@@ -1,0 +1,38 @@
+{"creatures" : [
+  {
+    "id" : "hero",
+    "name" : "Hero",
+    "description": "Player",
+    "health" : "10",
+    "speed" : "2",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "Punch,Arrow,Firewall,Icewall",
+    "org" : "1"
+  },
+  {
+    "id" : "animal_1",
+    "name" : "Rolf",
+    "description": "Regular rolf",
+    "health" : "10",
+    "speed" : "1",
+    "spritesheetregion" : "enemy3",
+    "effects" : "DAMAGE 1 1 0",
+    "abilities" : "PUNCH",
+    "items" : "coin,coin,coin",
+    "org" : "2"
+  },
+
+  {
+    "id" : "animal_2",
+    "name" : "Fast Rolf",
+    "description": "Fast rolf",
+    "health" : "10",
+    "speed" : "1",
+    "spritesheetregion" : "enemy4",
+    "effects" : "DAMAGE 1 1 0",
+    "abilities" : "PUNCH",
+    "items" : "coin,coin,coin",
+    "org" : "2"
+  }
+
+]}

@@ -1,0 +1,42 @@
+{"items":[
+  {
+    "id":"key_1",
+    "name" : "Key from next level",
+    "description" : "Key from some door",
+    "value" : "0",
+    "image" : "key1"
+  },
+  {
+    "id":"coin",
+    "name" : "Treasure",
+    "description" : "Money,money,money...",
+    "value" : "100",
+    "image" : "gem1"
+  },
+  {
+    "id":"helmet_1",
+    "name" : "Helmet for novice",
+    "description" : "Helmet?",
+    "value" : "100",
+    "image" : "helmet",
+    "type" : "HEAD",
+    "effects": "DAMAGE 6 1 2"
+  },
+  {
+    "id":"armor_1",
+    "name" : "Rusty armor",
+    "description" : "Rusty armor for fatman",
+    "value" : "100",
+    "image" : "armor",
+    "type" : "ARMOR"
+  },
+  {
+    "id":"potion_1",
+    "name" : "Potion of healing",
+    "description" : "Potion of healing",
+    "value" : "100",
+    "image" : "red_bottle",
+    "usable" : "TRUE",
+    "effects" : "FAST 10 10 0"
+  }
+]}
