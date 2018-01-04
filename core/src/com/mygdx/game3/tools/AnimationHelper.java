@@ -55,8 +55,8 @@ public class AnimationHelper {
         for (int index : indexes) {
             frames.add(new TextureRegion(getAtlas().findRegion(region), index * HuntersGame.TILE_SIZE, 0, HuntersGame.TILE_SIZE, HuntersGame.TILE_SIZE));
             finalAnimation = new Animation(duration, frames);
-            frames.clear();
         }
+        frames.clear();
         return finalAnimation;
     }
 }

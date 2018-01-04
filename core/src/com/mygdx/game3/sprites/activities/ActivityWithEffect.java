@@ -79,6 +79,7 @@ public class ActivityWithEffect extends Sprite {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / HuntersGame.PPM, getY()/ HuntersGame.PPM );
+        bodyDef.gravityScale= 0.1f;
         body = world.createBody(bodyDef);
 
         CircleShape shape;
@@ -91,7 +92,7 @@ public class ActivityWithEffect extends Sprite {
                 fixtureDef= new FixtureDef();
                 fixtureDef.shape = shape;
 
-                fixtureDef.isSensor = false;
+                fixtureDef.isSensor = true;
 
                 fixtureDef.filter.categoryBits = HuntersGame.ACTIVITY_BIT;
                 fixtureDef.filter.maskBits = HuntersGame.HERO_BIT |
@@ -125,7 +126,7 @@ public class ActivityWithEffect extends Sprite {
                 fixtureDef = new FixtureDef();
                 fixtureDef.shape = box;
 
-                fixtureDef.isSensor = false;
+                fixtureDef.isSensor = true;
 
                 fixtureDef.filter.categoryBits = HuntersGame.ACTIVITY_BIT;
                 fixtureDef.filter.maskBits = HuntersGame.HERO_BIT |
@@ -225,5 +226,9 @@ public class ActivityWithEffect extends Sprite {
 
     public boolean isTargetACreator(Creature target){
         return createdBy.equals(target);
+    }
+
+    public Creature getCreator() {
+        return createdBy;
     }
 }

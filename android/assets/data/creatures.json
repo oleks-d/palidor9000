@@ -4,10 +4,11 @@
     "name" : "Hero",
     "description": "Player",
     "health" : "10",
-    "speed" : "2",
+    "speed" : "1",
     "spritesheetregion" : "enemy1",
-    "abilities" : "Punch,Arrow,Firewall,Icewall",
-    "org" : "1"
+    "abilities" : "Punch,Arrow,Firewall,Icewall,Haste,Stopcast,Dash,Push,Pull",
+    "org" : "1",
+    "items" : "helmet_1,armor_1,sword_1"
   },
   {
     "id" : "animal_1",
@@ -16,8 +17,8 @@
     "health" : "10",
     "speed" : "1",
     "spritesheetregion" : "enemy3",
-    "effects" : "DAMAGE 1 1 0",
-    "abilities" : "PUNCH",
+    "effects" : "CRUSH_DAMAGE 1 1 0",
+    "abilities" : "Firewall",
     "items" : "coin,coin,coin",
     "org" : "2"
   },
@@ -29,8 +30,8 @@
     "health" : "10",
     "speed" : "1",
     "spritesheetregion" : "enemy4",
-    "effects" : "DAMAGE 1 1 0",
-    "abilities" : "PUNCH",
+    "effects" : "CUT_DAMAGE 1 1 0",
+    "abilities" : "Punch,Arrow",
     "items" : "coin,coin,coin",
     "org" : "2"
   }

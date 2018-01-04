@@ -1,26 +1,38 @@
 package com.mygdx.game3.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game3.HuntersGame;
+import com.mygdx.game3.enums.AbilityID;
 import com.mygdx.game3.sprites.creatures.Hero;
 import com.mygdx.game3.tools.AnimationHelper;
+
+import java.util.LinkedList;
 
 /**
  * Created by odiachuk on 12/18/17.
  */
 public class ControllerPanel implements Disposable{
+
+    private  Label titemout;
+    private  Label titemout1;
+    private  Label titemout2;
+    private  Label titemout3;
 
     public Stage stage;
     Viewport viewport;
@@ -39,8 +51,28 @@ public class ControllerPanel implements Disposable{
     Image imageRight;
     Image imageDown;
 
+    Image image0;
+    Image image1;
+    Image image2;
+    Image image3;
+
+    Table tableAbilitiesDefense;
+    Table tableAbilitiesAtack;
+    Table tableAbilitiesBuff;
+    Table table;
+    Table tableJump;
+
+    LinkedList<Image> atackabilities;
+    LinkedList<Image> defenseabilities;
+    LinkedList<Image> helpabilities;
+
+    LinkedList<Label> atackalabels;
+    LinkedList<Label> defenselabels;
+    LinkedList<Label> helpalabels;
+
     AnimationHelper animhelper;
 
+    private Vector2 lastTouch;
 
     public ControllerPanel(SpriteBatch sb, AnimationHelper animhelper){
 
@@ -52,13 +84,23 @@ public class ControllerPanel implements Disposable{
 
         Gdx.input.setInputProcessor(stage);
 
+        lastTouch = new Vector2();
+
+        updateDirections();
+
+        //titemout1 = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+    }
+
+    private void updateDirections() {
+
         imageTop = new Image(animhelper.getTextureRegionByIDAndIndex("up_button"));
-        imageTop.setSize(40, 40);
-         imageLeft = new Image(animhelper.getTextureRegionByIDAndIndex("left_button"));
-        imageLeft.setSize(40, 40);
-         imageRight = new Image(animhelper.getTextureRegionByIDAndIndex("right_button"));
-        imageRight.setSize(40, 40);
-         imageDown = new Image(animhelper.getTextureRegionByIDAndIndex("down_button"));
+        imageTop.setSize(50, 50);
+        imageLeft = new Image(animhelper.getTextureRegionByIDAndIndex("left_button"));
+        imageLeft.setSize(50, 50);
+        imageRight = new Image(animhelper.getTextureRegionByIDAndIndex("right_button"));
+        imageRight.setSize(50, 50);
+        imageDown = new Image(animhelper.getTextureRegionByIDAndIndex("down_button"));
         imageDown.setSize(40, 40);
 
 
@@ -67,27 +109,68 @@ public class ControllerPanel implements Disposable{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 touchedUp = true;
+                //lastTouch.set(x, y);
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 touchedUp = false;
+                //touchedLeft = false;
+                //touchedRight = false;
             }
+
+//            @Override
+//            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+//                //touchedUp = true;
+//                Vector2 newTouch = new Vector2(x, y);
+//                // delta will now hold the difference between the last and the current touch positions
+//                // delta.x > 0 means the touch moved to the right, delta.x < 0 means a move to the left
+//                Vector2 delta = newTouch.cpy().sub(lastTouch);
+//                //lastTouch = newTouch;
+//                if(delta.x > 0) {
+//                    touchedRight = true;
+//                    touchedLeft = false;
+//                }else {
+//                    touchedLeft = true;
+//                    touchedRight = false;
+//                }
+//                if (delta.y < 0) {
+//                        touchedDown = true;
+//                        touchedUp = false;
+//                }
+//                else  if (delta.y > 20) {
+//                    if(touchedDown && !touchedUp) {
+//                        jumpNow = true;
+//                        lastTouch = newTouch;
+//                    }
+//                    touchedUp = true;
+//                    touchedDown = false;
+//                }
+//            }
+
+//            @Override
+//            public boolean (InputEvent event, float x, float y) {
+//                //return super.mouseMoved(event, x, y);
+//                touchedUp = true;
+//                Gdx.app.log("x","" + y);
+//                return true;
+//            }
         });
 
         imageDown.addListener(new InputListener(){
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                touchedDown = true;
-                return true;
-            }
+//            @Override
+//            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+//                touchedDown = true;
+//                return true;
+//            }
+//
+//            @Override
+//            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+//                touchedDown = false;
+//            }
 
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touchedDown = false;
-            }
         });
 
         imageRight.addListener(new InputListener(){
@@ -118,118 +201,200 @@ public class ControllerPanel implements Disposable{
             }
         });
 
-        Table table = new Table();
+        table = new Table();
         table.left().bottom();
         table.setFillParent(true);
 
         table.row().padLeft(5);
         table.add();
+        //table.add(imageTop).size(imageTop.getWidth(), imageTop.getHeight());
         table.add();
         table.row().pad(5,5,5,5);
         table.add(imageLeft).size(imageLeft.getWidth(), imageLeft.getHeight());
-        table.add(imageDown).size(imageDown.getWidth(), imageDown.getHeight());
+        table.add();
+        table.add();
+        table.add();
+        table.add();
+        //table.add(imageDown).size(imageDown.getWidth(), imageDown.getHeight());
         table.add(imageRight).size(imageRight.getWidth(), imageRight.getHeight());
 
-        stage.addActor(table);
 
+        tableJump = new Table();
+        tableJump.right().bottom();
+        tableJump.setFillParent(true);
+        tableJump.row();
+        tableJump.add(imageTop).size(imageTop.getWidth(), imageTop.getHeight());
+
+        stage.addActor(tableJump);
+        stage.addActor(table);
     }
 
     public void update(Hero hero){
 
+        stage.dispose();
+
+        updateDirections();
+
         Gdx.input.setInputProcessor(stage);
 
-        Image image = new Image(animhelper.getTextureRegionByIDAndIndex(hero.ABILITY0.getIcon()));
-        image.setSize(40, 40);
-        Image image1 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.ABILITY1.getIcon()));
-        image.setSize(40, 40);
-        Image image2 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.ABILITY2.getIcon()));
-        image.setSize(40, 40);
-        Image image3 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.ABILITY3.getIcon()));
-        image.setSize(40, 40);
+        atackabilities = new LinkedList<Image>();
+        defenseabilities = new LinkedList<Image>();
+        helpabilities = new LinkedList<Image>();
 
-        image.addListener(new InputListener(){
+        atackalabels = new LinkedList<Label>();
+        defenselabels = new LinkedList<Label>();
+        helpalabels = new LinkedList<Label>();
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                touched0 = true;
-                return true;
-            }
+        tableAbilitiesAtack = new Table();
+        tableAbilitiesAtack.right().top();
+        tableAbilitiesAtack.setFillParent(true);
+        tableAbilitiesAtack.row();
 
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touched0 = false;
-            }
-        });
+        for(int i = 0; i < hero.selectedAtackAbilities.size; i++) {
+            AbilityID ability = hero.selectedAtackAbilities.get(i);
+            final int index = i;
+            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
+            image0.setSize(40, 40);
+            titemout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-        image1.addListener(new InputListener(){
+            atackabilities.add(image0);
+            atackalabels.add(titemout);
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                touched1 = true;
-                return true;
-            }
+            image0.addListener(new ClickListener() {
 
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touched1 = false;
-            }
-        });
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    touched0 = false;
+                    return true;
+                }
 
-        image2.addListener(new InputListener(){
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    touched0 = true;
+                }
+            });
 
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                touched2 = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touched2 = false;
-            }
-        });
-
-        image3.addListener(new InputListener(){
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                touched3 = true;
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touched3 = false;
-            }
-        });
+            tableAbilitiesAtack.add(image0).size(image0.getWidth(), image0.getHeight());
+            tableAbilitiesAtack.add(titemout);
+        }
 
 
-        Table tableAbilities = new Table();
-        tableAbilities.right().bottom();
-        tableAbilities.setFillParent(true);
-        tableAbilities.row();
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.add(image).size(image.getWidth(), image.getHeight());
-        tableAbilities.row();
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.add(image1).size(image.getWidth(), image.getHeight());
-        tableAbilities.row();
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.add(image2).size(image.getWidth(), image.getHeight());
-        tableAbilities.row();
-        tableAbilities.add(imageTop).size(image.getWidth(), image.getHeight());
-        tableAbilities.add();
-        tableAbilities.add(image3).size(image.getWidth(), image.getHeight());
+        tableAbilitiesDefense = new Table();
+        tableAbilitiesDefense.right().bottom();
+        tableAbilitiesDefense.setFillParent(true);
 
-        stage.addActor(tableAbilities);
+        for(int i = 0; i < hero.selectedDefenseAbilities.size; i++) {
+            AbilityID ability = hero.selectedDefenseAbilities.get(i);
+            final int index = i;
+            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
+            image0.setSize(40, 40);
+            titemout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+            defenseabilities.add(image0);
+            defenselabels.add(titemout);
+
+            image0.addListener(new InputListener() {
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    touched1 = false;
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    touched1 = true;
+                }
+            });
+
+            tableAbilitiesDefense.add(image0).size(image0.getWidth(), image0.getHeight());
+            tableAbilitiesDefense.add(titemout);
+        }
+
+
+        tableAbilitiesBuff = new Table();
+        tableAbilitiesBuff.left().top();
+        tableAbilitiesBuff.setFillParent(true);
+
+        for(int i = 0; i < hero.selectedHelpAbilities.size; i++) {
+            AbilityID ability = hero.selectedHelpAbilities.get(i);
+            final int index = i;
+            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
+            image0.setSize(40, 40);
+            titemout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+            helpabilities.add(image0);
+            helpalabels.add(titemout);
+
+            image0.addListener(new InputListener() {
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    touched2 = false;
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    touched2 = true;
+                }
+            });
+
+            tableAbilitiesBuff.add(image0).size(image0.getWidth(), image0.getHeight());
+            tableAbilitiesBuff.add(titemout);
+        }
+
+        stage.addActor(tableAbilitiesDefense);
+        stage.addActor(tableAbilitiesAtack);
+        stage.addActor(tableAbilitiesBuff);
 
     }
 
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public void updateLabels(Hero hero) {
+
+        for(int i=0;i<hero.selectedAtackAbilities.size;i++)
+            atackalabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedAtackAbilities.get(i))));
+        for(int i=0;i<hero.selectedDefenseAbilities.size;i++)
+            defenselabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedDefenseAbilities.get(i))));
+        for(int i=0;i<hero.selectedHelpAbilities.size;i++)
+            helpalabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedHelpAbilities.get(i))));
+
+    }
+
+   public  void makeAtackIconActive(int i){
+       Gdx.app.log("Big",i + " ");
+       if(atackabilities.size()>=i)
+        atackabilities.get(i).setSize(60,60);
+       if(atackabilities.size()>1)
+        atackabilities.get(i==0? atackabilities.size()-1 : i-1).setSize(40,40);
+   }
+
+    public  void makeDefenceIconActive(int i){
+
+        if(defenseabilities.size()>=i)
+        defenseabilities.get(i).setSize(60,60);
+        if(defenseabilities.size()>1)
+        defenseabilities.get(i==0? defenseabilities.size()-1 : i-1).setSize(40,40);
+    }
+    public  void makeHelpIconActive(int i){
+        if(helpabilities.size()>=i)
+        helpabilities.get(i).setSize(60,60);
+        if(helpabilities.size()>1)
+        helpabilities.get(i==0? helpabilities.size()-1 : i-1).setSize(40,40);
+    }
+
+    public  void makeAtackIconInActive(int i){
+        atackabilities.get(i==0? atackabilities.size()-1 : i-1).setSize(40,40);
+    }
+    public  void makeDefenceIconInActive(int i){
+        defenseabilities.get(i==0? defenseabilities.size()-1 : i-1).setSize(40,40);
+    }
+    public  void makeHelpIconInActive(int i){
+        helpabilities.get(i==0? helpabilities.size()-1 : i-1).setSize(40,40);
     }
 }

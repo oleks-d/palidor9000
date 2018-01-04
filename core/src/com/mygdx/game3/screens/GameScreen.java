@@ -8,18 +8,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game3.CustomDialog;
 import com.mygdx.game3.HuntersGame;
-import com.mygdx.game3.scenes.HeroPanel;
+import com.mygdx.game3.scenes.HeroAbilitiesPanel;
+import com.mygdx.game3.scenes.HeroInventoryPanel;
 import com.mygdx.game3.sprites.activities.ActivityWithEffect;
 import com.mygdx.game3.enums.*;
 import com.mygdx.game3.sprites.creatures.Creature;
@@ -53,7 +49,8 @@ public class GameScreen implements Screen {
 
     public InfoPanel infoPanel;
     ControllerPanel controller;
-    public HeroPanel heroPanel;
+    public HeroInventoryPanel heroInventoryPanel;
+    public HeroAbilitiesPanel heroAbilitiesPanel;
 
     public LevelManager levelmanager;
 
@@ -61,6 +58,18 @@ public class GameScreen implements Screen {
     public BitmapFont font;
 
     boolean PAUSE;
+    boolean onInventoryScreen = false;
+    boolean onAbilitiesScreen = false;
+
+    double CURRENTTIME = 0;
+
+    double timetoExecuteClickOnAbility = 0;
+    AbilityID abilityToExecuteNext = null;
+    int abilityIndex = 0;
+
+    boolean toZoomIn = false;
+    boolean toZoomOut = false;
+    float ZOOM_LEVEL = 1;
 
     public GameScreen(HuntersGame game) {
         this.game = game;
@@ -95,11 +104,14 @@ public class GameScreen implements Screen {
         infoPanel = new InfoPanel(game.getBatch(), levelmanager);
 
         //info
-        heroPanel = new HeroPanel(game.getBatch(), hero, animationHelper);
+        heroInventoryPanel = new HeroInventoryPanel(game.getBatch(), hero, animationHelper);
+        heroAbilitiesPanel = new HeroAbilitiesPanel(game.getBatch(), hero, animationHelper);
 
         controller.update(hero);
 
         PAUSE = false;
+
+        //Gdx.input.setInputProcessor(new SimpleGestureDetector(new SimpleGestureDetector.DirectionListener());
 
     }
 
@@ -111,6 +123,7 @@ public class GameScreen implements Screen {
 
     void update(float delta){
 
+        CURRENTTIME = CURRENTTIME + delta;
 
         ActivityWithEffect activity;
 
@@ -118,15 +131,33 @@ public class GameScreen implements Screen {
 
             // handle camera after hero position update
             if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2)
-                camera.position.x = (hero.getBody().getPosition().x);
+                camera.position.x = (hero.getBody().getPosition().x );
             else
                 camera.position.x = viewport.getWorldWidth() / 2;
             if (hero.getBody().getPosition().y > viewport.getWorldHeight() / 2)
-                camera.position.y = (hero.getBody().getPosition().y);
+                camera.position.y = (hero.getBody().getPosition().y );
             else
                 camera.position.y = viewport.getWorldHeight() / 2;
 
+            if(toZoomIn) {
+                ZOOM_LEVEL = 2f ;
+                camera.zoom = 0.5f;
+                viewport.setWorldSize(HuntersGame.WIDTH /2 / HuntersGame.PPM , HuntersGame.HIGHT/ 2/ HuntersGame.PPM);
+                toZoomIn = false;
+            }
+
+            if(toZoomOut) {
+                ZOOM_LEVEL = 1f;
+                camera.zoom = 1f;
+                viewport.setWorldSize(HuntersGame.WIDTH/ HuntersGame.PPM , HuntersGame.HIGHT/ HuntersGame.PPM);
+                toZoomOut = false;
+            }
+
+
         if(!PAUSE) {
+
+            //update cooldowns
+            controller.updateLabels(hero);
 
             //update hero
             hero.update(delta);
@@ -178,11 +209,38 @@ public class GameScreen implements Screen {
     }
 
     private void handleInput(float delta) {
+
+        if(abilityToExecuteNext != null && CURRENTTIME > timetoExecuteClickOnAbility) {
+            if(abilityToExecuteNext.getType() == AbilityType.BUFF)
+                controller.makeHelpIconInActive(abilityIndex);
+            if(abilityToExecuteNext.getType() == AbilityType.CLOSE_RANGE_ATACK || abilityToExecuteNext.getType() == AbilityType.LONG_RANGE_ATACK)
+                controller.makeAtackIconInActive(abilityIndex);
+            if(abilityToExecuteNext.getType() == AbilityType.CLOSE_RANGE_DEFENSE || abilityToExecuteNext.getType() == AbilityType.LONG_RANGE_DEFENSE)
+                controller.makeDefenceIconInActive(abilityIndex);
+
+            hero.useAbility(abilityToExecuteNext);
+            abilityToExecuteNext = null;
+
+            abilityIndex = 0;
+        }
+
         Vector3 coord;
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            onInventoryScreen = !onInventoryScreen;
             PAUSE = !PAUSE;
             if(!PAUSE)
                 controller.update(hero);
+            else
+                heroInventoryPanel.update();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            onAbilitiesScreen = !onAbilitiesScreen;
+            PAUSE = !PAUSE;
+            if(!PAUSE)
+                controller.update(hero);
+            else
+                heroAbilitiesPanel.update();
         }
 
 
@@ -194,11 +252,11 @@ public class GameScreen implements Screen {
         } else {
                 ActivityWithEffect activity = null;
 
-                if (controller.touchedUp) {
+                if (controller.touchedUp ) {
                     hero.jump();
                 }
                 if (controller.touchedDown) {
-                    //hero.move(true);
+                    //hero.hidden = true
                 }
                 if (controller.touchedLeft) {
                     hero.move(false);
@@ -206,48 +264,153 @@ public class GameScreen implements Screen {
                 if (controller.touchedRight) {
                     hero.move(true);
                 }
-                if (controller.touched0) {
-                    hero.useAbility(hero.ABILITY0);
-                }
-                if (controller.touched1) {
-                    hero.useAbility(hero.ABILITY1);
-                }
-                if (controller.touched2) {
-                    hero.useAbility(hero.ABILITY2);
-                }
-                if (controller.touched3) {
-                    hero.useAbility(hero.ABILITY3);
-                }
 
-                {
+
+            if (controller.touched0 || Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+
+
+                if(abilityIndex >= hero.selectedAtackAbilities.size )
+                    abilityIndex =0;
+                if ( abilityToExecuteNext != null &&
+                        !( abilityToExecuteNext.getType() != AbilityType.CLOSE_RANGE_ATACK || abilityToExecuteNext.getType() != AbilityType.LONG_RANGE_ATACK))
+                    abilityIndex =0;
+                controller.makeAtackIconActive(abilityIndex);
+                abilityIndex++;
+
+                    System.out.println(abilityIndex);
+                    timetoExecuteClickOnAbility = CURRENTTIME + 0.5;
+                    abilityToExecuteNext = hero.selectedAtackAbilities.get(abilityIndex - 1);
+                    controller.touched0 = false;
+            }
+            if (controller.touched1 || Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+                if(abilityIndex >= hero.selectedDefenseAbilities.size)
+                    abilityIndex =0;
+                if (( abilityToExecuteNext != null &&
+                        !( abilityToExecuteNext.getType() != AbilityType.CLOSE_RANGE_DEFENSE || abilityToExecuteNext.getType() != AbilityType.LONG_RANGE_DEFENSE)))
+                    abilityIndex =0;
+                controller.makeDefenceIconActive(abilityIndex);
+                abilityIndex++;
+
+                System.out.println(abilityIndex);
+                timetoExecuteClickOnAbility = CURRENTTIME + 0.5;
+                abilityToExecuteNext = hero.selectedDefenseAbilities.get(abilityIndex - 1);
+                controller.touched1 = false;
+
+            }
+            if (controller.touched2 || Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                if(abilityIndex >= hero.selectedHelpAbilities.size )
+                    abilityIndex =0;
+                if ( abilityToExecuteNext != null && abilityToExecuteNext.getType() == AbilityType.BUFF)
+                    abilityIndex =0;
+                controller.makeHelpIconActive(abilityIndex);
+                abilityIndex++;
+
+                System.out.println(abilityIndex);
+                timetoExecuteClickOnAbility = CURRENTTIME + 0.5;
+                abilityToExecuteNext = hero.selectedHelpAbilities.get(abilityIndex - 1);
+                controller.touched2 = false;
+
+            }
+//            if (controller.touched3) {
+//                timetoExecuteClickOnAbility = CURRENTTIME + 1;
+//            }
+
+            // OLD way
+//
+//                if (controller.touched0) {
+//                    hero.useAbility(hero.ABILITY0);
+//                }
+//                if (controller.touched1) {
+//                    hero.useAbility(hero.ABILITY1);
+//                }
+//                if (controller.touched2) {
+//                    hero.useAbility(hero.ABILITY2);
+//                }
+//                if (controller.touched3) {
+//                    hero.useAbility(hero.ABILITY3);
+//                }
+
+         //       {
                     if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
                         hero.jump();
                     if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
                         hero.move(true);
                     if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
                         hero.move(false);
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-                        hero.useAbility(hero.ABILITY0);
-                    };
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-                        hero.useAbility(hero.ABILITY1);
-                    };
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-                        hero.useAbility(hero.ABILITY2);
-                    }
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                        hero.useAbility(hero.ABILITY3);
+
+//
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+//                        if(abilityIndex >= hero.selectedAtackAbilities.size )
+//                            abilityIndex =0;
+//                        if ( abilityToExecuteNext != null &&
+//                                !( abilityToExecuteNext.getType() != AbilityType.CLOSE_RANGE_ATACK || abilityToExecuteNext.getType() != AbilityType.LONG_RANGE_ATACK))
+//                            abilityIndex =0;
+//                        abilityIndex++;
+//
+//                        System.out.println(abilityIndex);
+//                        timetoExecuteClickOnAbility = CURRENTTIME + 0.5;
+//                        abilityToExecuteNext = hero.selectedAtackAbilities.get(abilityIndex - 1);
+//                        controller.touched0 = false;
+//                    }
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+//                        if(abilityIndex >= hero.selectedDefenseAbilities.size)
+//                            abilityIndex =0;
+//                        if (( abilityToExecuteNext != null &&
+//                                !( abilityToExecuteNext.getType() != AbilityType.CLOSE_RANGE_DEFENSE || abilityToExecuteNext.getType() != AbilityType.LONG_RANGE_DEFENSE)))
+//                            abilityIndex =0;
+//                        abilityIndex++;
+//
+//                        System.out.println(abilityIndex);
+//                        timetoExecuteClickOnAbility = CURRENTTIME + 0.5;
+//                        abilityToExecuteNext = hero.selectedDefenseAbilities.get(abilityIndex - 1);
+//                        controller.touched0 = false;
+//                    }
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+//                        if(abilityIndex >= hero.selectedHelpAbilities.size )
+//                            abilityIndex =0;
+//                        if ( abilityToExecuteNext != null && abilityToExecuteNext.getType() == AbilityType.BUFF)
+//                            abilityIndex =0;
+//                        abilityIndex++;
+//
+//                        System.out.println(abilityIndex);
+//                        timetoExecuteClickOnAbility = CURRENTTIME + 0.5;
+//                        abilityToExecuteNext = hero.selectedHelpAbilities.get(abilityIndex - 1);
+//                        controller.touched0 = false;
+//                    }
+
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+//                        hero.useAbility(hero.ABILITY0);
+//                    };
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+//                        hero.useAbility(hero.ABILITY1);
+//                    };
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+//                        hero.useAbility(hero.ABILITY2);
+//                    }
+//                    if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+//                        hero.useAbility(hero.ABILITY3);
 //                activity = hero.activateAbility(Hero.ABILITY2);
 //                if (activity != null)
 //                    levelmanager.ACTIVITIES.add(activity);
-                    };
+//                    };
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+                        hero.makeInvisible(!hero.isHidden());
+                    }
 
 
                     if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
                         levelmanager.ITEMS.add(hero.throwFromInventory(hero.getInventory().get(0))); // TODO adjust
                     }
+
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+                        toZoomIn = true;
+                    }
+
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+                        toZoomOut = true;
+                    }
                 }
-            }
+           // }
 
 
     }
@@ -271,7 +434,6 @@ public class GameScreen implements Screen {
 
         update(delta);
 
-        //if(!PAUSE) {  // TODO stop shivering after pause
 
             Gdx.gl.glClearColor(0, 0, 0, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -285,9 +447,6 @@ public class GameScreen implements Screen {
             //render all enemies
             for (Creature creature : levelmanager.CREATURES) {
                 creature.draw(game.getBatch());
-                //    creature.statusbar.draw(game.getBatch());
-                //    for(int i = 0; i< creature.statusbar.icons.size;i++)
-                //        game.getBatch().draw(creature.statusbar.icons.get(i),creature.getBody().getX(),creature.getY());
             }
 
             //render all items
@@ -303,19 +462,23 @@ public class GameScreen implements Screen {
             }
 
             hero.draw(game.getBatch());
-            //hero.getStatusbar().draw(game.getBatch());
 
-            //game.getBatch().draw(hero.getStatusbar(), hero.getBody().getPosition().x-hero.getWidth() / HuntersGame.PPM / 2, hero.getBody().getPosition().y-hero.getHeight() / HuntersGame.PPM / 2,  hero.getWidth() / HuntersGame.PPM, hero.getHeight() / HuntersGame.PPM);
             game.getBatch().end();
 
             //render boxes
             debugRenderer.render(world, camera.combined); // render boxes from World
 
         if(PAUSE) {
-            //show info panel
-            heroPanel.update();
-            game.getBatch().setProjectionMatrix(heroPanel.stage.getCamera().combined);
-            heroPanel.stage.draw();
+            if (onInventoryScreen){
+                //show info panel
+                //heroInventoryPanel.update();
+                game.getBatch().setProjectionMatrix(heroInventoryPanel.stage.getCamera().combined);
+                heroInventoryPanel.stage.draw();
+            } else if (onAbilitiesScreen){
+                //heroAbilitiesPanel.update();
+                game.getBatch().setProjectionMatrix(heroAbilitiesPanel.stage.getCamera().combined);
+                heroAbilitiesPanel.stage.draw();
+            }
 
         } else {
 
@@ -385,7 +548,8 @@ public class GameScreen implements Screen {
         debugRenderer.dispose();
         controller.dispose();
         infoPanel.dispose();
-        heroPanel.dispose();
+        heroInventoryPanel.dispose();
+        heroAbilitiesPanel.dispose();
         levelmanager.dispose();
 
     }

@@ -10,7 +10,8 @@ public enum CreatureAction {
     STOP,
     HIDE,
     BLOCK,
-    ATACK,
+    CLOSE_ATACK,
     BUFF,
-    DEBUFF
+    DEBUFF,
+    RANGE_ATACK;
 }

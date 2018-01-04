@@ -22,12 +22,13 @@ import com.mygdx.game3.sprites.creatures.Hero;
 import com.mygdx.game3.sprites.gameobjects.GameItem;
 import com.mygdx.game3.tools.AnimationHelper;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
  *  Inventory and Equiplment
  */
-public class HeroPanel implements Disposable {
+public class HeroInventoryPanel implements Disposable {
 
     private final AnimationHelper animhelper;
     public Stage stage;
@@ -38,7 +39,6 @@ public class HeroPanel implements Disposable {
 
     Label inventoryHeader;
     Label equipedHeader;
-    Label abilitiesHeader;
     Label detailsHeader;
     Image background;
 
@@ -49,13 +49,12 @@ public class HeroPanel implements Disposable {
     Hero hero;
 
     public GameItem currentItem = null;
-    public AbilityID currentAbility = null;
 
-    int MAX_NUMBER_OF_ROWS = 2;
+    int MAX_NUMBER_OF_ROWS = 8;
     int LAST_DISPLAYED_ROW;
     int INITIAL_DISPLAYED_ROW;
 
-    public HeroPanel(SpriteBatch sb, Hero hero, AnimationHelper animhelper){
+    public HeroInventoryPanel(SpriteBatch sb, Hero hero, AnimationHelper animhelper){
 
         this.sb = sb;
         this.hero = hero;
@@ -68,10 +67,9 @@ public class HeroPanel implements Disposable {
 
         inventoryHeader = new Label(String.format("<< -  %s - >>", "ITEMS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));
         equipedHeader= new Label(String.format("<< -  %s - >>", "EQUIPMENT:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
-        abilitiesHeader= new Label(String.format("<< -  %s - >>", "ABILITIES:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
         detailsHeader= new Label(String.format("<< -  %s - >>", "DETAILS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
 
-        background = new Image(new Texture("forest2.jpg"));
+        background = new Image(new Texture(HuntersGame.SPRITES_DIR + File.separator + "background.png"));
 
         LAST_DISPLAYED_ROW = 0;
         INITIAL_DISPLAYED_ROW = 0;
@@ -134,14 +132,8 @@ public class HeroPanel implements Disposable {
         equipmenttable.row();
         equipmenttable.add(equipedHeader);
 
-        Table abilitiestable = new Table();
-        abilitiestable.left();
-        abilitiestable.setFillParent(true);
-        abilitiestable.row();
-        abilitiestable.add(abilitiesHeader);
-
         Table detailstable = new Table();
-        detailstable.right();
+        detailstable.bottom();
         detailstable.setFillParent(true);
         detailstable.row();
         detailstable.add(detailsHeader);
@@ -217,7 +209,6 @@ public class HeroPanel implements Disposable {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         currentItem = hero.getInventory().get(index);
-                        currentAbility = null;
                         System.out.println(currentItem.itemname);
                         return true;
                     }
@@ -232,7 +223,6 @@ public class HeroPanel implements Disposable {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         currentItem = hero.getInventory().get(index);
-                        currentAbility = null;
                         if(currentItem.getType() != EquipmentType.NONE) {
                             hero.equipItem(hero.getInventory().get(index));
                             System.out.println("Equip:" + currentItem.itemname);
@@ -301,32 +291,14 @@ public class HeroPanel implements Disposable {
         equipmenttable.add();
         equipmenttable.add();
 
-        //abilities table update
-
-        abilitiestable.row();
-        abilitiestable.row();
-        for (AbilityID item : hero.getAbilities()) {
-            abilityItems.add(new Label(String.format("%s", item.getName()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
-            Image imageTop = new Image(animhelper.getTextureRegionByIDAndIndex(item.getIcon()));
-            imageTop.setSize(20, 20);
-            abilityItemsImage.add(imageTop);
-        }
-        abilitiestable.row();
-
-        for (int i = 0; i<abilityItems.size;i++) {
-            Label item  = abilityItems.get(i);
-            Image select = abilityItemsImage.get(i);
-            final int index = i;
-            abilitiestable.add(item);
-            abilitiestable.add(select);
-            abilitiestable.row();
-            item.addListener(new InputListener(){
-
+        if(hero.weapon1 != null) {
+            Image weaponImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.weapon1.getIcon()));
+            weaponImage.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.getAbilities().get(index);
-                    currentItem = null;
-                    System.out.println(currentAbility.getName());
+                    currentItem = hero.weapon1;
+                    hero.unEquipItem(hero.weapon1);
+                    System.out.println("UnEquip:" + currentItem.itemname);
                     return true;
                 }
 
@@ -335,24 +307,10 @@ public class HeroPanel implements Disposable {
                     update();
                 }
             });
-
-            select.addListener(new InputListener(){
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.getAbilities().get(index);
-                    setAbility(currentAbility);
-                    currentItem = null;
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    update();
-                }
-            });
-
+            equipmenttable.add(weaponImage);
         }
-        abilitiestable.row();
+
+
 
 
         //details table update
@@ -360,12 +318,9 @@ public class HeroPanel implements Disposable {
         detailstable.row();
         if(currentItem != null)
             detailstable.add(new Label(String.format("%s", currentItem.itemdescription), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
-        else if (currentAbility != null)
-            detailstable.add(new Label(String.format("%s", currentAbility.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
 
 
         stage.addActor(inventorytable);
-        stage.addActor(abilitiestable);
         stage.addActor(equipmenttable);
         stage.addActor(detailstable);
 

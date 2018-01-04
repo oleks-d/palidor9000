@@ -11,5 +11,7 @@ public enum EquipmentType {
     BELT,
     RING,
     NECK,
+    WEAPON,
+    BIG_WEAPON,
     NONE
 }

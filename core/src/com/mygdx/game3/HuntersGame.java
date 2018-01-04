@@ -17,7 +17,7 @@ public class HuntersGame extends Game {
     public static final int TILE_SIZE = 32;
 	public static final String SPRITES_DIR = "sprites";
 	public static final String MAPS_DIR = "maps";
-	public static final String STARTING_LEVEL = "Forest";
+	public static final String STARTING_LEVEL = "Pit" ; //"Pit_Mob"; //"Forest";
 	public static String gameDetails;
 
 	private GameStateManager gsm;

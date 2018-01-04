@@ -44,4 +44,14 @@ public class Effect {
         this.magnitude = Float.valueOf(fields[2]);
         this.dotDuration = Float.valueOf(fields[3]);
     }
+
+    @Override
+    public int hashCode() {
+        return (int) (id.hashCode() + Math.round(duration + magnitude + dotDuration));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return ((Effect)obj).hashCode() == this.hashCode();
+    }
 }

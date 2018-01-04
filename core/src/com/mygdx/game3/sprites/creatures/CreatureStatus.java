@@ -34,6 +34,11 @@ public class CreatureStatus extends Sprite {
 
     public TextureRegion healthbar;
 
+    public TextureRegion hiddenMark;
+    public TextureRegion battleMark;
+
+    private Array<String> messages;
+    public double removeMessageTime;
 
     public CreatureStatus(Creature owner) {
         super();
@@ -44,6 +49,9 @@ public class CreatureStatus extends Sprite {
 
         //buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Math.round(owner.getWidth()), Math.round(owner.getHeight() / 4), false);
 
+        messages = new Array<String>();
+        removeMessageTime =0;
+
         icons = new Array<TextureRegion>();
 
         update();
@@ -53,9 +61,12 @@ public class CreatureStatus extends Sprite {
 
         castbar = owner.screen.animationHelper.getTextureRegionByIDAndIndex("castbar");
 
+        hiddenMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
+
+        battleMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
+
     }
-
-
+    
 
     public void update() {
 
@@ -65,7 +76,8 @@ public class CreatureStatus extends Sprite {
         //setPosition(owner.getBody().getPosition().x - owner.getWidth()/2 , owner.getBody().getPosition().y + owner.getHeight() /2);
         icons.clear();
         for (Effect effect : owner.activeEffects) {
-            icons.add(owner.screen.animationHelper.getTextureRegionByIDAndIndex(effect.id.getIcon()));
+            if(effect.duration != 0) // do not show constant effects
+                icons.add(owner.screen.animationHelper.getTextureRegionByIDAndIndex(effect.id.getIcon()));
         }
 
     }
@@ -78,18 +90,45 @@ public class CreatureStatus extends Sprite {
     public void draw(Batch batch) {
         if(!owner.destroyed) {
             //super.draw(batch);
-            for (int i = 0; i < icons.size; i++)
+            int i;
+            for (i = 0; i < icons.size; i++)
                 batch.draw(icons.get(i), getX() + i * HuntersGame.TILE_SIZE / 2 / PPM, getY(), HuntersGame.TILE_SIZE / 2 / PPM, HuntersGame.TILE_SIZE / 2 / PPM);
 
-            owner.screen.font.draw(batch, String.valueOf(owner.stats.health.current), getX(), getY()  + HuntersGame.TILE_SIZE/PPM);
+            if(owner.isHidden()){
+                batch.draw(hiddenMark, getX() + i * HuntersGame.TILE_SIZE / 2 / PPM, getY(), HuntersGame.TILE_SIZE / 2 / PPM, HuntersGame.TILE_SIZE / 2 / PPM);
+            }
+
+            if(owner.IN_BATTLE){
+                batch.draw(battleMark, getX() + i * HuntersGame.TILE_SIZE / 2 / PPM, getY(), HuntersGame.TILE_SIZE / 2 / PPM, HuntersGame.TILE_SIZE / 2 / PPM);
+            }
+
+            for(int j = 0; j<messages.size+0; j++){
+                owner.screen.font.draw(batch, messages.get(j), getX(), getY()  + HuntersGame.TILE_SIZE/PPM + j*20/PPM);
+            }
+
+            owner.screen.font.draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + 10/PPM  + HuntersGame.TILE_SIZE/PPM);
             //batch.draw(healthbar, getX() + 8 / PPM, getY() + 8 / PPM, (60*(owner.stats.health.current/owner.stats.health.base )) / PPM, 8 / PPM);
 //TODO healthbar
 
-            if(owner.getState() == State.CASTING && owner.abilityToCastExecutionTime > 0.2) {
+            if(owner.abilityToCastExecutionTime > 0.2) {
                 owner.screen.font.draw(batch, owner.abilityToCast.toString(), getX() + 8/PPM, getY()  + HuntersGame.TILE_SIZE/PPM);
-                batch.draw(castbar, getX() + 8 / PPM, getY() + 24 / PPM, (HuntersGame.TILE_SIZE / PPM) * (owner.timeSpentOnCast/ owner.abilityToCastExecutionTime), 8 / PPM);
+                batch.draw(castbar, getX() + 16 / PPM, getY() + 24 / PPM, (HuntersGame.TILE_SIZE / PPM) * (owner.timeSpentOnCast/ owner.abilityToCastExecutionTime), 8 / PPM);
             }
+
         }
 
+    }
+
+    public void addMessage(String s, double removeMessageTime) {
+        messages.add(s);
+        this.removeMessageTime = removeMessageTime;
+        if(messages.size > 1)
+            removeMessage();
+    }
+
+    public void removeMessage() {
+        //removeMessageTime = 0;
+        if(messages.size > 0)
+            messages.removeIndex(0);
     }
 }

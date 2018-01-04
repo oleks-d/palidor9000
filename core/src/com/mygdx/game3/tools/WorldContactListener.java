@@ -40,9 +40,12 @@ public class WorldContactListener implements ContactListener {
                     target = ((Creature) fixB.getUserData());
                 }
 
-                if (!act.isTargetACreator(target)) { //&& !act.isTargetWasAlreadyProcessed(target)) {
+                if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
                     for (Effect effect : act.activeEffects) {
                         target.applyEffect(effect);
+                        if(!effect.id.isPositive()){
+                            target.setIN_BATTLE(true);
+                        }
                     }
                     //   act.addTargetToAlreadyProcessed(target);
                     act.onHit();

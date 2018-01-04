@@ -8,7 +8,10 @@ public enum State {
     STANDING,
     RUNNING,
     FALLING,
+
     KICKING,
     CASTING,
+    SHOTING,
+
     DEAD
 }

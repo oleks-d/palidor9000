@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game3.HuntersGame;
 import com.mygdx.game3.ai.AI;
+import com.mygdx.game3.enums.AbilityType;
+import com.mygdx.game3.enums.EffectID;
 import com.mygdx.game3.sprites.activities.ActivityWithEffect;
 import com.mygdx.game3.sprites.gameobjects.GameItem;
 import com.mygdx.game3.screens.GameScreen;
@@ -24,7 +27,10 @@ import com.mygdx.game3.tools.AbilityHandler;
 import com.mygdx.game3.enums.AbilityID;
 import com.mygdx.game3.tools.EffectsHandler;
 
+import java.util.HashMap;
 import java.util.Set;
+
+import static com.mygdx.game3.HuntersGame.PPM;
 
 /**
  * Created by odiachuk on 12/20/17.
@@ -62,6 +68,8 @@ public class Creature extends Sprite {
     Array<GameItem> inventory;
     public GameItem head;
     public GameItem armor;
+    public GameItem weapon1;
+    public GameItem weapon2;
     GameItem boots;
     GameItem gloves;
     GameItem belt;
@@ -74,7 +82,11 @@ public class Creature extends Sprite {
     double existingTime;
     public boolean stuned;
     public boolean hidden;
+    public boolean IN_BATTLE;
     private Integer ID;
+
+    float JUMP_BASE = 5;
+    float SPEED_BASE = 0.5f;
 
     public AI brain;
     private Set<Integer> enemyOrganizations;
@@ -82,6 +94,11 @@ public class Creature extends Sprite {
     private int organization;
 
     public CreatureStatus statusbar;
+
+    private int reputation; // representation of reputation
+
+    private HashMap<AbilityID, Double> cooldowns;
+
     public CreatureStatus getStatusbar() {
         return statusbar;
     }
@@ -105,19 +122,29 @@ public class Creature extends Sprite {
     protected boolean toDestroy;
     public boolean destroyed;
 
+    public double timeInBattle;
+    public void setIN_BATTLE(boolean IN_BATTLE) {
+        if(IN_BATTLE)
+            timeInBattle = existingTime + 5;
+        else {
+            timeInBattle = 0;
+        };
+        this.IN_BATTLE = IN_BATTLE;
+    }
+
     public Creature (GameScreen screen, float x, float y, CreatureDescription description){
         //super(screen.getAtlas().findRegion(description.region));
         super();
         stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 0);
         deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 10);
-        runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 0,1);
-        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.2f,4,5);
-        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.2f,2,3);
-        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.2f,6,7);
-        pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.2f,8,9);
-        jumpAnimation = screen.animationHelper.getAnimationByID(description.region,0.2f,2,3);
+        runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.1f, 0,1);
+        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
+        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
+        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
+        pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
+        jumpAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
 
-        setBounds(0, 0, HuntersGame.TILE_SIZE/ HuntersGame.PPM, HuntersGame.TILE_SIZE/ HuntersGame.PPM);
+        setBounds(0, 0, HuntersGame.TILE_SIZE/ PPM, HuntersGame.TILE_SIZE/ PPM);
         setRegion(stand);
 
         this.ID = description.name.hashCode() + Math.round( x * y);
@@ -152,6 +179,7 @@ public class Creature extends Sprite {
 
         stuned = false;
         hidden = false;
+        IN_BATTLE = false;
 
         this.brain = new AI();
 
@@ -163,6 +191,12 @@ public class Creature extends Sprite {
 
         // get abilities list
         this.abilities = description.abilities;
+
+        // init cooldowns
+        cooldowns = new HashMap<AbilityID, Double>();
+        for(AbilityID ability : abilities){
+            cooldowns.put(ability,0d);
+        }
 
         // add all items from inventory  -  get items from item descriptions in levelmanager
         for (String itemd : description.inventory){
@@ -180,20 +214,23 @@ public class Creature extends Sprite {
     public void createBody(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(getX() / HuntersGame.PPM, getY()/ HuntersGame.PPM );
+        bodyDef.position.set(getX() / PPM, getY()/ PPM );
         body = world.createBody(bodyDef);
 
         //PolygonShape shape = new PolygonShape();
         //shape.setAsBox(getWidth() / 2,getHeight() / 2);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(HuntersGame.TILE_SIZE / 2 / HuntersGame.PPM );
+        shape.setRadius(HuntersGame.TILE_SIZE / 2 / PPM );
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
+        //fixtureDef.friction = 0.1f;
+        //fixtureDef.restitution = 1f;
 
         fixtureDef.filter.categoryBits = HuntersGame.CREATURE_BIT;
         fixtureDef.filter.maskBits = HuntersGame.HERO_BIT |
+                HuntersGame.CREATURE_BIT|
                 HuntersGame.OBJECT_BIT |
                 HuntersGame.ITEM_BIT |
                 HuntersGame.ACTIVITY_BIT |
@@ -201,6 +238,16 @@ public class Creature extends Sprite {
                 HuntersGame.TRIGGER_POINT;
 
         body.createFixture(fixtureDef).setUserData(this);
+
+//        EdgeShape arm = new EdgeShape();
+//        arm.set(new Vector2(10 / PPM, 20/ PPM ), new Vector2(10 / PPM, 10/ PPM ));
+//        fixtureDef.shape = arm;
+//        fixtureDef.isSensor = false; // not PHISICAL body - just sensor
+//
+//        //fixtureDef.filter.categoryBits = 1; can be collided anyone with this mask
+//        //fixtureDef.filter.maskBits = sda | asd | das - can collide with
+//
+//        body.createFixture(fixtureDef).setUserData("arm");
 
     }
 
@@ -219,19 +266,27 @@ public class Creature extends Sprite {
                 toDie();
 
             updatePosition(dt);
+
             checkEffects(dt);
+
+            if(IN_BATTLE &&  existingTime >= timeInBattle)
+                setIN_BATTLE(false);
+
             existingTime = existingTime + dt;
 
-            if (getState() == State.CASTING) {
+            if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING) {
                 timeSpentOnCast = timeSpentOnCast + dt;
             }
 
             statusbar.updatePosition();
+            if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
+                statusbar.removeMessage();
 
         }
     }
 
     public void nextStep(){
+        if(abilityToCast == AbilityID.NONE)
         switch (brain.getNextStep(this,screen)){
             case MOVE_LEFT:
                 move(false);
@@ -243,8 +298,29 @@ public class Creature extends Sprite {
                 setHasToJump(false);
                 jump();
                 break;
+            case RANGE_ATACK:
+                if(!findAbility(AbilityType.LONG_RANGE_ATACK))
+                    move(directionRight);
+                break;
+            case CLOSE_ATACK:
+                if(!findAbility(AbilityType.CLOSE_RANGE_ATACK))
+                    if(!findAbility(AbilityType.BUFF))
+                        findAbility(AbilityType.DEBUFF);
+                break;
         }
     }
+
+    private boolean findAbility(AbilityType type) {
+        for(AbilityID ability : abilities){
+            if(ability.getType().equals(type))
+            {
+                useAbility(ability);
+                return true;
+            }
+        };
+        return false;
+    }
+
 
     public void updatePosition(float dt){
         this.setPosition(body.getPosition().x - getWidth()/2 , body.getPosition().y - getHeight() /2);
@@ -268,18 +344,26 @@ public class Creature extends Sprite {
             case CASTING:
                 region = (TextureRegion) castAnimation.getKeyFrame(stateTimer, true);
                 break;
+            case KICKING:
+                region = (TextureRegion) kickAnimation.getKeyFrame(stateTimer, true);
+                break;
+            case SHOTING:
+                region = (TextureRegion) shotAnimation.getKeyFrame(stateTimer, true);
+                break;
 
             default:
                 region = stand;
         }
 
-        if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()){
+        //if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()){
+        if (!directionRight && !region.isFlipX()){
             region.flip(true, false);
-            directionRight = false;
+            //directionRight = false;
         } else
-        if ((body.getLinearVelocity().x > 0 || directionRight) && region.isFlipX()){
-            region.flip(true,false);
-            directionRight = true;
+        //if ((body.getLinearVelocity().x > 0 || directionRight) && region.isFlipX()){
+            if (directionRight && region.isFlipX()){
+                region.flip(true,false);
+            //directionRight = true;
         }
 
         stateTimer = currentState == previousState ? stateTimer + dt: 0;
@@ -290,10 +374,15 @@ public class Creature extends Sprite {
     public State getState() {
         if(currentState == State.CASTING)
             return State.CASTING;
+        if(currentState == State.KICKING)
+            return State.KICKING;
+        if(currentState == State.SHOTING)
+            return State.SHOTING;
+
         if(currentState != State.DEAD) {
-            if (body.getLinearVelocity().y > 0)
+            if (body.getLinearVelocity().y > 0.1)
                 return State.JUMPING;
-            else if (body.getLinearVelocity().y < 0)
+            else if (body.getLinearVelocity().y < -0.1)
                 return State.FALLING;
             else if (body.getLinearVelocity().x != 0)
                 return State.RUNNING;
@@ -312,44 +401,67 @@ public class Creature extends Sprite {
 
     // ACTIONS
     public void jump() {
-        if (getState() == State.CASTING){
+        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
             resetTimeSpentOnCast();
         }
         if(!stuned)
             if ( currentState != State.JUMPING && currentState != State.FALLING  ) {
-                getBody().applyLinearImpulse(new Vector2(0,5 * stats.jumphight.current), getBody().getWorldCenter(), true);
+                getBody().setLinearVelocity(0,0);
+                getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
+
+                //getBody().applyLinearImpulse(new Vector2(0, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
                 currentState = State.JUMPING;
             }
     }
 
     public void move(boolean moveright){
-        if (getState() == State.CASTING){
+        directionRight = moveright;
+        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
             resetTimeSpentOnCast();
         }
         if(!stuned){
-            if(moveright &&  getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x < 1)
-                getBody().applyLinearImpulse(new Vector2(0.5f * stats.speed.current,0), getBody().getWorldCenter(), true);
+            if(moveright &&  getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x < 2*stats.speed.current)
+                getBody().applyLinearImpulse(new Vector2( (IN_BATTLE)?SPEED_BASE/2:SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
             else
-                if ( ! moveright && getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x > -1)
-                getBody().applyLinearImpulse(new Vector2(-0.5f * stats.speed.current,0), getBody().getWorldCenter(), true);
+                if ( ! moveright && getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x > -2*stats.speed.current)
+                getBody().applyLinearImpulse(new Vector2(-((IN_BATTLE)?SPEED_BASE/2:SPEED_BASE) * stats.speed.current,0), getBody().getWorldCenter(), true);
         }
     }
 
     public void useAbility(AbilityID ability){
-        abilityToCastExecutionTime = AbilityHandler.getAbilityCastTime(this, ability);
-        //if(abilityToCastExecutionTime > 0.2){
-            setState(State.CASTING);
+        if(checkCooldownExpired(ability)) {
+            abilityToCastExecutionTime = AbilityHandler.getAbilityCastTime(this, ability);
+            //if(abilityToCastExecutionTime > 0.2){
+            setState(ability.getState());
             //TODO: set Loader
-        //}
-        setAbilityToCast(ability);
+            //}
+            setAbilityToCast(ability);
+        } else {
+            statusbar.addMessage( String.format("%s not ready: %.1f",ability.getName(),this.showWhenAbilityWillBeAvailable(ability)) , existingTime + 2d);
+        }
     }
 
     public ActivityWithEffect activateAbility(AbilityID ability) {
         if(!stuned) {
             resetTimeSpentOnCast();
             getBody().setLinearVelocity(0, 0); // STOP
+            cooldowns.put(ability, AbilityHandler.getAbilityCooldownTime(this,ability) + existingTime);
+            setIN_BATTLE(true);
             return AbilityHandler.getAbilityAndUseIt(screen, this, ability); // return ability
         } return null;
+    }
+
+    //results of defense actions
+    public void lockAbility(AbilityID ability) {
+            resetTimeSpentOnCast();
+            getBody().setLinearVelocity(0, 0); // STOP
+            cooldowns.put(ability, AbilityHandler.getAbilityCooldownTime(this,ability) + existingTime);
+            setIN_BATTLE(true);
+            Gdx.app.log("Creature", "Locked " + ability);
+    }
+
+    private boolean checkCooldownExpired(AbilityID ability){
+        return cooldowns.get(ability) <= existingTime;
     }
 
     public void applyEffect(Effect neweffect){
@@ -381,8 +493,6 @@ public class Creature extends Sprite {
                 effect.refreshTime = effect.refreshTime + effect.dotDuration;
                 EffectsHandler.applyEffectUseIt(this, effect.id, effect.magnitude);
             }
-
-
         }
 
         // remove effects from active list
@@ -393,7 +503,6 @@ public class Creature extends Sprite {
             }
             effectsToRemove.clear();
         }
-
     }
 
     private void removeEffect(Effect effect) {
@@ -417,11 +526,26 @@ public class Creature extends Sprite {
 
     }
 
+    // remove effect WITHOUT UNHANDLING (works for flag-type effect : Shields, Immune)
+    public void removeEffectByID(EffectID effect) {
+
+        //check if effect is still active
+        for(int i = 0; i < activeEffects.size; i++){
+            if(effect.equals(activeEffects.get(i)) ){
+                activeEffects.removeIndex(i);
+                break;
+            }
+        }
+
+    }
+
+    // add item to inventory
     public void addToInventory(GameItem item) {
         item.destroyBody();
         inventory.add(item);
     }
 
+    // put item on and apply effect
     public void equipItem(GameItem item){
 
         for(Effect curEffect : item.getEffects()){
@@ -435,11 +559,15 @@ public class Creature extends Sprite {
                 armor = item;
                 break;
             // TODO add all
+            case WEAPON:
+                weapon1 = item;
+                break;
         }
         inventory.removeValue(item,true);
         statusbar.update();
     }
 
+    //take off item - undo effect
     public void unEquipItem(GameItem item){
 
         for(Effect curEffect : item.getEffects()){
@@ -452,6 +580,9 @@ public class Creature extends Sprite {
             case ARMOR:
                 armor = null;
                 break;
+            case WEAPON:
+                weapon1 = null;
+                break;
             // TODO add all
         }
 
@@ -459,13 +590,15 @@ public class Creature extends Sprite {
         statusbar.update();
     }
 
+    //throw to ground
     public GameItem throwFromInventory(GameItem item) {
         inventory.removeValue(item, true);
         float direction = directionRight ?  -(HuntersGame.TILE_SIZE + HuntersGame.TILE_SIZE/2) : (HuntersGame.TILE_SIZE + HuntersGame.TILE_SIZE/2) ;
-        item.createBody((getBody().getPosition().x ) * HuntersGame.PPM + direction, getBody().getPosition().y * HuntersGame.PPM);
+        item.createBody((getBody().getPosition().x ) * PPM + direction, getBody().getPosition().y * PPM);
         return item;
     }
 
+    //use item
     public void useItem(GameItem item) {
         for(Effect curEffect : item.getEffects()){
             applyEffect(curEffect);
@@ -528,5 +661,58 @@ public class Creature extends Sprite {
 
     public Array<AbilityID> getAbilities() {
         return abilities;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void makeInvisible(boolean b) {
+        hidden = b;
+    }
+
+    public void setStun(boolean stuned) {
+        this.stuned = stuned;
+        //resetTimeSpentOnCast();
+        if(stuned) lockAbility(abilityToCast);
+    }
+
+    public void pushIt() {
+        resetTimeSpentOnCast();
+    }
+
+    public int getToughness() {
+        int result = stats.health.current + getReputation();
+        return result;
+    }
+
+    public int getReputation() {
+        return reputation;
+    }
+
+    public double showWhenAbilityWillBeAvailable(AbilityID ability) {
+        if(cooldowns.get(ability) - existingTime <= 0)
+            return 0;
+        return Math.round(cooldowns.get(ability) - existingTime);
+    }
+
+
+    public Effect getEffect(EffectID id) {
+        for(int i = activeEffects.size-1;i>=0;i--){
+            if(activeEffects.get(i).id == id){
+                return activeEffects.get(i);
+            }
+        }
+        return null;
+    }
+
+    public float getEffectsSum(EffectID id) {
+        float result = 0;
+        for(int i = activeEffects.size-1;i>=0;i--){
+            if(activeEffects.get(i).id == id){
+                result = result + activeEffects.get(i).magnitude;
+            }
+        }
+        return result;
     }
 }

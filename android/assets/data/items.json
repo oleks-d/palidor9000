@@ -20,7 +20,16 @@
     "value" : "100",
     "image" : "helmet",
     "type" : "HEAD",
-    "effects": "DAMAGE 6 1 2"
+    "effects": "MINUS_CRUSH_DAMAGE 0 1 0"
+  },
+  {
+    "id":"sword_1",
+    "name" : "Sword of Ice",
+    "description" : "Sword",
+    "value" : "100",
+    "image" : "sword",
+    "type" : "WEAPON",
+    "effects": "PLUS_CUT_DAMAGE 0 1 0,PLUS_ICE_DAMAGE 0 1 0"
   },
   {
     "id":"armor_1",
@@ -28,7 +37,8 @@
     "description" : "Rusty armor for fatman",
     "value" : "100",
     "image" : "armor",
-    "type" : "ARMOR"
+    "type" : "ARMOR",
+    "effects": "MINUS_CUT_DAMAGE 0 1 0,MINUS_CRUSH_DAMAGE 0 1 0"
   },
   {
     "id":"potion_1",
