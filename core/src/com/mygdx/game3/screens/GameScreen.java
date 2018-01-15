@@ -85,6 +85,9 @@ public class GameScreen implements Screen {
 
     Array<Integer> itemsToRemove;
 
+    int[] layersToRender; //day and night
+    boolean isDay;
+
     public GameScreen(HuntersGame game, String heroName){
         this(game,heroName,null);
     }
@@ -92,6 +95,8 @@ public class GameScreen implements Screen {
     public GameScreen(HuntersGame game, String heroName, String newHeroType) {
         this.game = game;
         this.game.currentHero = heroName;
+
+        setDay(true);
 
         STOP_GAME = false;
         //load font
@@ -145,6 +150,14 @@ public class GameScreen implements Screen {
 
         itemsToRemove = new Array<Integer>();
 
+    }
+
+    private void setDay(boolean b) {
+        isDay = b;
+        if(b)
+        layersToRender = new int[]{0, 2};
+        else
+            layersToRender = new int[]{1, 2};
     }
 
 
@@ -275,6 +288,12 @@ public class GameScreen implements Screen {
             else
                 heroInventoryPanel.update();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+            onInventoryScreen = !onInventoryScreen;
+            setDay(!isDay);
+        }
+
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             onAbilitiesScreen = !onAbilitiesScreen;
@@ -429,8 +448,8 @@ public class GameScreen implements Screen {
             Gdx.gl.glClearColor(0.5f, 0, 0.5f, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            maprenderer.render(); // show map
-
+            //maprenderer.render(); // show map
+        maprenderer.render(layersToRender);
 
             // render hero
             game.getBatch().setProjectionMatrix(camera.combined);

@@ -43,11 +43,11 @@ public class LevelManager implements Disposable{
     JSONLoader loader;
     public Hero hero;
 
-    public static final int GROUND_LAYER = 2;
-    public static final int TRIGGERS_LAYER = 3;
-    public static final int OBJECTS_LAYER = 4;
-    public static final int CREATURES_LAYER = 5;
-    public static final int JUMP_POINTS_LAYER = 6;
+    public static final int GROUND_LAYER = 2+1;
+    public static final int TRIGGERS_LAYER = 3+1;
+    public static final int OBJECTS_LAYER = 4+1;
+    public static final int CREATURES_LAYER = 5+1;
+    public static final int JUMP_POINTS_LAYER = 6+1;
 
     public HashMap<String, ItemDescription> ITEMS_DESCRIPTIONS;
     public HashMap<String,CreatureDescription>  CREATURE_DESCRIPTIONS;
