@@ -1,6 +1,9 @@
 package com.mygdx.game3.ai;
 
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game3.HuntersGame;
+import com.mygdx.game3.enums.AbilityID;
+import com.mygdx.game3.enums.AbilityType;
 import com.mygdx.game3.enums.CreatureAction;
 import com.mygdx.game3.screens.GameScreen;
 import com.mygdx.game3.sprites.creatures.Creature;
@@ -11,6 +14,9 @@ import static com.mygdx.game3.HuntersGame.PPM;
  * Created by odiachuk on 12/26/17.
  */
 public class AI {
+    private boolean moveLeft;
+    private boolean moveRight;
+
     public boolean isHasToJump() {
         return hasToJump;
     }
@@ -20,7 +26,8 @@ public class AI {
     }
 
     boolean hasToJump;
-    public CreatureAction getNextStep(Creature creature, GameScreen screen) {
+    public void getNextStep(Creature creature, GameScreen screen) {
+
         //return CreatureAction.STOP;
         float targetX = creature.getX(), targetY = creature.getY();
         CreatureAction result = CreatureAction.STOP;
@@ -39,33 +46,111 @@ public class AI {
             //result = new Random().nextBoolean() ? CreatureAction.MOVE_LEFT : CreatureAction.MOVE_RIGHT;
         }
 
+//        if (targetX < creature.getX())    //move/atack left
+//            if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {
+//                creature.directionRight = false;
+//                if(targetX > creature.getX() - HuntersGame.TILE_SIZE/PPM)
+//                    result = CreatureAction.CLOSE_ATACK;
+//                else
+//                    result = CreatureAction.RANGE_ATACK;
+//            } else
+//                result = CreatureAction.MOVE_LEFT;
+//         else if(targetX > creature.getX()){        //move/atack right
+//            if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {
+//                creature.directionRight = true;
+//                if (targetX < creature.getX() + HuntersGame.TILE_SIZE / PPM)
+//                    result = CreatureAction.CLOSE_ATACK;
+//                else
+//                    result = CreatureAction.RANGE_ATACK;
+//            } else {
+//                result = CreatureAction.MOVE_RIGHT;
+//            }
+//        }    else
+//            result = CreatureAction.STOP;
+
+
         if (targetX < creature.getX())    //move/atack left
-            if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {
+             {
                 creature.directionRight = false;
-                if(targetX > creature.getX() - HuntersGame.TILE_SIZE/PPM)
+                if(targetX > creature.getX() - HuntersGame.TILE_SIZE/PPM && ((targetY < creature.getY() + HuntersGame.TILE_SIZE/PPM || (targetY > creature.getY() - HuntersGame.TILE_SIZE/PPM))))
                     result = CreatureAction.CLOSE_ATACK;
                 else
                     result = CreatureAction.RANGE_ATACK;
-            } else
-                result = CreatureAction.MOVE_LEFT;
-         else if(targetX > creature.getX()){        //move/atack right
-            if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {
+            }
+        else if(targetX > creature.getX()){        //move/atack right
+             {
                 creature.directionRight = true;
-                if (targetX < creature.getX() + HuntersGame.TILE_SIZE / PPM)
+                if (targetX < creature.getX() + HuntersGame.TILE_SIZE / PPM && ((targetY < creature.getY() - HuntersGame.TILE_SIZE/PPM || (targetY > creature.getY() - HuntersGame.TILE_SIZE/PPM))))
                     result = CreatureAction.CLOSE_ATACK;
                 else
                     result = CreatureAction.RANGE_ATACK;
-            } else {
-                result = CreatureAction.MOVE_RIGHT;
+
             }
         }    else
             result = CreatureAction.STOP;
 
 
         if(isHasToJump() && targetY - 0.05 > creature.getY()){
-            return CreatureAction.JUMP;
+            result = CreatureAction.JUMP;
         }
-        return result;
 
+        creature.direction.set(-(targetX - creature.getBody().getPosition().x), targetY - creature.getBody().getPosition().y );
+        creature.direction.clamp(1,1);
+        //creature.direction.set(creature.targetVector.x > 1 ? 1: (creature.targetVector.x < -1 ? -1f : creature.targetVector.x), creature.targetVector.y > 1 ? 1:(creature.targetVector.y < -1 ? -1f : creature.targetVector.y));
+
+
+
+
+        if(creature.abilityToCast == AbilityID.NONE)
+        switch (result){
+            case MOVE_LEFT:
+                if(!moveRight)
+                    creature.move(false);
+                else{
+                    creature.move(true);
+                }
+                break;
+            case MOVE_RIGHT:
+                if(!moveLeft)
+                    creature.move(true);
+                else {
+                    creature.move(false);
+                }
+                break;
+            case JUMP:
+                creature.jump();
+                break;
+            case RANGE_ATACK:
+                if(creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null)
+                    creature.useAbility(creature.findAbility(AbilityType.LONG_RANGE_ATACK));
+                    else if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
+                    if (moveRight) {
+                        creature.move(true);
+                    } else if (moveLeft) {
+                        creature.move(false);
+                    } else creature.move(creature.directionRight);
+                }
+
+                break;
+            case CLOSE_ATACK:
+                if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null)
+                    creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
+                    else if(creature.findAbility(AbilityType.BUFF) != null)
+                    creature.useAbility(creature.findAbility(AbilityType.BUFF));
+                        else if (creature.findAbility(AbilityType.DEBUFF)!=null)
+                    creature.useAbility(creature.findAbility(AbilityType.DEBUFF));
+                break;
+        }
+
+        //return result;
+
+    }
+
+    public void setMoveLeft(boolean moveLeft) {
+        this.moveLeft = moveLeft;
+    }
+
+    public void setMoveRight(boolean moveRight) {
+        this.moveRight = moveRight;
     }
 }

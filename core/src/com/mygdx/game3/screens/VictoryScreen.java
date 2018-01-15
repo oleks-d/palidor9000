@@ -51,7 +51,7 @@ public class VictoryScreen implements Screen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
-            game.setScreen(new GameScreen((HuntersGame) game));
+            game.setScreen(new MainMenuScreen(game)); /// TODO add finish-sceeen
             dispose();
         }
         Gdx.gl.glClearColor(0, 1, 0, 1);

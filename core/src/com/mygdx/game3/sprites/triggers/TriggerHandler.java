@@ -15,6 +15,7 @@ public class TriggerHandler {
                 //TODO dialog
                 if(creature.equals(creature.screen.hero)) {
                     creature.screen.levelmanager.loadNextLevel(trigger.getValue());
+                    creature.screen.levelmanager.saveHero(creature.screen.hero);
                     creature.screen.infoPanel.update();
                 }
             break;

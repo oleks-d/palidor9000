@@ -28,7 +28,9 @@ import com.mygdx.game3.enums.AbilityID;
 import com.mygdx.game3.tools.EffectsHandler;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Set;
+import java.util.Vector;
 
 import static com.mygdx.game3.HuntersGame.PPM;
 
@@ -60,6 +62,8 @@ public class Creature extends Sprite {
 
     public boolean directionRight;
 
+    public Vector2 direction;
+
     public Array<Effect> activeEffects;
     Array<Integer> effectsToRemove;
 
@@ -76,17 +80,18 @@ public class Creature extends Sprite {
     GameItem ring;
     GameItem neck;
 
-    String name;
+    public String name;
     public String description;
+    public String spritesheetRegion;
 
     double existingTime;
     public boolean stuned;
     public boolean hidden;
     public boolean IN_BATTLE;
-    private Integer ID;
+    private long ID;
 
-    float JUMP_BASE = 5;
-    float SPEED_BASE = 0.5f;
+    float JUMP_BASE = 6;
+    float SPEED_BASE = 0.3f;
 
     public AI brain;
     private Set<Integer> enemyOrganizations;
@@ -94,10 +99,14 @@ public class Creature extends Sprite {
     private int organization;
 
     public CreatureStatus statusbar;
+    public CreatureAim creatureAim;
 
     private int reputation; // representation of reputation
 
     private HashMap<AbilityID, Double> cooldowns;
+    public Vector2 targetVector;
+
+    public boolean canPickUpObjects;
 
     public CreatureStatus getStatusbar() {
         return statusbar;
@@ -132,41 +141,25 @@ public class Creature extends Sprite {
         this.IN_BATTLE = IN_BATTLE;
     }
 
-    public Creature (GameScreen screen, float x, float y, CreatureDescription description){
-        //super(screen.getAtlas().findRegion(description.region));
+    public Creature(GameScreen screen, CreatureDescription description){
         super();
-        stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 0);
-        deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 10);
-        runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.1f, 0,1);
-        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
-        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
-        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
-        pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
-        jumpAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
+        this.screen = screen;
 
-        setBounds(0, 0, HuntersGame.TILE_SIZE/ PPM, HuntersGame.TILE_SIZE/ PPM);
-        setRegion(stand);
-
-        this.ID = description.name.hashCode() + Math.round( x * y);
-
+        this.ID = description.name.hashCode() + new Random().nextInt(1000);
         this.name = description.name;
         this.description = description.description;
-        this.world = screen.world;
-        this.screen = screen;
+
         this.stats = new Characteristics(description.stats);
 
         this.organization = description.organization;
 
+        canPickUpObjects = false;
         toDestroy = false;
         destroyed = false;
 
-        activeEffects = new Array<Effect>();
-        effectsToRemove = new Array<Integer>();
+        this.activeEffects = new Array<Effect>();
+        this.effectsToRemove = new Array<Integer>();
         this.inventory = new Array<GameItem>() ;
-
-
-        setPosition(x, y);
-        createBody();
 
         directionRight = false;
         stateTimer = 0f;
@@ -183,8 +176,6 @@ public class Creature extends Sprite {
 
         this.brain = new AI();
 
-        statusbar = new CreatureStatus(this);
-
         for(Effect effect: description.effects){
             applyEffect(effect);
         }
@@ -200,8 +191,49 @@ public class Creature extends Sprite {
 
         // add all items from inventory  -  get items from item descriptions in levelmanager
         for (String itemd : description.inventory){
-            inventory.add(new GameItem(screen, screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd)));
+            inventory.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd)));
         }
+
+        //equip
+        for (String itemd : description.equiped){
+            equipItem(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd)));
+        }
+
+        // set animations
+        spritesheetRegion = description.region;
+        stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 0);
+        deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 10);
+        runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.1f, 0,1);
+        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
+        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
+        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
+        pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
+        jumpAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
+
+    }
+    public Creature (GameScreen screen, float x, float y, CreatureDescription description) {
+        //super(screen.getAtlas().findRegion(description.region));
+
+        this(screen, description);
+
+        makeAlive(x, y);
+    }
+
+    public void makeAlive(float x, float y){
+
+        setBounds(0, 0, HuntersGame.TILE_SIZE/ PPM, HuntersGame.TILE_SIZE/ PPM);
+        setRegion(stand);
+
+        this.world = screen.world;
+
+        setPosition(x, y);
+        createBody();
+
+        direction = new Vector2(0.5f,0.5f);
+        targetVector = new Vector2(0.5f,0.5f);
+
+        statusbar = new CreatureStatus(this);
+        creatureAim  = new CreatureAim(this);
 
     }
 
@@ -225,8 +257,8 @@ public class Creature extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        //fixtureDef.friction = 0.1f;
-        //fixtureDef.restitution = 1f;
+        fixtureDef.friction = 0.5f;
+        //fixtureDef.restitution = 1f; like a ball
 
         fixtureDef.filter.categoryBits = HuntersGame.CREATURE_BIT;
         fixtureDef.filter.maskBits = HuntersGame.HERO_BIT |
@@ -235,6 +267,8 @@ public class Creature extends Sprite {
                 HuntersGame.ITEM_BIT |
                 HuntersGame.ACTIVITY_BIT |
                 HuntersGame.JUMP_POINT |
+                HuntersGame.NO_LEFT_POINT |
+                HuntersGame.NO_RIGHT_POINT|
                 HuntersGame.TRIGGER_POINT;
 
         body.createFixture(fixtureDef).setUserData(this);
@@ -256,6 +290,7 @@ public class Creature extends Sprite {
         if(toDestroy && !destroyed){
             world.destroyBody(body);
             destroyed = true;
+            Gdx.app.log("Destroyed", ID + " ");
         }
 
         if(!toDestroy && !destroyed) {
@@ -279,6 +314,7 @@ public class Creature extends Sprite {
             }
 
             statusbar.updatePosition();
+            creatureAim.updatePosition();
             if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
                 statusbar.removeMessage();
 
@@ -286,39 +322,16 @@ public class Creature extends Sprite {
     }
 
     public void nextStep(){
-        if(abilityToCast == AbilityID.NONE)
-        switch (brain.getNextStep(this,screen)){
-            case MOVE_LEFT:
-                move(false);
-                break;
-            case MOVE_RIGHT:
-                move(true);
-                break;
-            case JUMP:
-                setHasToJump(false);
-                jump();
-                break;
-            case RANGE_ATACK:
-                if(!findAbility(AbilityType.LONG_RANGE_ATACK))
-                    move(directionRight);
-                break;
-            case CLOSE_ATACK:
-                if(!findAbility(AbilityType.CLOSE_RANGE_ATACK))
-                    if(!findAbility(AbilityType.BUFF))
-                        findAbility(AbilityType.DEBUFF);
-                break;
-        }
+        brain.getNextStep(this,screen);
     }
 
-    private boolean findAbility(AbilityType type) {
+    public AbilityID findAbility(AbilityType type) {
         for(AbilityID ability : abilities){
-            if(ability.getType().equals(type))
-            {
-                useAbility(ability);
-                return true;
+            if(ability.getType().equals(type) && cooldowns.get(ability) <= existingTime) {
+                return ability;
             }
         };
-        return false;
+        return null;
     }
 
 
@@ -407,9 +420,8 @@ public class Creature extends Sprite {
         if(!stuned)
             if ( currentState != State.JUMPING && currentState != State.FALLING  ) {
                 getBody().setLinearVelocity(0,0);
-                getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
-
-                //getBody().applyLinearImpulse(new Vector2(0, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
+                //getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
+                getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
                 currentState = State.JUMPING;
             }
     }
@@ -421,10 +433,12 @@ public class Creature extends Sprite {
         }
         if(!stuned){
             if(moveright &&  getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x < 2*stats.speed.current)
-                getBody().applyLinearImpulse(new Vector2( (IN_BATTLE)?SPEED_BASE/2:SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
+                getBody().applyLinearImpulse(new Vector2( SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
+                //getBody().applyLinearImpulse(new Vector2( (IN_BATTLE)?SPEED_BASE/2:SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
             else
                 if ( ! moveright && getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x > -2*stats.speed.current)
-                getBody().applyLinearImpulse(new Vector2(-((IN_BATTLE)?SPEED_BASE/2:SPEED_BASE) * stats.speed.current,0), getBody().getWorldCenter(), true);
+                    getBody().applyLinearImpulse(new Vector2(-(SPEED_BASE) * stats.speed.current,0), getBody().getWorldCenter(), true);
+            //getBody().applyLinearImpulse(new Vector2(-((IN_BATTLE)?SPEED_BASE/2:SPEED_BASE) * stats.speed.current,0), getBody().getWorldCenter(), true);
         }
     }
 
@@ -473,7 +487,8 @@ public class Creature extends Sprite {
                 (neweffect.dotDuration > 0 ? neweffect.dotDuration + existingTime : 0),
                 neweffect.duration + existingTime));
         EffectsHandler.applyEffectUseIt(this, neweffect.id, neweffect.magnitude);
-        statusbar.update();
+        if(statusbar!=null)
+            statusbar.update();
     }
 
     private void checkEffects(float dt) {
@@ -541,8 +556,11 @@ public class Creature extends Sprite {
 
     // add item to inventory
     public void addToInventory(GameItem item) {
-        item.destroyBody();
-        inventory.add(item);
+        //if(!toDestroy && !item.toDestroy) {
+        if(canPickUpObjects){ // TODO make all Humans pickup objects
+            item.destroyBody();
+            inventory.add(item);
+        }
     }
 
     // put item on and apply effect
@@ -564,7 +582,8 @@ public class Creature extends Sprite {
                 break;
         }
         inventory.removeValue(item,true);
-        statusbar.update();
+        if(statusbar != null)
+            statusbar.update();
     }
 
     //take off item - undo effect
@@ -618,12 +637,12 @@ public class Creature extends Sprite {
         return timeSpentOnCast > abilityToCastExecutionTime;
     }
 
-    public Integer getID() {
-        return ID;
-    }
+//    public Integer getID() {
+//        return ID;
+//    }
 
     public void toDie(){
-        Gdx.app.log("Dead",getID() + " ");
+        Gdx.app.log("Dead",name + " ");
         toDestroy = true;
         setState(State.DEAD);
         int inventorySize = getInventory().size;
@@ -636,6 +655,7 @@ public class Creature extends Sprite {
         if(!destroyed) {
             super.draw(batch);
             statusbar.draw(batch);
+            creatureAim.draw(batch);
         }else
             batch.draw(deadBody, getX(),getY(),getWidth(),getHeight());
     }
@@ -649,10 +669,6 @@ public class Creature extends Sprite {
 
     public int getOrganization() {
         return organization;
-    }
-
-    public void setHasToJump(boolean hasToJump) {
-        this.brain.setHasToJump(hasToJump);
     }
 
     public void activateTrigger(Trigger trigger) {
@@ -715,4 +731,17 @@ public class Creature extends Sprite {
         }
         return result;
     }
+
+    public void setMoveLeft(boolean b) {
+        this.brain.setMoveLeft(b);
+    }
+
+    public void setMoveRight(boolean b) {
+        this.brain.setMoveRight(b);
+    }
+
+    public void setHasToJump(boolean hasToJump) {
+        this.brain.setHasToJump(hasToJump);
+    }
+
 }

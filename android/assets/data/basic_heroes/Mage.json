@@ -1,0 +1,27 @@
+{
+  "hero": {
+    "name": "",
+    "description": "Player",
+    "health": "1",
+    "speed": "1",
+    "spritesheetregion": "enemy1",
+    "abilities": "FIREWALL,ICEWALL,STOP_CAST,HASTE",
+    "org": "1",
+    "items": "",
+    "equipeditems": ""
+  },
+
+  "globalStates" : [
+    { "key" : "Flag1", "value" : "Passed"},
+    { "key" : "Flag2", "value" : "Passed"}
+  ],
+
+  "previousLevel" : "Start",
+  "currentLevel" : "Forest",
+
+  "selectedAtackAbilities" : "FIREWALL,ICEWALL",
+  "selectedDefenseAbilities": "STOP_CAST",
+  "selectedHelpAbilities": "HASTE"
+
+
+}

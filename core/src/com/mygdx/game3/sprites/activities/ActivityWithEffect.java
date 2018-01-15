@@ -13,6 +13,8 @@ import com.mygdx.game3.screens.GameScreen;
 import com.mygdx.game3.sprites.creatures.Creature;
 import com.mygdx.game3.stuctures.Effect;
 
+import static com.mygdx.game3.HuntersGame.PPM;
+
 /**
  * Created by odiachuk on 12/20/17.
  */
@@ -42,6 +44,8 @@ public class ActivityWithEffect extends Sprite {
     public Creature createdBy;
     public Array<Creature> appliedTo;
 
+    TextureRegion region;
+
     public ActivityWithEffect(GameScreen screen, float x, float y, Array<Effect> activeEffects, ActivityAreaType type, Vector2 direction, String spriteRegionName){
         super(screen.animationHelper.getAtlas().findRegion(spriteRegionName));
         setBounds(0, 0, HuntersGame.TILE_SIZE/ HuntersGame.PPM, HuntersGame.TILE_SIZE/ HuntersGame.PPM);
@@ -59,20 +63,14 @@ public class ActivityWithEffect extends Sprite {
         directionRight = false;
         stateTimer = 0f;
 
-        switch(type) {
-            case ARROW:
-                liveTime = 1f;
-                break;
-            case SPRAY:
-                liveTime = 1f;
-                break;
-            default:
-                liveTime = 0.1f;
-        }
+
+        liveTime = type.getLiveTime();
+
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
 
         runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, 0.5f, 0, 1);
+        region = new TextureRegion();
     }
 
     void createBody(){
@@ -80,6 +78,8 @@ public class ActivityWithEffect extends Sprite {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / HuntersGame.PPM, getY()/ HuntersGame.PPM );
         bodyDef.gravityScale= 0.1f;
+        if(type == ActivityAreaType.ARROW)
+            bodyDef.bullet = true;
         body = world.createBody(bodyDef);
 
         CircleShape shape;
@@ -100,6 +100,7 @@ public class ActivityWithEffect extends Sprite {
                         HuntersGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
+
 
                 break;
             case SPRAY:
@@ -160,16 +161,14 @@ public class ActivityWithEffect extends Sprite {
 
     public TextureRegion getFrame(float dt) {
 
-        TextureRegion region = null;
-
         if(!destroyed && !toDestroy) {
             region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
 
             if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()) {
-                region.flip(true, false);
+                //region.flip(true, false);
                 directionRight = false;
             } else if ((body.getLinearVelocity().x > 0 || directionRight) && region.isFlipX()) {
-                region.flip(true, false);
+                //region.flip(true, false);
                 directionRight = true;
             }
         }
@@ -194,9 +193,14 @@ public class ActivityWithEffect extends Sprite {
         }
     }
 
-    public void draw(Batch batch){
-        if(!destroyed)
-            super.draw(batch);
+    public void draw(Batch batch) {
+        if (!destroyed)
+            //super.draw(batch);
+            try {
+                batch.draw(region, getX(), getY(), region.getRegionWidth() / PPM / 2, region.getRegionHeight() / PPM / 2, region.getRegionWidth() / PPM, region.getRegionHeight() / PPM, 1, 1, (direction.angle()));
+            } catch (Exception e) {
+                System.currentTimeMillis();
+            }
     }
 
     public void destroyBody(){
@@ -211,14 +215,14 @@ public class ActivityWithEffect extends Sprite {
         appliedTo.add(target);
     }
 
-    public boolean isTargetWasAlreadyProcessed(Creature target){
-        for (int i = 0; i < appliedTo.size; i++){
-            if (appliedTo.get(i).getID() == target.getID())
-                return true;
-        }
-        return false;
-
-    }
+//    public boolean isTargetWasAlreadyProcessed(Creature target){
+//        for (int i = 0; i < appliedTo.size; i++){
+//            if (appliedTo.get(i).getID() == target.getID())
+//                return true;
+//        }
+//        return false;
+//
+//    }
 
     public void setCreatedBy(Creature target){
         createdBy = target;

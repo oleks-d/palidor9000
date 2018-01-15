@@ -61,12 +61,14 @@ public class CreatureStatus extends Sprite {
 
         castbar = owner.screen.animationHelper.getTextureRegionByIDAndIndex("castbar");
 
+        healthbar = owner.screen.animationHelper.getTextureRegionByIDAndIndex("castbar2");
+
         hiddenMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
 
         battleMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
 
     }
-    
+
 
     public void update() {
 
@@ -103,16 +105,18 @@ public class CreatureStatus extends Sprite {
             }
 
             for(int j = 0; j<messages.size+0; j++){
-                owner.screen.font.draw(batch, messages.get(j), getX(), getY()  + HuntersGame.TILE_SIZE/PPM + j*20/PPM);
+                owner.screen.shadyfont.draw(batch, messages.get(j), getX(), getY()  + HuntersGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 
-            owner.screen.font.draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + 10/PPM  + HuntersGame.TILE_SIZE/PPM);
+            owner.screen.font.draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + HuntersGame.TILE_SIZE  / PPM);
+            owner.screen.font.draw(batch, owner.name, getX() + HuntersGame.TILE_SIZE / 2 /PPM, getY() + HuntersGame.TILE_SIZE  / PPM);
             //batch.draw(healthbar, getX() + 8 / PPM, getY() + 8 / PPM, (60*(owner.stats.health.current/owner.stats.health.base )) / PPM, 8 / PPM);
 //TODO healthbar
 
             if(owner.abilityToCastExecutionTime > 0.2) {
-                owner.screen.font.draw(batch, owner.abilityToCast.toString(), getX() + 8/PPM, getY()  + HuntersGame.TILE_SIZE/PPM);
-                batch.draw(castbar, getX() + 16 / PPM, getY() + 24 / PPM, (HuntersGame.TILE_SIZE / PPM) * (owner.timeSpentOnCast/ owner.abilityToCastExecutionTime), 8 / PPM);
+                batch.draw(castbar,                                             getX()-HuntersGame.TILE_SIZE/PPM,                             getY() + 2*HuntersGame.TILE_SIZE/PPM, (2*HuntersGame.TILE_SIZE / PPM) * (owner.timeSpentOnCast/ owner.abilityToCastExecutionTime), 16 / PPM);
+                batch.draw(healthbar,                                             getX()- HuntersGame.TILE_SIZE/PPM,                             getY() + 2*HuntersGame.TILE_SIZE/PPM, (2*HuntersGame.TILE_SIZE / PPM), 16 / PPM);
+                owner.screen.font.draw(batch, owner.abilityToCast.toString(),   getX() - HuntersGame.TILE_SIZE/PPM, getY()  + 2*HuntersGame.TILE_SIZE/PPM);
             }
 
         }

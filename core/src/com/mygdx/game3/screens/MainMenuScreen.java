@@ -1,12 +1,14 @@
 package com.mygdx.game3.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game3.HuntersGame;
+import com.mygdx.game3.scenes.MainPanel;
+
+import java.io.File;
 
 /**
  * Created by odiachuk on 12/16/17.
@@ -21,6 +23,13 @@ public class MainMenuScreen implements Screen {
     Texture newMenuItemImageInactive;
     Rectangle newMenuItem;
 
+    Texture loadMenuItemImage;
+    Texture loadMenuItemImageInactive;
+    Rectangle loadMenuItem;
+
+    Texture exitMenuItemImage;
+    Texture exitMenuItemImageInactive;
+    Rectangle exitMenuItem;
 
     OrthographicCamera camera;
 
@@ -28,23 +37,43 @@ public class MainMenuScreen implements Screen {
 
     Pixmap pic;
 
+
+    public MainPanel mainPanel;
+
+
     public MainMenuScreen(HuntersGame game) {
         this.game = game;
 
         //camera
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, HuntersGame.WIDTH, HuntersGame.HIGHT);
-        camera.position.set(HuntersGame.WIDTH / 2, HuntersGame.HIGHT / 2, 0);
-
+//        camera.setToOrtho(false, HuntersGame.WIDTH, HuntersGame.HIGHT);
+//        camera.position.set(HuntersGame.WIDTH / 2, HuntersGame.HIGHT / 2, 0);
+//
         viewport = new FitViewport(HuntersGame.WIDTH, HuntersGame.HIGHT, camera);
-        bg = new Texture("forest2.jpg");
+        bg = new Texture(HuntersGame.SPRITES_DIR + File.separator +"background_mainmenu.png");
+//
+//        newMenuItem = new Rectangle(HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 + 40, 40, 40);
+//        newMenuItemImage = new Texture(HuntersGame.SPRITES_DIR + File.separator +"new_hero.png");
+//        newMenuItemImageInactive = new Texture(HuntersGame.SPRITES_DIR + File.separator +"new_hero_active.png");
+//
+//        loadMenuItem = new Rectangle(HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 + 80, 40, 40);
+//        loadMenuItemImage = new Texture(HuntersGame.SPRITES_DIR + File.separator +"select_hero.png");
+//        loadMenuItemImageInactive = new Texture(HuntersGame.SPRITES_DIR + File.separator +"select_hero_active.png");
+//
+//        loadMenuItem = new Rectangle(HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 + 120, 40, 40);
+//        loadMenuItemImage = new Texture(HuntersGame.SPRITES_DIR + File.separator +"exit.png");
+//        loadMenuItemImageInactive = new Texture(HuntersGame.SPRITES_DIR + File.separator +"exit_active.png");
+//
+//        pic = new Pixmap(40, 40, Pixmap.Format.RGBA8888);
+//        pic.setColor(Color.BLUE);
+//        pic.drawRectangle(1, 1, 30, 30);
 
-        newMenuItem = new Rectangle(HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2, 40, 40);
-        newMenuItemImage = new Texture("hero1.png");
-        newMenuItemImageInactive = new Texture("hero.png");
-        pic = new Pixmap(40, 40, Pixmap.Format.RGBA8888);
-        pic.setColor(Color.BLUE);
-        pic.drawRectangle(1, 1, 30, 30);
+        mainPanel = new MainPanel(game.getBatch());
+
+        //set camera to center
+        camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+
+
 
     }
 
@@ -60,33 +89,47 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    private void checkMenuItem(Rectangle newMenuItem) {
-        //newMenuItemImage.draw(pic, 1, 1);
-        if(newMenuItem.contains(Gdx.input.getX(), Gdx.input.getY())) {
-            game.getBatch().draw(newMenuItemImage, HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 - newMenuItem.height);
-        } else {
-            game.getBatch().draw(newMenuItemImageInactive, HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 - newMenuItem.height);
-
-        }
-        if (Gdx.input.justTouched()) {
-            if (newMenuItem.contains(Gdx.input.getX(), Gdx.input.getY()))
-                game.setScreen(new GameScreen(game));
-        }
-    }
+//    private void checkMenuItem(Rectangle menuItem) {
+//        //newMenuItemImage.draw(pic, 1, 1);
+//        if(menuItem.contains(Gdx.input.getX(), Gdx.input.getY())) {
+//            game.getBatch().draw(newMenuItemImage, HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 - newMenuItem.height);
+//        } else {
+//            game.getBatch().draw(newMenuItemImageInactive, HuntersGame.WIDTH/2 , HuntersGame.HIGHT/2 - newMenuItem.height);
+//
+//        }
+//        if (Gdx.input.justTouched()) {
+//            if (newMenuItem.contains(Gdx.input.getX(), Gdx.input.getY()))
+//                game.setScreen(new GameScreen(game, game.currentHero));
+//        }
+//    }
 
     @Override
     public void render(float delta) {
 
+        camera.update();
+        game.getBatch().setProjectionMatrix(mainPanel.stage.getCamera().combined);
+        mainPanel.stage.draw();
+        //mainPanel.stage.act();
 
+//        Gdx.gl.glClearColor(0, 0, 0, 1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//
+//        game.getBatch().setProjectionMatrix(camera.combined);
+//        game.getBatch().begin();
+//        game.getBatch().draw(bg, 0, 0);
+//        checkMenuItem(newMenuItem);
+//        checkMenuItem(loadMenuItem);
+//        checkMenuItem(exitMenuItem);
+//        game.getBatch().end();
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if(mainPanel.createNewFlag){
+            game.setScreen(new GameScreen(game, mainPanel.heroName, mainPanel.createHeroWithType));
+            dispose();
+        } else if(mainPanel.loadHeroFlag){
+            game.setScreen(new GameScreen(game, mainPanel.heroName));
+            dispose();
+        }
 
-        game.getBatch().setProjectionMatrix(camera.combined);
-        game.getBatch().begin();
-        game.getBatch().draw(bg, 0, 0);
-        checkMenuItem(newMenuItem);
-        game.getBatch().end();
 
     }
 

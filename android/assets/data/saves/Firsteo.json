@@ -1,0 +1,26 @@
+{
+  "hero": {
+    "name": "Firsteo",
+    "description": "Player",
+    "health": "10",
+    "speed": "1",
+    "spritesheetregion": "enemy1",
+    "abilities": "PUNCH,TARGET_SHOT,DASH,PULL,PUSH,STOP_CAST,HASTE,FIREWALL",
+    "org": "1",
+    "items": "",
+    "equipeditems": "armor_1,sword_1,helmet_1"
+  },
+
+  "globalStates" : [
+{ "key" : "Flag1", "value" : "Passed"},
+{ "key" : "Flag2", "value" : "Passed"}  ],
+
+  "currentLevel" : "HuntersWillage",
+  "previousLevel" : "Start",
+
+  "selectedAtackAbilities" : "PUNCH, TARGET_SHOT, FIREWALL",
+  "selectedDefenseAbilities": "STOP_CAST",
+  "selectedHelpAbilities": "HASTE"
+
+
+}

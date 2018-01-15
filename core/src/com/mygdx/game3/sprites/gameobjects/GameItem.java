@@ -16,11 +16,9 @@ import java.io.File;
 public class GameItem extends Sprite {
     protected GameScreen screen;
     protected World world;
-    protected boolean toDestroy;
+    public boolean toDestroy;
     protected boolean destroyed;
     protected Body body;
-
-    Texture image;
 
     public String itemname;
     public String itemdescription;
@@ -30,64 +28,45 @@ public class GameItem extends Sprite {
     EquipmentType type;
     private boolean usable;
     private String icon;
+    public String id;
 
     public GameItem(GameScreen screen, ItemDescription description){
         super();
+
         this.screen = screen;
-        this.world = screen.world;
-
+        this.id = description.id;
         this.icon = description.image;
-        setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(description.image));
-
-        itemname = description.name;
-        itemdescription = description.description;
-        itemvalue = description.value;
-
+        this.itemname = description.name;
+        this.itemdescription = description.description;
+        this.itemvalue = description.value;
         this.type = description.type;
-
         this.usable = description.usable;
 
+        //get all effects
         this.effects = new Array<Effect>();
         for(Effect effect : description.effects)
             this.effects.add(effect);
 
+        setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(description.image));
+
     }
 
     public GameItem(GameScreen screen, float x, float y, ItemDescription description){
-        super();
-        this.screen = screen;
-        this.world = screen.world;
-
-        this.icon = description.image;
-        setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(description.image));
-
-        itemname = description.name;
-        itemdescription = description.description;
-        itemvalue = description.value;
-
-        this.type = description.type;
-
-        this.usable = description.usable;
-
-        this.effects = new Array<Effect>();
-        for(Effect effect : description.effects)
-        this.effects.add(effect);
+        this(screen,description);
 
         createBody(x, y);
-
     }
 
     public void createBody(float x, float y){
-
+        this.world = screen.world;
         setPosition(x, y);
         setBounds(x, y, HuntersGame.TILE_SIZE / HuntersGame.PPM, HuntersGame.TILE_SIZE / HuntersGame.PPM);
-
 
         toDestroy = false;
         destroyed = false;
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(getX() / HuntersGame.PPM, getY()/ HuntersGame.PPM );
         body = world.createBody(bodyDef);
 
@@ -96,7 +75,7 @@ public class GameItem extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.isSensor = false;
+        fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = HuntersGame.ITEM_BIT;
         fixtureDef.filter.maskBits = HuntersGame.CREATURE_BIT | HuntersGame.HERO_BIT | HuntersGame.ACTIVITY_BIT | HuntersGame.OBJECT_BIT;
 
@@ -143,5 +122,10 @@ public class GameItem extends Sprite {
 
     public String getIcon() {
         return icon;
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }

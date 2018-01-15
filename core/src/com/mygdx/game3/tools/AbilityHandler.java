@@ -21,22 +21,23 @@ public class AbilityHandler {
         Vector2 direction;
 
         switch (id) {
-            case FIREBALL:
-                Gdx.app.log("Ability", "Fireball");
+            case FIREWALL:
+                Gdx.app.log("Ability", "Firewall");
 
                     activeEffects = new Array<Effect>();
                     activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
                     activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
 
-                    directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE) : -(HuntersGame.TILE_SIZE);
-                    direction = new Vector2(creature.directionRight == true ? 5 : -5, 0);
+                    //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE) : -(HuntersGame.TILE_SIZE);
+                    //direction = new Vector2(creature.directionRight == true ? 5 : -5, 0);
+                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
 
                     result = new ActivityWithEffect(
                             screen,
-                            creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                            creature.getBody().getPosition().x * HuntersGame.PPM,
                             creature.getBody().getPosition().y * HuntersGame.PPM,
                             activeEffects,
-                            ActivityAreaType.SPRAY,
+                            id.getActivityAreaType(),
                             direction,
                             "firewall"); //TODO anim
 
@@ -44,22 +45,23 @@ public class AbilityHandler {
             //        creature.setTimeSpentOnCast(0);
             //    }
                 break;
-            case ICEBALL:
-                Gdx.app.log("Ability", "Iceball");
+            case ICEWALL:
+                Gdx.app.log("Ability", "Icewall");
 
                 activeEffects = new Array<Effect>();
                 activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 5f, 1f, 1f));
                 activeEffects.add(new Effect(EffectID.ICE_DAMAGE, 10f, 5f, 0f));
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
-                direction = new Vector2(creature.directionRight == true ? 5 : -5, 0);
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                //direction = new Vector2(creature.directionRight == true ? 5 : -5, 0);
+                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.SPRAY,
+                        id.getActivityAreaType(),
                         direction,
                         "icewall"); //TODO anim
 
@@ -74,15 +76,17 @@ public class AbilityHandler {
                 activeEffects = new Array<Effect>();
                 activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE), 0f));
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
-                direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                //direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
+
+                direction = new Vector2(-(creature.direction.x * 0.1f), creature.direction.y * 0.1f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.BOX,
+                        id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
 
@@ -94,15 +98,15 @@ public class AbilityHandler {
                 activeEffects = new Array<Effect>();
                 activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
-                direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
-
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                direction = new Vector2(-(creature.direction.x * 10), creature.direction.y * 10 );  ;//new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
+//Gdx.app.log("direction", direction.x + "-" + direction.y );
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM,// + directionPlus,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.ARROW,
+                        id.getActivityAreaType(),
                         direction,
                         "arrow"); //TODO anim
 
@@ -114,15 +118,17 @@ public class AbilityHandler {
                 activeEffects = new Array<Effect>();
                 activeEffects.add(new Effect(EffectID.STUNED, 0.01f, 0f, 0f));
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
-                direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                //direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
+
+                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM ,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.BOX,
+                        id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
 
@@ -134,15 +140,17 @@ public class AbilityHandler {
                 activeEffects = new Array<Effect>();
                 activeEffects.add(new Effect(EffectID.STUNED, 0.01f, 0f, 0f));
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
-                direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
+//                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+//                direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
+
+                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM ,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.BOX,
+                        id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
 
@@ -155,15 +163,15 @@ public class AbilityHandler {
                 activeEffects = new Array<Effect>();
                 activeEffects.add(new Effect(EffectID.STUNED, 0.01f, 0f, 0f));
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
-                direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
-
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                //direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
+                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM ,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.SPRAY,
+                        id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
 
@@ -178,16 +186,17 @@ public class AbilityHandler {
             case PUSH:
                 activeEffects = new Array<Effect>();
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
                 activeEffects.add(creature.directionRight == true ? new Effect(EffectID.MOVE_RIGHT, 0.01f, 10f, 0f):new Effect(EffectID.MOVE_LEFT, 0.01f, 10f, 0f));
-                direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
+
+                direction = new Vector2(creature.directionRight == true ? 5f : -5f, 0 );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM ,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.ARROW,
+                        id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
 
@@ -196,26 +205,26 @@ public class AbilityHandler {
             case PULL:
                 activeEffects = new Array<Effect>();
 
-                directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
+                //directionPlus = creature.directionRight == true ? (HuntersGame.TILE_SIZE/2) : -(HuntersGame.TILE_SIZE/2);
                 activeEffects.add(creature.directionRight == true ? new Effect(EffectID.MOVE_LEFT, 0.01f, 10f, 0f):new Effect(EffectID.MOVE_RIGHT, 0.01f, 10f, 0f));
-                direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
+                //direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
+
+                direction = new Vector2(-(creature.direction.x * 0.1f), creature.direction.y * 0.1f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * HuntersGame.PPM + directionPlus,
+                        creature.getBody().getPosition().x * HuntersGame.PPM ,
                         creature.getBody().getPosition().y * HuntersGame.PPM,
                         activeEffects,
-                        ActivityAreaType.ARROW,
+                        id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
 
                 result.setCreatedBy(creature);
                 break;
         }
-        // TODO Ривок - Активити + Ривок себя вперед
-        //активити наложит Disorientation и бой
 
-
+        creature.creatureAim.update(id.getActivityAreaType());
         return result;
     }
 

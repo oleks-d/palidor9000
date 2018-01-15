@@ -20,7 +20,7 @@ public class AnimationHelper {
     TextureAtlas atlas;
 
     public AnimationHelper(){
-        this.atlas = new TextureAtlas(HuntersGame.SPRITES_DIR + File.separator +  "main_spreadsheet.txt") ; //"simple_sheet.txt") ;//("hero_tiles.txt");
+        this.atlas = new TextureAtlas(HuntersGame.SPRITES_DIR + File.separator +  "main_sheet.txt") ; //"simple_sheet.txt") ;//("hero_tiles.txt");
     }
 
 //        new TextureRegion(getTexture(),0, 0, 32, 32);

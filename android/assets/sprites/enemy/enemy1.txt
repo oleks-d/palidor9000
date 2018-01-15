@@ -1,0 +1,82 @@
+enemy1.png
+size: 352, 32
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+enemy1
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy2
+  rotate: false
+  xy: 32, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy3
+  rotate: false
+  xy: 64, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy4
+  rotate: false
+  xy: 96, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy7
+  rotate: false
+  xy: 128, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy8
+  rotate: false
+  xy: 160, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy10
+  rotate: false
+  xy: 192, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy11
+  rotate: false
+  xy: 224, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy50
+  rotate: false
+  xy: 256, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy51
+  rotate: false
+  xy: 288, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+enemy60
+  rotate: false
+  xy: 320, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1

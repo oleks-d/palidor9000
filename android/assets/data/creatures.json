@@ -6,7 +6,7 @@
     "health" : "10",
     "speed" : "1",
     "spritesheetregion" : "enemy1",
-    "abilities" : "Punch,Arrow,Firewall,Icewall,Haste,Stopcast,Dash,Push,Pull",
+    "abilities" : "PUNCH,TARGET_SHOT,DASH,PULL,PUSH,STOP_CAST,HASTE",
     "org" : "1",
     "items" : "helmet_1,armor_1,sword_1"
   },
@@ -18,8 +18,9 @@
     "speed" : "1",
     "spritesheetregion" : "enemy3",
     "effects" : "CRUSH_DAMAGE 1 1 0",
-    "abilities" : "Firewall",
-    "items" : "coin,coin,coin",
+    "abilities" : "PUNCH,TARGET_SHOT",
+    "items" : "coin,coin,coin,sword_1",
+    "equipeditems" : "",
     "org" : "2"
   },
 
@@ -31,7 +32,7 @@
     "speed" : "1",
     "spritesheetregion" : "enemy4",
     "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "Punch,Arrow",
+    "abilities" : "PUNCH",
     "items" : "coin,coin,coin",
     "org" : "2"
   }

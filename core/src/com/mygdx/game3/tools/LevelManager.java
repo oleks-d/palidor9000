@@ -1,6 +1,10 @@
 package com.mygdx.game3.tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -22,6 +26,7 @@ import com.mygdx.game3.sprites.creatures.Creature;
 import com.mygdx.game3.stuctures.descriptions.ItemDescription;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -35,6 +40,8 @@ public class LevelManager implements Disposable{
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
+    JSONLoader loader;
+    public Hero hero;
 
     public static final int GROUND_LAYER = 2;
     public static final int TRIGGERS_LAYER = 3;
@@ -50,10 +57,11 @@ public class LevelManager implements Disposable{
     public Array<ActivityWithEffect> ACTIVITIES;
 
     public CreatureDescription DEFAULT_CREATURE_DESCRIPTION = new CreatureDescription("Unknown", "Unknown", "enemy1");
-    public ItemDescription DEFAULT_ITEM_DESCRIPTION = new ItemDescription("Unknown", "Unknown", "icon_blank", 0);
+    public ItemDescription DEFAULT_ITEM_DESCRIPTION = new ItemDescription("Unknown","Unknown", "Unknown", "icon_blank", 0);
+    //public Sprite background;
 
-    public String currentLevel;
-    public String previousLevel = "Start";
+//    public String currentLevel;
+//    public String previousLevel = "Start";
 
     public LevelManager(GameScreen screen) {
 
@@ -61,20 +69,20 @@ public class LevelManager implements Disposable{
         mapLoader = new TmxMapLoader();
 
         //load definitions from file
-        JSONLoader loader = new JSONLoader();
+        loader = new JSONLoader();
         ITEMS_DESCRIPTIONS = loader.loadItems();
         CREATURE_DESCRIPTIONS = loader.loadCreatures();
     }
 
     public void loadNextLevel(String name) {
         //dispose();
-        previousLevel = currentLevel;
+        hero.previousLevel = hero.currentLevel;
         loadLevel(name);
     }
 
     public void loadLevel(String levelname){
 
-        currentLevel = levelname;
+        hero.currentLevel = levelname;
         // physics
         screen.world = new World(new Vector2(0, -10f  ), true);
         screen.world.setContactListener(new WorldContactListener(screen));
@@ -82,6 +90,13 @@ public class LevelManager implements Disposable{
         screen.debugRenderer = new Box2DDebugRenderer();
 
         map = mapLoader.load(HuntersGame.MAPS_DIR + File.separator + levelname + ".tmx");
+
+        //TODO background
+//        background = new Sprite();
+//        background.setTexture(new Texture(HuntersGame.SPRITES_DIR + File.separator + levelname + ".jpg"));
+//        background.setSize(HuntersGame.WIDTH/HuntersGame.PPM,HuntersGame.HIGHT/HuntersGame.PPM);
+//        background.setRegion(0,0,640,400);
+
         screen.maprenderer = new OrthogonalTiledMapRenderer(map, 1 / HuntersGame.PPM);
 
         ITEMS = new Array<GameItem>();
@@ -93,7 +108,7 @@ public class LevelManager implements Disposable{
         }
 
         for (MapObject object : map.getLayers().get(JUMP_POINTS_LAYER).getObjects().getByType(RectangleMapObject.class)) {
-            createJumpPoint(screen.world, object);
+            createAIPoint(screen.world, object);
         }
 
         for (MapObject object : map.getLayers().get(TRIGGERS_LAYER).getObjects().getByType(RectangleMapObject.class)) {
@@ -110,12 +125,12 @@ public class LevelManager implements Disposable{
         for (MapObject object : map.getLayers().get(CREATURES_LAYER).getObjects()) {
 
             if (object.getName().startsWith("hero")) {
-                if(object.getName().contains(previousLevel)) {
+                if(object.getName().contains(hero.previousLevel)) {
                     Rectangle rect = ((RectangleMapObject) object).getRectangle();
-                    if(screen.hero == null)
-                        screen.hero = new Hero(screen, rect.getX(), rect.getY());
-                    else
-                        screen.hero.createBody(rect.getX(), rect.getY());
+//                    if(screen.hero == null)
+//                        screen.hero = new Hero(screen, rect.getX(), rect.getY());
+//                    else
+                        screen.hero.makeAlive(rect.getX(), rect.getY());
                 };
             } else
                 createCreature(screen, object);
@@ -174,7 +189,7 @@ public class LevelManager implements Disposable{
         fixture.setFilterData(filter);
     }
 
-    private void createJumpPoint(World world, MapObject object) {
+    private void createAIPoint(World world, MapObject object) {
         BodyDef bdef = new BodyDef();
 
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
@@ -193,7 +208,13 @@ public class LevelManager implements Disposable{
         Fixture fixture = body.createFixture(fixtureDef);//.setUserData("ground");
 
         Filter filter = new Filter();
-        filter.categoryBits = HuntersGame.JUMP_POINT;
+        if(object.getName().equals("no_right"))
+            filter.categoryBits = HuntersGame.NO_RIGHT_POINT;
+        else if(object.getName().equals("no_left"))
+            filter.categoryBits = HuntersGame.NO_LEFT_POINT;
+        else
+            filter.categoryBits = HuntersGame.JUMP_POINT;
+
         fixture.setFilterData(filter);
     }
 
@@ -230,5 +251,47 @@ public class LevelManager implements Disposable{
     @Override
     public void dispose() {
         map.dispose();
+    }
+
+
+    public Hero loadHero(String name){
+        String path = HuntersGame.SAVES_DIR + File.separator + name + ".json";
+        hero = loader.loadHero(screen, path);
+        return hero;
+    }
+
+    public void saveHero(Hero hero) {
+        loader.saveHero(hero);
+    }
+
+    public static ArrayList<String> getListOfSaveHeros(){
+        ArrayList<String> listOfFiles = new ArrayList<String>();
+        FileHandle dirHandle = Gdx.files.local(HuntersGame.SAVES_DIR);
+        for (FileHandle entry: dirHandle.list()) {
+            listOfFiles.add(entry.nameWithoutExtension());
+        }
+        return listOfFiles;
+    }
+
+    public static ArrayList<String> getListOfHeroTypes(){
+        ArrayList<String> listOfFiles = new ArrayList<String>();
+        FileHandle dirHandle = Gdx.files.local(HuntersGame.DEFAULT_HERO_DIR);
+        for (FileHandle entry: dirHandle.list()) {
+            listOfFiles.add(entry.nameWithoutExtension());
+        }
+        return listOfFiles;
+    }
+
+    public Hero createNewHero(String heroName, String newHeroType) {
+        String path = HuntersGame.DEFAULT_HERO_DIR + File.separator + newHeroType + ".json";
+        hero = loader.loadHero(screen, path);
+        hero.name = heroName;
+        saveHero(hero);
+        return hero;
+    }
+
+    public static void removeSave(String savedHeroLabel) {
+        FileHandle file = Gdx.files.local(HuntersGame.SAVES_DIR + File.separator + savedHeroLabel + ".json");
+        file.delete();
     }
 }

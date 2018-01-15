@@ -17,6 +17,7 @@ public class CreatureDescription {
     public Array<AbilityID> abilities;
     public Array<Effect> effects;
     public Array<String> inventory;
+    public Array<String> equiped;
     public int organization;
 
 
@@ -30,7 +31,7 @@ public class CreatureDescription {
         this.effects = new Array<Effect>();
     }
 
-    public CreatureDescription(String name, String description, String region, Characteristics characteristics, int organization, String abilities, String effects, String inventory) {
+    public CreatureDescription(String name, String description, String region, Characteristics characteristics, int organization, String abilities, String effects, String inventory, String equiped) {
         this.name = name;
         this.description = description;
         this.region = region;
@@ -38,20 +39,31 @@ public class CreatureDescription {
         this.abilities = new Array<AbilityID>();
         this.effects = new Array<Effect>();
         this.inventory = new Array<String>();
+        this.equiped = new Array<String>();
 
         if(!abilities.equals("")) {
             for (String curAbiility : abilities.split(",")) {
-                this.abilities.add(AbilityID.getIDByName(curAbiility));
+                //this.abilities.add(AbilityID.getIDByName(curAbiility));
+                this.abilities.add(AbilityID.valueOf(curAbiility.trim()));
             }
         }
         if(!effects.equals("")) {
             for (String curEffect : effects.split(",")) {
-                this.effects.add(new Effect(curEffect));
+                if(!curEffect.equals(""))
+                    this.effects.add(new Effect(curEffect));
             }
         }
         if(!inventory.equals("")) {
             for (String curItem : inventory.split(",")) {
-                this.inventory.add(curItem);
+                if(!curItem.equals(""))
+                    this.inventory.add(curItem.trim());
+            }
+        }
+
+        if(!equiped.equals("")) {
+            for (String curItem : equiped.split(",")) {
+                if(!curItem.equals(""))
+                    this.equiped.add(curItem.trim());
             }
         }
 

@@ -45,7 +45,7 @@ public class InfoPanel implements Disposable {
         table.left().top();
         table.setFillParent(true);
 
-        levelLabel = new Label(lm.currentLevel, new Label.LabelStyle(new BitmapFont(), Color.BROWN));
+        levelLabel = new Label(lm.hero.currentLevel, new Label.LabelStyle(new BitmapFont(), Color.BROWN));
         //scoreLabel = new Label(String.format("%03d", score), new Label.LabelStyle(new BitmapFont(), Color.BROWN));
 
         table.add(levelLabel).expandX().padTop(10);
@@ -66,7 +66,7 @@ public class InfoPanel implements Disposable {
         table.left().top();
         table.setFillParent(true);
 
-        levelLabel = new Label(lm.currentLevel, new Label.LabelStyle(new BitmapFont(), Color.BROWN));
+        levelLabel = new Label(lm.hero.currentLevel, new Label.LabelStyle(new BitmapFont(), Color.BROWN));
         //scoreLabel = new Label(String.format("%03d", score), new Label.LabelStyle(new BitmapFont(), Color.BROWN));
 
         table.add(levelLabel).expandX().padTop(10);

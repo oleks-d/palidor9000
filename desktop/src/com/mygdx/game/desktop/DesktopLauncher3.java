@@ -9,6 +9,7 @@ public class DesktopLauncher3 {
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
+		config.forceExit = false;
 		config.title = HuntersGame.TITLE;
 		config.width = HuntersGame.WIDTH;
 		config.height = HuntersGame.HIGHT;

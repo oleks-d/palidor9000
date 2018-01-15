@@ -15,8 +15,10 @@ public class ItemDescription {
     public EquipmentType type;
     public boolean usable;
     public Array<Effect> effects;
+    public String id;
 
-    public ItemDescription(String name, String description, String image, int value) {
+    public ItemDescription(String id, String name, String description, String image, int value) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;
@@ -27,7 +29,8 @@ public class ItemDescription {
     }
 
 
-    public ItemDescription(String name, String description, String image, int value, EquipmentType type, boolean usable, String effects) {
+    public ItemDescription(String id, String name, String description, String image, int value, EquipmentType type, boolean usable, String effects) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;

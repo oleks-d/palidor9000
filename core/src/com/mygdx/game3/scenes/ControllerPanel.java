@@ -209,7 +209,7 @@ public class ControllerPanel implements Disposable{
         table.add();
         //table.add(imageTop).size(imageTop.getWidth(), imageTop.getHeight());
         table.add();
-        table.row().pad(5,5,5,5);
+        table.row().pad(10,10,15,15);
         table.add(imageLeft).size(imageLeft.getWidth(), imageLeft.getHeight());
         table.add();
         table.add();
@@ -223,7 +223,9 @@ public class ControllerPanel implements Disposable{
         tableJump.right().bottom();
         tableJump.setFillParent(true);
         tableJump.row();
+        tableJump.row().pad(20,20,20,20);
         tableJump.add(imageTop).size(imageTop.getWidth(), imageTop.getHeight());
+        tableJump.row();
 
         stage.addActor(tableJump);
         stage.addActor(table);
@@ -280,7 +282,7 @@ public class ControllerPanel implements Disposable{
 
 
         tableAbilitiesDefense = new Table();
-        tableAbilitiesDefense.right().bottom();
+        tableAbilitiesDefense.right();
         tableAbilitiesDefense.setFillParent(true);
 
         for(int i = 0; i < hero.selectedDefenseAbilities.size; i++) {

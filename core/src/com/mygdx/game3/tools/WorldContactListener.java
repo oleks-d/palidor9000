@@ -63,6 +63,26 @@ public class WorldContactListener implements ContactListener {
                 else
                     ((Creature) fixB.getUserData()).setHasToJump(true);
                 break;
+//            case HuntersGame.CREATURE_BIT | HuntersGame.CREATURE_BIT: // TODO make sure it is correct way
+//                if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT) {
+//                    ((Creature) fixA.getUserData()).jump();
+//                }
+//                else {
+//                    ((Creature) fixB.getUserData()).jump();
+//                }
+//                break;
+            case HuntersGame.CREATURE_BIT | HuntersGame.NO_RIGHT_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setMoveLeft(true);
+                else
+                    ((Creature) fixB.getUserData()).setMoveLeft(true);
+                break;
+            case HuntersGame.CREATURE_BIT | HuntersGame.NO_LEFT_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setMoveRight(true);
+                else
+                    ((Creature) fixB.getUserData()).setMoveRight(true);
+                break;
             case HuntersGame.CREATURE_BIT | HuntersGame.TRIGGER_POINT:
                 if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT) {
                     trigger = ((Trigger) fixB.getUserData());
@@ -88,6 +108,32 @@ public class WorldContactListener implements ContactListener {
 
     @Override
     public void endContact(Contact contact) {
+        Fixture fixA = contact.getFixtureA();
+        Fixture fixB = contact.getFixtureB();
+
+        int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+
+        switch (cDef) {
+            case HuntersGame.CREATURE_BIT | HuntersGame.NO_RIGHT_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setMoveLeft(false);
+                else
+                    ((Creature) fixB.getUserData()).setMoveLeft(false);
+                break;
+            case HuntersGame.CREATURE_BIT | HuntersGame.NO_LEFT_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setMoveRight(false);
+                else
+                    ((Creature) fixB.getUserData()).setMoveRight(false);
+                break;
+            case HuntersGame.CREATURE_BIT | HuntersGame.JUMP_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == HuntersGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setHasToJump(false);
+                else
+                    ((Creature) fixB.getUserData()).setHasToJump(false);
+                break;
+        }
+
 
     }
 

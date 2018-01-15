@@ -1,0 +1,47 @@
+simple_sheet.png
+size: 225, 102
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+abilities
+  rotate: false
+  xy: 0, 0
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+coin
+  rotate: false
+  xy: 48, 0
+  size: 18, 23
+  orig: 18, 23
+  offset: 0, 0
+  index: -1
+enemy1
+  rotate: false
+  xy: 66, 0
+  size: 127, 32
+  orig: 127, 32
+  offset: 0, 0
+  index: -1
+enemy2
+  rotate: false
+  xy: 0, 32
+  size: 225, 32
+  orig: 225, 32
+  offset: 0, 0
+  index: -1
+hero
+  rotate: false
+  xy: 0, 64
+  size: 160, 38
+  orig: 160, 38
+  offset: 0, 0
+  index: -1
+key
+  rotate: false
+  xy: 160, 64
+  size: 20, 24
+  orig: 20, 24
+  offset: 0, 0
+  index: -1

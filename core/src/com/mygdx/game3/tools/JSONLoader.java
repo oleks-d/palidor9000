@@ -1,16 +1,21 @@
 package com.mygdx.game3.tools;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.mygdx.game2.objects.InteractiveTileObject;
+import com.badlogic.gdx.utils.*;
+import com.mygdx.game3.enums.AbilityID;
 import com.mygdx.game3.enums.EquipmentType;
+import com.mygdx.game3.screens.GameScreen;
+import com.mygdx.game3.sprites.creatures.Hero;
+import com.mygdx.game3.sprites.gameobjects.GameItem;
 import com.mygdx.game3.stuctures.Characteristics;
 import com.mygdx.game3.stuctures.descriptions.CreatureDescription;
 import com.mygdx.game3.stuctures.descriptions.ItemDescription;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by odiachuk on 12/21/17.
@@ -21,7 +26,6 @@ public class JSONLoader {
         HashMap<String,CreatureDescription>  results = new HashMap<String,CreatureDescription>() ;
         JsonReader json = new JsonReader();
         JsonValue base = json.parse(Gdx.files.internal("data" + File.separator+ "creatures.json"));
-
 
         for (JsonValue component : base.get("creatures"))
         {
@@ -37,7 +41,9 @@ public class JSONLoader {
                             Integer.valueOf(component.getString("org")),
                             tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                             tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                            tryToGetValue(component, "items") != null ? component.getString("items") : ""
+                            tryToGetValue(component, "items") != null ? component.getString("items") : "",
+                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
+
                             ));
             //System.out.println(component.get("asset").getString("relativePath"));
         }
@@ -55,6 +61,7 @@ public class JSONLoader {
         {
             results.put(component.getString("id"),
                     new ItemDescription(
+                            component.getString("id"),
                             component.getString("name"),
                             component.getString("description"),
                             component.getString("image"),
@@ -79,5 +86,120 @@ public class JSONLoader {
         return result;
     }
 
+    public Hero loadHero(GameScreen screen, String file){
 
+        CreatureDescription heroDescription;
+
+        String currentLevel = "";
+        String previousLevel = "";
+        HashMap<String,String> globalStates = new HashMap<String,String>();
+
+        Array<AbilityID> selectedAtackAbilities = new Array<AbilityID>();
+        Array<AbilityID> selectedDefenseAbilities = new Array<AbilityID>();
+        Array<AbilityID> selectedHelpAbilities = new Array<AbilityID>();
+
+        JsonReader json = new JsonReader();
+        try {
+            JsonValue base = json.parse(Gdx.files.internal(file));
+
+
+            JsonValue component = base.get("hero");
+
+            heroDescription = new CreatureDescription(
+                    component.getString("name"),
+                    component.getString("description"),
+                    component.getString("spritesheetregion"),
+                    new Characteristics(
+                            Integer.valueOf(component.getString("health")),
+                            Integer.valueOf(component.getString("speed")),
+                            Integer.valueOf(1)),
+                    Integer.valueOf(component.getString("org")),
+                    tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
+                    tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
+                    tryToGetValue(component, "items") != null ? component.getString("items") : "",
+                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
+            );
+
+            for (JsonValue state : base.get("globalStates")) {
+                globalStates.put(state.getString("key"), state.getString("value"));
+            }
+
+
+            for (String item : base.getString("selectedAtackAbilities").split(","))
+                selectedAtackAbilities.add(AbilityID.valueOf(item.trim()));
+            for (String item : base.getString("selectedDefenseAbilities").split(","))
+                selectedDefenseAbilities.add(AbilityID.valueOf(item.trim()));
+            for (String item : base.getString("selectedHelpAbilities").split(","))
+                selectedHelpAbilities.add(AbilityID.valueOf(item.trim()));
+
+            currentLevel = base.getString("currentLevel");
+            previousLevel = base.getString("previousLevel");
+
+            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, selectedHelpAbilities);
+        }catch (Exception e) {
+            //no hero found
+
+            Gdx.app.log("No hero found", "Loading failed " + file);
+            return null;
+        }
+    }
+
+    void saveHero(Hero hero){
+
+        String globalStates ="";
+
+        for(Map.Entry<String,String> entry : hero.getGlobalStates().entrySet()){
+            if(globalStates.equals(""))
+                globalStates = "{ \"key\" : \"" + entry.getKey() + "\", \"value\" : \"" + entry.getValue() + "\"}";
+            else
+                globalStates = globalStates + ",\n{ \"key\" : \"" + entry.getKey() + "\", \"value\" : \"" + entry.getValue() + "\"}";
+        }
+
+        String equipedItems = "";
+        if(hero.head != null)
+            equipedItems = equipedItems + hero.head.id +",";
+        if(hero.armor != null)
+            equipedItems = equipedItems + hero.armor.id +",";
+        if(hero.weapon1 != null)
+            equipedItems = equipedItems + hero.weapon1.id +",";
+ // TODO add other equipment types
+
+        String stringContent ="" +
+                "{\n" +
+                "  \"hero\": {\n" +
+                "    \"name\": \"" + hero.name +"\",\n" +
+                "    \"description\": \"" + hero.description + "\",\n" +
+                "    \"health\": \""  + hero.stats.health.base + "\",\n" +
+                "    \"speed\": \""  + hero.stats.speed.base + "\",\n" +
+                "    \"spritesheetregion\": \"" + hero.spritesheetRegion + "\",\n" +
+                "    \"abilities\": \"" + hero.getAbilities().toString(",") + "\",\n" +
+                "    \"org\": \"1\",\n" +
+                "    \"items\": \"" + hero.getInventory().toString().replaceAll("[\\[\\]]","") + "\",\n" +
+                "    \"equipeditems\": \"" + equipedItems + "\"\n" +
+                "  },\n" +
+                "\n" +
+                "  \"globalStates\" : [\n" +
+                globalStates +
+                "  ],\n" +
+                "\n" +
+                "  \"currentLevel\" : \"" + hero.currentLevel + "\",\n" +
+                "  \"previousLevel\" : \"" + hero.previousLevel + "\",\n" +
+                "\n" +
+                "  \"selectedAtackAbilities\" : \"" + hero.selectedAtackAbilities.toString().replaceAll("[\\[\\]]", "") + "\",\n" +
+                "  \"selectedDefenseAbilities\": \"" + hero.selectedDefenseAbilities.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
+                "  \"selectedHelpAbilities\": \"" + hero.selectedHelpAbilities.toString().replaceAll("[\\[\\]]", "") + "\"\n" +
+                "\n" +
+                "\n" +
+                "}" ;
+
+
+        try {
+            Json content = new Json();
+            JsonWriter jw = new JsonWriter(new FileWriter(Gdx.files.internal("data" + File.separator + "saves" + File.separator + hero.name + ".json").file()));
+            jw.write((stringContent));
+            jw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

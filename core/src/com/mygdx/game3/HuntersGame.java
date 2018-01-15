@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.states.GameStateManager;
 import com.mygdx.game3.screens.GameScreen;
+import com.mygdx.game3.screens.MainMenuScreen;
+
+import java.io.File;
 
 public class HuntersGame extends Game {
 
@@ -15,12 +18,17 @@ public class HuntersGame extends Game {
 
 	public static final String TITLE = "HUNTER";
     public static final int TILE_SIZE = 32;
+	public static final String DATA_DIR = "data";
 	public static final String SPRITES_DIR = "sprites";
 	public static final String MAPS_DIR = "maps";
-	public static final String STARTING_LEVEL = "Pit" ; //"Pit_Mob"; //"Forest";
+	public static final String DEFAULT_HERO_DIR = HuntersGame.DATA_DIR + File.separator + "basic_heroes";
+	public static final String SAVES_DIR = HuntersGame.DATA_DIR + File.separator + "saves";
+	//public static final String STARTING_LEVEL = "Pit" ; //"Pit_Mob"; //"Forest";
 	public static String gameDetails;
+	public static boolean EXIT_FLAG = false;
 
 	private GameStateManager gsm;
+	public String currentHero;
 
 	public SpriteBatch getBatch() {
 		return batch;
@@ -36,16 +44,19 @@ public class HuntersGame extends Game {
 	public static final short ACTIVITY_BIT = 16;
 	public static final short JUMP_POINT = 32;
 	public static final short TRIGGER_POINT = 64;
+	public static final short NO_RIGHT_POINT = 128;
+	public static final short NO_LEFT_POINT = 256;
 
 	@Override
 	public void create () {
+		//currentHero = "firsthero";
 
 		batch = new SpriteBatch();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 
-		//setScreen(new MainMenuScreen(this));
-		setScreen(new GameScreen(this));
+		setScreen(new MainMenuScreen(this));
+		//setScreen(new GameScreen(this, currentHero));
 	}
 
 	@Override
