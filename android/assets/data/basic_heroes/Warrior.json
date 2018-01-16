@@ -5,7 +5,7 @@
     "health": "1",
     "speed": "1",
     "spritesheetregion": "enemy1",
-    "abilities": "PUNCH,TARGET_SHOT,DASH,PULL,PUSH,STOP_CAST,HASTE",
+    "abilities": "PUNCH",
     "org": "1",
     "items": "helmet_1,armor_1",
     "equipeditems": "sword_1"
@@ -19,9 +19,10 @@
   "previousLevel" : "Start",
   "currentLevel" : "Forest",
 
-  "selectedAtackAbilities" : "PUNCH,TARGET_SHOT",
-  "selectedDefenseAbilities": "STOP_CAST",
-  "selectedHelpAbilities": "HASTE"
+
+  "selectedAtackAbilities" : "PUNCH",
+  "selectedDefenseAbilities": "PUNCH",
+  "selectedHelpAbilities": ""
 
 
 }
