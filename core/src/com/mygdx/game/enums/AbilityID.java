@@ -10,7 +10,7 @@ public enum AbilityID{
 //    FIREWALL("Firewall" , "Wall of fire", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 2f, 10f),
 //    ICEWALL("Icewall", "Wall of ice", "ice_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 2f , 10f),
 //
-    PUNCH("Punch",  "Melee strike", "sword", State.KICKING, com.mygdx.game.enums.AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
+    PUNCH("Punch",  "Melee strike", "sword", State.KICKING, com.mygdx.game.enums.AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 2f, 1f ),
 //    QUICK_PUNCH("Quick punch",  "Quick melee strike", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 5f ),
 //    POWER_PUNCH("Power punch",  "Powerfull melee strike", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 2f, 10f ),
 //    LEG_PUNCH("Leg punch",  "Melee strike to leg", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 2f, 10f ),
@@ -40,7 +40,7 @@ public enum AbilityID{
 
     HUMMER_SMASH("Hummer SMASH",  "Stunning Melee strike", "humer", State.KICKING, com.mygdx.game.enums.AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
     AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe", State.KICKING, com.mygdx.game.enums.AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
-    SWORD_SMASH("Sword SMASH",  "Melee strike with multiple targets ", "sword", State.KICKING, com.mygdx.game.enums.AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
+    SWORD_SMASH("Sword SMASH",  "Melee strike with multiple targets ", "sword", State.KICKING, com.mygdx.game.enums.AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BIGBOX, 0.1f, 10f ),
 
 
     DITRUCTING_SHOT("Stuning shot", "Stunning shot", "bow", State.SHOTING, com.mygdx.game.enums.AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.1f, 10f),

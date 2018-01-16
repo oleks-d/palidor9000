@@ -5,7 +5,7 @@
     "health": "1",
     "speed": "1",
     "spritesheetregion": "enemy1",
-    "abilities": "PUNCH",
+    "abilities": "PUNCH,SWORD_SWING,SWORD_SMASH,COVER,DODGE,DASH,SHOUT,MASK",
     "org": "1",
     "items": "helmet_1,armor_1",
     "equipeditems": "sword_1"
@@ -20,8 +20,8 @@
   "currentLevel" : "Forest",
 
 
-  "selectedAtackAbilities" : "PUNCH",
-  "selectedDefenseAbilities": "PUNCH",
+  "selectedAtackAbilities" : "SWORD_SWING,SWORD_SMASH",
+  "selectedDefenseAbilities": "COVER,DODGE",
   "selectedHelpAbilities": ""
 
 

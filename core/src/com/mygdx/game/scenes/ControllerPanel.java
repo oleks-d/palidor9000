@@ -230,7 +230,7 @@ public class ControllerPanel implements Disposable{
         tableAbilities.setFillParent(true);
 
 
-        ability1 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.weapon1.getIcon())) ;
+        ability1 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedAtackAbilities.get(0).getIcon())) ;
         ability1.addListener(new ClickListener() {
 
             @Override
@@ -247,7 +247,7 @@ public class ControllerPanel implements Disposable{
             }
         });
 
-        ability2 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.weapon2.getIcon())) ;
+        ability2 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedDefenseAbilities.get(0).getIcon()));
         ability2.addListener(new ClickListener() {
 
             @Override

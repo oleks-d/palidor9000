@@ -3,10 +3,7 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -56,8 +53,6 @@ public class GameScreen implements Screen {
     public com.mygdx.game.tools.LevelManager levelmanager;
 
     public com.mygdx.game.tools.AnimationHelper animationHelper;
-    public BitmapFont font;
-    public BitmapFont shadyfont;
 
     boolean PAUSE;
     boolean onInventoryScreen = false;
@@ -87,6 +82,8 @@ public class GameScreen implements Screen {
     int[] layersToRender; //day and night
     boolean isDay;
 
+    FPSLogger fpslogger;
+
     public GameScreen(PalidorGame game, String heroName){
         this(game,heroName,null);
     }
@@ -94,19 +91,10 @@ public class GameScreen implements Screen {
     public GameScreen(PalidorGame game, String heroName, String newHeroType) {
         this.game = game;
         this.game.currentHero = heroName;
-
+        fpslogger = new FPSLogger();
         setDay(true);
 
         STOP_GAME = false;
-        //load font
-        font = new BitmapFont(); //buildFont("arial.ttf", 8, "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*");
-        font.getData().setScale(0.01f);
-        font.setUseIntegerPositions(false);
-
-        shadyfont = new BitmapFont();
-        shadyfont.setColor(Color.DARK_GRAY);
-        shadyfont.getData().setScale(0.01f);
-        shadyfont.setUseIntegerPositions(false);
 
         //camera
         camera = new OrthographicCamera();
@@ -327,7 +315,7 @@ public class GameScreen implements Screen {
 
             if(holdingTimeUP > 0) {
                 if (!controller.touchedUp && !Gdx.input.isKeyPressed(Input.Keys.UP)){
-                    if(holdingTimeUP > 1)
+                    if(holdingTimeUP > 3)
                         hero.shout();
                     //hero.statusbar.resetCastbar();
                     holdingTimeUP = 0;
@@ -337,7 +325,7 @@ public class GameScreen implements Screen {
             }
             if(holdingTimeDOWN > 0) {
                 if (!controller.touchedDown && !Gdx.input.isKeyPressed(Input.Keys.DOWN)){
-                    if(holdingTimeDOWN > 1)
+                    if(holdingTimeDOWN > 3)
                         hero.hide();
                     holdingTimeDOWN = 0;
                     //hero.statusbar.resetCastbar();
@@ -348,7 +336,7 @@ public class GameScreen implements Screen {
 
             if(holdingTimeJUMP > 0) {
                 if (!controller.touchedJump && !Gdx.input.isKeyPressed(Input.Keys.W)){
-                    if(holdingTimeJUMP < 1)
+                    if(holdingTimeJUMP < 2)
                         hero.jump();
                     else
                         if (holdingTimeUP>0)
@@ -367,9 +355,9 @@ public class GameScreen implements Screen {
 
             if (holdingTimeABILITY1> 0) {
                 if (! controller.touchedAbility1 &&! Gdx.input.isKeyPressed (Input.Keys.A)) {
-                    if (holdingTimeABILITY1 <1)
+                    if (holdingTimeABILITY1 <2)
                         hero.attack (true, false);
-                    if (holdingTimeABILITY1>= 1)
+                    if (holdingTimeABILITY1>= 2)
                         hero.attack (true, true);
 
                     holdingTimeABILITY1 = 0;
@@ -378,9 +366,9 @@ public class GameScreen implements Screen {
 
             if (holdingTimeABILITY2> 0) {
                 if (! controller.touchedAbility2 &&! Gdx.input.isKeyPressed (Input.Keys.D)) {
-                    if (holdingTimeABILITY2 <1)
+                    if (holdingTimeABILITY2 <2)
                         hero.attack (false, false);
-                    if (holdingTimeABILITY2>= 1)
+                    if (holdingTimeABILITY2>= 2)
                         hero.attack (false, true);
 
                 holdingTimeABILITY2 = 0;
@@ -401,7 +389,7 @@ public class GameScreen implements Screen {
                 } else if (controller.touchedRight || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     hero.direction.set(-1, hero.direction.y);
                     hero.move(true);
-                } else hero.direction.set(0, hero.direction.y);
+                } //else hero.direction.set(0, hero.direction.y);
 
 
                 if (controller.touchedJump || Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -418,7 +406,7 @@ public class GameScreen implements Screen {
                 }
 
 
-            //hero.direction.clamp(1, 1);
+            //hero.direction.clamp(1, 1); // TODO make sure it works correctly
 
 
             //if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
@@ -464,9 +452,11 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
+        fpslogger.log();
+
         update(delta);
 
-            Gdx.gl.glClearColor(0.5f, 0, 0.5f, 1);
+            Gdx.gl.glClearColor(1, 1, 1, 1);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             //maprenderer.render(); // show map

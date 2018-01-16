@@ -1,10 +1,12 @@
 {"creatures" : [
+
+
   {
     "id" : "animal_1",
     "name" : "Rolf",
     "description": "Regular rolf",
     "health" : "10",
-    "speed" : "1",
+    "speed" : "0",
     "spritesheetregion" : "enemy3",
     "effects" : "CRUSH_DAMAGE 1 1 0",
     "abilities" : "PUNCH",
@@ -18,7 +20,7 @@
     "name" : "Fast Rolf",
     "description": "Fast rolf",
     "health" : "10",
-    "speed" : "1",
+    "speed" : "0",
     "spritesheetregion" : "enemy4",
     "effects" : "CUT_DAMAGE 1 1 0",
     "abilities" : "PUNCH",

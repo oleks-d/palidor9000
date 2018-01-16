@@ -2,6 +2,8 @@ package com.mygdx.game.tools;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityType;
+import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
@@ -39,12 +41,18 @@ public class WorldContactListener implements ContactListener {
                     target = ((Creature) fixB.getUserData());
                 }
 
+
+                //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
-                    for (Effect effect : act.activeEffects) {
-                        target.applyEffect(effect);
-                        if(!effect.id.isPositive()){
-                            target.setIN_BATTLE(true);
+                    if(target.getEffect(EffectID.COVERED_BY_SHIELD) == null) {// creature was covered
+                        for (Effect effect : act.activeEffects) {
+                            target.applyEffect(effect);
+                            if (!effect.id.isPositive()) {
+                                target.setIN_BATTLE(true);
+                            }
                         }
+                    } else {
+                        act.createdBy.applyEffect(new Effect(EffectID.STUNED, 3, 0, 0)); // stun if target was protected
                     }
                     //   act.addTargetToAlreadyProcessed(target);
                     act.onHit();

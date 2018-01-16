@@ -4,29 +4,89 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.EffectID;
+import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.stuctures.Effect;
 
 
 public class AbilityHandler {
-    static public com.mygdx.game.sprites.activities.ActivityWithEffect getAbilityAndUseIt(com.mygdx.game.screens.GameScreen screen, Creature creature, com.mygdx.game.enums.AbilityID id) {
+    static public ActivityWithEffect getAbilityAndUseIt(com.mygdx.game.screens.GameScreen screen, Creature creature, com.mygdx.game.enums.AbilityID id) {
         com.mygdx.game.sprites.activities.ActivityWithEffect result = null;
 
         Array<com.mygdx.game.stuctures.Effect> activeEffects = new Array<Effect>();
         int directionPlus;
         Vector2 direction;
 
+        creature.statusbar.addMessage(id.toString(), creature.existingTime + 1, Fonts.GOOD);
+
         switch (id) {
+                case PUNCH:
+
+                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE), 0f));
+
+                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM,
+                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "soundwall"); //TODO anim
+
+                result.setCreatedBy(creature);
+
+                break;
+            case SWORD_SWING:
+
+                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
+
+                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "soundwall"); //TODO anim
+
+                result.setCreatedBy(creature);
+
+                break;
+            case SWORD_SMASH:
+
+                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
+
+                direction = new Vector2(0,0);
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM,
+                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "soundwall"); //TODO anim
+
+                result.setCreatedBy(creature);
+
+                break;
             case SHOUT:
                 creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 15f, 1f, 0f));
                 creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 15f, 1f, 0f));
+                break;
+            case COVER:
+                creature.applyEffect(new Effect(EffectID.COVERED_BY_SHIELD, 1f, 1f, 0f));
                 break;
             case DASH:
 
                 activeEffects.add(new Effect(EffectID.STUNED, 0.01f, 0f, 0f));
 
                 direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
-                result = new com.mygdx.game.sprites.activities.ActivityWithEffect(
+                result = new ActivityWithEffect(
                         screen,
                         creature.getBody().getPosition().x * PalidorGame.PPM ,
                         creature.getBody().getPosition().y * PalidorGame.PPM,

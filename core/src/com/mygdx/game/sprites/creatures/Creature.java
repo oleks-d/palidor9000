@@ -21,6 +21,8 @@ import com.mygdx.game.stuctures.Characteristics;
 import com.mygdx.game.stuctures.Effect;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
 import com.mygdx.game.tools.AbilityHandler;
+import com.mygdx.game.tools.EffectsHandler;
+import com.mygdx.game.tools.Fonts;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -76,7 +78,7 @@ public class Creature extends Sprite {
     public String description;
     public String spritesheetRegion;
 
-    double existingTime;
+    public double existingTime;
     public boolean stuned;
     public boolean hidden;
     public boolean IN_BATTLE;
@@ -106,16 +108,16 @@ public class Creature extends Sprite {
 
     public void resetTimeSpentOnCast() {
         this.timeSpentOnCast = 0;
-        abilityToCast = com.mygdx.game.enums.AbilityID.NONE;
+        abilityToCast = AbilityID.NONE;
         abilityToCastExecutionTime = 0;
         setState(State.STANDING);
     }
 
-    public com.mygdx.game.enums.AbilityID getAbilityToCast() {
+    public AbilityID getAbilityToCast() {
         return abilityToCast;
     } // TODO set all to setters/getters
 
-    public com.mygdx.game.enums.AbilityID abilityToCast;
+    public AbilityID abilityToCast;
     public float timeSpentOnCast;
     public float abilityToCastExecutionTime;
 
@@ -250,7 +252,7 @@ public class Creature extends Sprite {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.friction = 0.5f;
-        fixtureDef.restitution = 0.1f;
+        //fixtureDef.restitution = 0.3f;
 
         fixtureDef.filter.categoryBits = PalidorGame.CREATURE_BIT;
         fixtureDef.filter.maskBits = PalidorGame.HERO_BIT |
@@ -317,8 +319,8 @@ public class Creature extends Sprite {
         brain.getNextStep(this,screen);
     }
 
-    public com.mygdx.game.enums.AbilityID findAbility(AbilityType type) {
-        for(com.mygdx.game.enums.AbilityID ability : abilities){
+    public AbilityID findAbility(AbilityType type) {
+        for(AbilityID ability : abilities){
             if(ability.getType().equals(type) && cooldowns.get(ability) <= existingTime) {
                 return ability;
             }
@@ -434,19 +436,22 @@ public class Creature extends Sprite {
         }
     }
 
-    public void useAbility(com.mygdx.game.enums.AbilityID ability){
-        if(checkCooldownExpired(ability)) {
-            abilityToCastExecutionTime = AbilityHandler.getAbilityCastTime(this, ability);
-            //if(abilityToCastExecutionTime > 0.2){
-            setState(ability.getState());
-            //}
-            setAbilityToCast(ability);
-        } else {
-            statusbar.addMessage( String.format("%s not ready: %.1f",ability.getName(),this.showWhenAbilityWillBeAvailable(ability)) , existingTime + 2d);
+    public void useAbility(AbilityID ability){
+        if(!stuned)
+        {
+            if(checkCooldownExpired(ability)) {
+                abilityToCastExecutionTime = AbilityHandler.getAbilityCastTime(this, ability);
+                //if(abilityToCastExecutionTime > 0.2){
+                setState(ability.getState());
+                //}
+                setAbilityToCast(ability);
+            } else {
+                statusbar.addMessage( String.format("%s not ready: %.1f",ability.getName(),this.showWhenAbilityWillBeAvailable(ability)) , existingTime + 2d, Fonts.INFO);
+            }
         }
     }
 
-    public ActivityWithEffect activateAbility(com.mygdx.game.enums.AbilityID ability) {
+    public ActivityWithEffect activateAbility(AbilityID ability) {
         if(!stuned) {
             setInvisible(false); // make visible
             resetTimeSpentOnCast(); // reset casting time
@@ -458,7 +463,7 @@ public class Creature extends Sprite {
     }
 
     //results of defense actions
-    public void lockAbility(com.mygdx.game.enums.AbilityID ability) {
+    public void lockAbility(AbilityID ability) {
             resetTimeSpentOnCast();
             getBody().setLinearVelocity(0, 0); // STOP
             cooldowns.put(ability, AbilityHandler.getAbilityCooldownTime(this,ability) + existingTime);
@@ -466,7 +471,7 @@ public class Creature extends Sprite {
             Gdx.app.log("Creature", "Locked " + ability);
     }
 
-    private boolean checkCooldownExpired(com.mygdx.game.enums.AbilityID ability){
+    private boolean checkCooldownExpired(AbilityID ability){
         return cooldowns.get(ability) <= existingTime;
     }
 
@@ -478,7 +483,7 @@ public class Creature extends Sprite {
                 neweffect.dotDuration,
                 (neweffect.dotDuration > 0 ? neweffect.dotDuration + existingTime : 0),
                 neweffect.duration + existingTime));
-        com.mygdx.game.tools.EffectsHandler.applyEffectUseIt(this, neweffect.id, neweffect.magnitude);
+        EffectsHandler.applyEffect(this, neweffect.id, neweffect.magnitude);
         if(statusbar!=null)
             statusbar.update();
     }
@@ -498,7 +503,7 @@ public class Creature extends Sprite {
             };
             if (effect.dotDuration > 0 && effect.refreshTime <= existingTime) { // tick DoT
                 effect.refreshTime = effect.refreshTime + effect.dotDuration;
-                com.mygdx.game.tools.EffectsHandler.applyEffectUseIt(this, effect.id, effect.magnitude);
+                EffectsHandler.applyEffect(this, effect.id, effect.magnitude);
             }
         }
 
@@ -627,7 +632,7 @@ public class Creature extends Sprite {
         return inventory;
     }
 
-    public void setAbilityToCast(com.mygdx.game.enums.AbilityID abilityToCast) {
+    public void setAbilityToCast(AbilityID abilityToCast) {
         this.abilityToCast = abilityToCast;
     }
 
@@ -706,7 +711,7 @@ public class Creature extends Sprite {
         return reputation;
     }
 
-    public double showWhenAbilityWillBeAvailable(com.mygdx.game.enums.AbilityID ability) {
+    public double showWhenAbilityWillBeAvailable(AbilityID ability) {
         if(cooldowns.get(ability) - existingTime <= 0)
             return 0;
         return Math.round(cooldowns.get(ability) - existingTime);
@@ -745,5 +750,8 @@ public class Creature extends Sprite {
     }
 
 
-
+    public void addMessage(String message, Fonts font) {
+        if(statusbar != null)
+        statusbar.addMessage(message, existingTime + 2f, font);
+    }
 }

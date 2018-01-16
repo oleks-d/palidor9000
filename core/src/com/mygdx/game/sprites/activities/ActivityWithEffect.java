@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.ActivityAreaType;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.stuctures.Effect;
 
@@ -44,7 +45,7 @@ public class ActivityWithEffect extends Sprite {
 
     TextureRegion region;
 
-    public ActivityWithEffect(com.mygdx.game.screens.GameScreen screen, float x, float y, Array<Effect> activeEffects, com.mygdx.game.enums.ActivityAreaType type, Vector2 direction, String spriteRegionName){
+    public ActivityWithEffect(com.mygdx.game.screens.GameScreen screen, float x, float y, Array<Effect> activeEffects, ActivityAreaType type, Vector2 direction, String spriteRegionName){
         super(screen.animationHelper.getAtlas().findRegion(spriteRegionName));
         setBounds(0, 0, PalidorGame.TILE_SIZE/ PalidorGame.PPM, PalidorGame.TILE_SIZE/ PalidorGame.PPM);
         world = screen.world;
@@ -76,11 +77,12 @@ public class ActivityWithEffect extends Sprite {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / PalidorGame.PPM, getY()/ PalidorGame.PPM );
         bodyDef.gravityScale= 0.1f;
-        if(type == com.mygdx.game.enums.ActivityAreaType.ARROW)
+        if(type == ActivityAreaType.ARROW)
             bodyDef.bullet = true;
         body = world.createBody(bodyDef);
 
         CircleShape shape;
+        PolygonShape box;
         FixtureDef fixtureDef;
         switch(type){
             case ARROW:
@@ -93,8 +95,7 @@ public class ActivityWithEffect extends Sprite {
                 fixtureDef.isSensor = true;
 
                 fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
-                fixtureDef.filter.maskBits = PalidorGame.HERO_BIT |
-                        PalidorGame.OBJECT_BIT |
+                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
@@ -112,23 +113,39 @@ public class ActivityWithEffect extends Sprite {
                 fixtureDef.isSensor = true;
 
                 fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
-                fixtureDef.filter.maskBits = PalidorGame.HERO_BIT |
+                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
+                        PalidorGame.OBJECT_BIT |
+                        PalidorGame.CREATURE_BIT;
+
+                body.createFixture(fixtureDef).setUserData(this);
+                break;
+            case BIGBOX:
+                shape = new CircleShape();
+                shape.setRadius(PalidorGame.TILE_SIZE * 3 / PalidorGame.PPM );
+
+                fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+
+                fixtureDef.isSensor = false;
+
+                fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
+                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
                         PalidorGame.OBJECT_BIT |
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
                 break;
             default:
-                PolygonShape box = new PolygonShape();
-                box.setAsBox(getWidth()/4,getHeight()/4);
+                box = new PolygonShape();
+                box.setAsBox(getWidth()/2,getHeight()/2);
 
                 fixtureDef = new FixtureDef();
                 fixtureDef.shape = box;
 
-                fixtureDef.isSensor = true;
+                fixtureDef.isSensor = false;
 
                 fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
-                fixtureDef.filter.maskBits = PalidorGame.HERO_BIT |
+                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
                         PalidorGame.OBJECT_BIT |
                         PalidorGame.CREATURE_BIT;
 

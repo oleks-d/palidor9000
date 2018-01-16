@@ -5,9 +5,10 @@ package com.mygdx.game.enums;
  */
 public enum ActivityAreaType {
     ARROW("aim_left",0.5f),
-    BOX("aim_left",0.1f),
+    BOX("aim_left",0.2f),
     SPRAY("aim_left",0.5f),
-    SELF("castbar",0f);
+    SELF("castbar",0f),
+    BIGBOX("aim_left",0.2f);
     private String aimIcon;
     private float liveTime;
 

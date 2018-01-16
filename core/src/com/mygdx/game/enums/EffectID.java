@@ -58,7 +58,8 @@ public enum EffectID {
     WEEKNESS_FIRE_DAMAGE("icon_blank", false),
     WEEKNESS_ICE_DAMAGE("icon_blank", false),
     MOVE_LEFT("icon_blank", false),
-    MOVE_RIGHT("icon_blank", false);
+    MOVE_RIGHT("icon_blank", false),
+    COVERED_BY_SHIELD("shield",false);
 
     private String icon;
     private boolean positive;  // is it possitive effect

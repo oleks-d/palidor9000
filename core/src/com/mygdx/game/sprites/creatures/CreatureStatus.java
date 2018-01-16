@@ -1,11 +1,14 @@
 package com.mygdx.game.sprites.creatures;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.stuctures.Effect;
+import com.mygdx.game.tools.Fonts;
+import com.mygdx.game.tools.StatusMessage;
 
 import static com.mygdx.game.PalidorGame.PPM;
 
@@ -26,7 +29,7 @@ public class CreatureStatus extends Sprite {
     public TextureRegion hiddenMark;
     public TextureRegion battleMark;
 
-    private Array<String> messages;
+    private Array<StatusMessage> messages;
     public double removeMessageTime;
 
     private float timeSpentOnCast;
@@ -43,7 +46,7 @@ public class CreatureStatus extends Sprite {
 
         //buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Math.round(owner.getWidth()), Math.round(owner.getHeight() / 4), false);
 
-        messages = new Array<String>();
+        messages = new Array<StatusMessage>();
         removeMessageTime =0;
 
         icons = new Array<TextureRegion>();
@@ -60,6 +63,8 @@ public class CreatureStatus extends Sprite {
         hiddenMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
 
         battleMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
+
+        resetCastbar();
 
     }
 
@@ -99,11 +104,11 @@ public class CreatureStatus extends Sprite {
             }
 
             for(int j = 0; j<messages.size+0; j++){
-                owner.screen.shadyfont.draw(batch, messages.get(j), getX(), getY()  + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
+                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY()  + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 
-            owner.screen.font.draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + PalidorGame.TILE_SIZE  / PPM);
-            owner.screen.font.draw(batch, owner.name, getX() + PalidorGame.TILE_SIZE / 2 /PPM, getY() + PalidorGame.TILE_SIZE  / PPM);
+            Fonts.NAMES.getFont().draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + PalidorGame.TILE_SIZE  / PPM);
+            Fonts.NAMES.getFont().draw(batch, owner.name, getX() + PalidorGame.TILE_SIZE / 2 /PPM, getY() + PalidorGame.TILE_SIZE  / PPM);
             //batch.draw(healthbar, getX() + 8 / PPM, getY() + 8 / PPM, (60*(owner.stats.health.current/owner.stats.health.base )) / PPM, 8 / PPM);
 //TODO healthbar
 
@@ -112,17 +117,17 @@ public class CreatureStatus extends Sprite {
                 if (partOfCastbar > 1) partOfCastbar = 1;
                 batch.draw(castbar, getX()- PalidorGame.TILE_SIZE/PPM, getY() + 2* PalidorGame.TILE_SIZE/PPM, (2* PalidorGame.TILE_SIZE / PPM) * partOfCastbar, 16 / PPM);
                 batch.draw(healthbar, getX()- PalidorGame.TILE_SIZE/PPM, getY() + 2* PalidorGame.TILE_SIZE/PPM, (2* PalidorGame.TILE_SIZE / PPM), 16 / PPM);
-                owner.screen.font.draw(batch, "".equals(abilityToCastName) ? owner.abilityToCast.toString() : abilityToCastName,   getX() - PalidorGame.TILE_SIZE/PPM, getY()  + 2* PalidorGame.TILE_SIZE/PPM);
+                Fonts.NAMES.getFont().draw(batch, "".equals(abilityToCastName) ? owner.abilityToCast.toString() : abilityToCastName,   getX() - PalidorGame.TILE_SIZE/PPM, getY()  + 2* PalidorGame.TILE_SIZE/PPM);
             }
 
         }
 
     }
 
-    public void addMessage(String s, double removeMessageTime) {
-        messages.add(s);
+    public void addMessage(String message, double removeMessageTime, Fonts font) {
+        messages.add(new StatusMessage(message, font.getFont()));
         this.removeMessageTime = removeMessageTime;
-        if(messages.size > 1)
+        if(messages.size > 3)
             removeMessage();
     }
 

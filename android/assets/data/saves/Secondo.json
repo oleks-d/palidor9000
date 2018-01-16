@@ -15,7 +15,7 @@
     { "key" : "Flag1", "value" : "Passed"},
     { "key" : "Flag2", "value" : "Passed"}  ],
 
-  "currentLevel" : "Forest",
+  "currentLevel" : "Pit",
   "previousLevel" : "Start",
 
   "selectedAtackAbilities" : "PUNCH",

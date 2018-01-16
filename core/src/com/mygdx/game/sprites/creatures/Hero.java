@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
+import com.mygdx.game.tools.Fonts;
 
 import java.util.HashMap;
 
@@ -66,14 +67,14 @@ public class Hero extends Creature {
         if(abilities.contains(com.mygdx.game.enums.AbilityID.SHOUT, false))
             useAbility(com.mygdx.game.enums.AbilityID.SHOUT);
         else
-            statusbar.addMessage("You can not shout", existingTime + 1f);
+            statusbar.addMessage("You can not shout", existingTime + 1f, Fonts.INFO);
     }
 
     public void hide() {
         if(abilities.contains(AbilityID.MASK, false))
             setInvisible(true);
         else
-            statusbar.addMessage("You can not hide", existingTime + 1f);
+            statusbar.addMessage("You can not hide", existingTime + 1f, Fonts.INFO);
         //useAbility(com.mygdx.game.enums.AbilityID.MASK);
     }
 
