@@ -74,7 +74,7 @@ public class GameItem extends Sprite {
         fixtureDef.shape = shape;
         fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = PalidorGame.ITEM_BIT;
-        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.HERO_BIT | PalidorGame.ACTIVITY_BIT | PalidorGame.OBJECT_BIT;
+        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.OBJECT_BIT;
 
 
         body.createFixture(fixtureDef).setUserData(this);

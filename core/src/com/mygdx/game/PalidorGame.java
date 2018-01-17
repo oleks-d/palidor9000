@@ -33,7 +33,7 @@ public class PalidorGame extends Game {
 
 	//flags
 	public static final short OBJECT_BIT = 1;
-	public static final short HERO_BIT = 2;
+	public static final short ATTACK_BIT = 2;
 	public static final short ITEM_BIT = 4;
 	public static final short CREATURE_BIT = 8;
 	public static final short ACTIVITY_BIT = 16;

@@ -251,15 +251,16 @@ public class Creature extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.friction = 0.5f;
-        //fixtureDef.restitution = 0.3f;
+        //fixtureDef.friction = 0.5f;
+        //fixtureDef.restitution = 0.5f;
 
         fixtureDef.filter.categoryBits = PalidorGame.CREATURE_BIT;
-        fixtureDef.filter.maskBits = PalidorGame.HERO_BIT |
+        fixtureDef.filter.maskBits =
                 PalidorGame.CREATURE_BIT|
                 PalidorGame.OBJECT_BIT |
                 PalidorGame.ITEM_BIT |
                 PalidorGame.ACTIVITY_BIT |
+                PalidorGame.ATTACK_BIT|
                 PalidorGame.JUMP_POINT |
                 PalidorGame.NO_LEFT_POINT |
                 PalidorGame.NO_RIGHT_POINT|
@@ -408,9 +409,9 @@ public class Creature extends Sprite {
 
     // ACTIONS
     public void jump() {
-        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
-            resetTimeSpentOnCast();
-        }
+//        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
+//            resetTimeSpentOnCast();
+//        }
         if(!stuned)
             if ( currentState != State.JUMPING && currentState != State.FALLING  ) {
                 //getBody().setLinearVelocity(0,0);
@@ -422,17 +423,27 @@ public class Creature extends Sprite {
 
     public void move(boolean moveright){
         directionRight = moveright;
-        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
-            resetTimeSpentOnCast();
-        }
+//        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
+//            resetTimeSpentOnCast();
+//        }
         if(!stuned){
-            if(moveright &&  getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x < 2*stats.speed.current)
+            if(getBody().getLinearVelocity().y == 0){
+            if(moveright && getBody().getLinearVelocity().x < 2*stats.speed.current)
                 getBody().applyLinearImpulse(new Vector2( SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
                 //getBody().applyLinearImpulse(new Vector2( (IN_BATTLE)?SPEED_BASE/2:SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
             else
-                if ( ! moveright && getBody().getLinearVelocity().y == 0 && getBody().getLinearVelocity().x > -2*stats.speed.current)
+                if ( ! moveright && getBody().getLinearVelocity().x > -2*stats.speed.current)
                     getBody().applyLinearImpulse(new Vector2(-(SPEED_BASE) * stats.speed.current,0), getBody().getWorldCenter(), true);
             //getBody().applyLinearImpulse(new Vector2(-((IN_BATTLE)?SPEED_BASE/2:SPEED_BASE) * stats.speed.current,0), getBody().getWorldCenter(), true);
+            } else {
+                if(moveright && getBody().getLinearVelocity().x < 2*stats.speed.current)
+                    getBody().applyLinearImpulse(new Vector2( SPEED_BASE,0), getBody().getWorldCenter(), true);
+                    //getBody().applyLinearImpulse(new Vector2( (IN_BATTLE)?SPEED_BASE/2:SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
+                else
+                if ( ! moveright && getBody().getLinearVelocity().x > -2*stats.speed.current)
+                    getBody().applyLinearImpulse(new Vector2(-(SPEED_BASE),0), getBody().getWorldCenter(), true);
+
+            }
         }
     }
 
@@ -698,9 +709,9 @@ public class Creature extends Sprite {
         if(stuned) lockAbility(abilityToCast);
     }
 
-    public void pushIt() {
-        resetTimeSpentOnCast();
-    }
+//    public void pushIt() {
+//        resetTimeSpentOnCast();
+//    }
 
     public int getToughness() {
         int result = stats.health.current + getReputation();

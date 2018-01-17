@@ -78,6 +78,10 @@ public class AbilityHandler {
                 creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 15f, 1f, 0f));
                 creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 15f, 1f, 0f));
                 break;
+            case POWER_SHOUT: //TODO
+                creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 30f, 1f, 0f));
+                creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 30f, 1f, 0f));
+                break;
             case COVER:
                 creature.applyEffect(new Effect(EffectID.COVERED_BY_SHIELD, 1f, 1f, 0f));
                 break;
@@ -85,7 +89,7 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.STUNED, 0.01f, 0f, 0f));
 
-                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
                 result = new ActivityWithEffect(
                         screen,
                         creature.getBody().getPosition().x * PalidorGame.PPM ,
@@ -104,7 +108,23 @@ public class AbilityHandler {
             case HASTE:
                 creature.applyEffect(new Effect(EffectID.FAST, 15f, 2f, 0f));
                 break;
+            case LONGBOW_SHOT:
 
+                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
+
+                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y * PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "arrow"); //TODO anim
+
+                result.setCreatedBy(creature);
+                break;
 
 //            case FIREWALL:
 //                Gdx.app.log("Ability", "Firewall");

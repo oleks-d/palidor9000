@@ -32,6 +32,15 @@
     "effects": "PLUS_CUT_DAMAGE 0 1 0,PLUS_ICE_DAMAGE 0 1 0"
   },
   {
+    "id":"stuff_1",
+    "name" : "Fire stuff",
+    "description" : "Stuff",
+    "value" : "100",
+    "image" : "stuff_red",
+    "type" : "WEAPON",
+    "effects": ""
+  },
+  {
     "id":"armor_1",
     "name" : "Rusty armor",
     "description" : "Rusty armor for fatman",

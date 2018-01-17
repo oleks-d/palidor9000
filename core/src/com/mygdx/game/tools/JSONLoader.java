@@ -1,10 +1,13 @@
 package com.mygdx.game.tools;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.*;
 import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.stuctures.Characteristics;
+import com.mygdx.game.stuctures.Skill;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
 import com.mygdx.game.stuctures.descriptions.ItemDescription;
 
@@ -83,7 +86,7 @@ public class JSONLoader {
         return result;
     }
 
-    public Hero loadHero(com.mygdx.game.screens.GameScreen screen, String file){
+    public Hero loadHero(GameScreen screen, FileHandle file){
 
         CreatureDescription heroDescription;
 
@@ -95,9 +98,11 @@ public class JSONLoader {
         Array<AbilityID> selectedDefenseAbilities = new Array<AbilityID>();
         Array<AbilityID> selectedHelpAbilities = new Array<AbilityID>();
 
+        Array<Skill> skills = new Array<Skill>();
+
         JsonReader json = new JsonReader();
         try {
-            JsonValue base = json.parse(Gdx.files.internal(file));
+            JsonValue base = json.parse(file);
 
 
             JsonValue component = base.get("hero");
@@ -129,10 +134,13 @@ public class JSONLoader {
 //            for (String item : base.getString("selectedHelpAbilities").split(","))
 //                selectedHelpAbilities.add(AbilityID.valueOf(item.trim()));
 
+            for (String item : base.getString("skills").split(","))
+                skills.add(Skill.valueOf(item.trim()));
+
             currentLevel = base.getString("currentLevel");
             previousLevel = base.getString("previousLevel");
 
-            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, selectedHelpAbilities);
+            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, skills);
         }catch (Exception e) {
             //no hero found
 
@@ -141,7 +149,7 @@ public class JSONLoader {
         }
     }
 
-    void saveHero(com.mygdx.game.sprites.creatures.Hero hero){
+    void saveHero(Hero hero){
 
         String globalStates ="";
 
@@ -186,6 +194,7 @@ public class JSONLoader {
                 "\n" +
                 "  \"selectedAtackAbilities\" : \"" + hero.selectedAtackAbilities.toString().replaceAll("[\\[\\]]", "") + "\",\n" +
                 "  \"selectedDefenseAbilities\": \"" + hero.selectedDefenseAbilities.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
+                "  \"skills\": \"" + hero.skills.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
 //                "  \"selectedHelpAbilities\": \"" + hero.selectedHelpAbilities.toString().replaceAll("[\\[\\]]", "") + "\"\n" +
                 "\n" +
                 "\n" +
@@ -194,7 +203,9 @@ public class JSONLoader {
 
         try {
             Json content = new Json();
-            JsonWriter jw = new JsonWriter(new FileWriter(Gdx.files.internal("data" + File.separator + "saves" + File.separator + hero.name + ".json").file()));
+            if (!Gdx.files.local("data" + File.separator + "saves").exists())
+                Gdx.files.local("data" + File.separator + "saves").mkdirs();
+            JsonWriter jw = new JsonWriter(new FileWriter(Gdx.files.local("data" + File.separator + "saves" + File.separator + hero.name + ".json").file()));
             jw.write((stringContent));
             jw.close();
         } catch (IOException e) {

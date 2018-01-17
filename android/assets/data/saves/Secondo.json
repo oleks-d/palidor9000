@@ -20,7 +20,8 @@
 
   "selectedAtackAbilities" : "PUNCH",
   "selectedDefenseAbilities": "PUNCH",
-  "selectedHelpAbilities": "HASTE"
+  "selectedHelpAbilities": "HASTE",
 
+  "skills": "CLOSE_WEAPON1"
 
 }

@@ -2,7 +2,9 @@ package com.mygdx.game.sprites.creatures;
 
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.screens.GameScreen;
+import com.mygdx.game.stuctures.Skill;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
 import com.mygdx.game.tools.Fonts;
 
@@ -21,7 +23,9 @@ public class Hero extends Creature {
     public String currentLevel;
     public String previousLevel;
 
-    public Hero (GameScreen screen, CreatureDescription heroDescription, String currentLevel, String previousLevel, HashMap<String,String> globalStates, Array<AbilityID> selectedAtackAbilities, Array<AbilityID> selectedDefenseAbilities, Array<AbilityID> selectedHelpAbilities){
+    public Array<Skill> skills;
+
+    public Hero (GameScreen screen, CreatureDescription heroDescription, String currentLevel, String previousLevel, HashMap<String,String> globalStates, Array<AbilityID> selectedAtackAbilities, Array<AbilityID> selectedDefenseAbilities, Array<Skill> skills){
         super(screen, heroDescription);
 
         this.canPickUpObjects = true;
@@ -33,6 +37,8 @@ public class Hero extends Creature {
 
         this.currentLevel = currentLevel;
         this.previousLevel = previousLevel;
+
+        this.skills = skills;
     }
 
     public void changeGlobalState(String key, String value){
@@ -56,16 +62,18 @@ public class Hero extends Creature {
     }
 
     public void selectAbility(AbilityID currentAbility) {
-                if(!selectedAtackAbilities.contains(currentAbility, true))
+        if(currentAbility.getType()!= AbilityType.BUFF){
+                if(!selectedAtackAbilities.contains(currentAbility, true) && selectedAtackAbilities.size<2)
                     selectedAtackAbilities.add(currentAbility);
-                else if(!selectedDefenseAbilities.contains(currentAbility, true))
+                else if(!selectedDefenseAbilities.contains(currentAbility, true) && selectedDefenseAbilities.size<2)
                     selectedDefenseAbilities.add(currentAbility);
+        }
     }
 
 
     public void shout() {
-        if(abilities.contains(com.mygdx.game.enums.AbilityID.SHOUT, false))
-            useAbility(com.mygdx.game.enums.AbilityID.SHOUT);
+        if(abilities.contains(AbilityID.SHOUT, false))
+            useAbility(AbilityID.SHOUT);
         else
             statusbar.addMessage("You can not shout", existingTime + 1f, Fonts.INFO);
     }
@@ -75,17 +83,17 @@ public class Hero extends Creature {
             setInvisible(true);
         else
             statusbar.addMessage("You can not hide", existingTime + 1f, Fonts.INFO);
-        //useAbility(com.mygdx.game.enums.AbilityID.MASK);
+        //useAbility(AbilityID.MASK);
     }
 
     public void fly() {
-        if(abilities.contains(com.mygdx.game.enums.AbilityID.FLY, false))
-            useAbility(com.mygdx.game.enums.AbilityID.FLY);
+        if(abilities.contains(AbilityID.FLY, false))
+            useAbility(AbilityID.FLY);
     }
 
     public void jumpBack() {
-        if(abilities.contains(com.mygdx.game.enums.AbilityID.JUMP_BACK, false))
-            useAbility(com.mygdx.game.enums.AbilityID.JUMP_BACK);
+        if(abilities.contains(AbilityID.JUMP_BACK, false))
+            useAbility(AbilityID.JUMP_BACK);
     }
 
     public void dash() {

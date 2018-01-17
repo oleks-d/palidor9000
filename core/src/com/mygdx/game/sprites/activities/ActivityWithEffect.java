@@ -95,7 +95,8 @@ public class ActivityWithEffect extends Sprite {
                 fixtureDef.isSensor = true;
 
                 fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
-                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
+                fixtureDef.filter.maskBits = PalidorGame.OBJECT_BIT |
+                        PalidorGame.ACTIVITY_BIT|
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
@@ -128,7 +129,23 @@ public class ActivityWithEffect extends Sprite {
 
                 fixtureDef.isSensor = false;
 
-                fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
+                fixtureDef.filter.categoryBits = PalidorGame.ATTACK_BIT;
+                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
+                        PalidorGame.OBJECT_BIT |
+                        PalidorGame.CREATURE_BIT;
+
+                body.createFixture(fixtureDef).setUserData(this);
+                break;
+            case BOX:
+                box = new PolygonShape();
+                box.setAsBox(getWidth()/2,getHeight()/2);
+
+                fixtureDef = new FixtureDef();
+                fixtureDef.shape = box;
+
+                fixtureDef.isSensor = false;
+
+                fixtureDef.filter.categoryBits = PalidorGame.ATTACK_BIT;
                 fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
                         PalidorGame.OBJECT_BIT |
                         PalidorGame.CREATURE_BIT;

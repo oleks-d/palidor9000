@@ -14,10 +14,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.scenes.ControllerPanel;
+import com.mygdx.game.scenes.HeroAbilitiesPanel;
+import com.mygdx.game.scenes.HeroInventoryPanel;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
+import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.LevelManager;
 
 import static com.mygdx.game.PalidorGame.PPM;
@@ -103,10 +108,10 @@ public class GameScreen implements Screen {
 
         viewport = new FitViewport(PalidorGame.WIDTH/ PPM , PalidorGame.HIGHT/ PPM, camera);
 
-        animationHelper = new com.mygdx.game.tools.AnimationHelper();
+        animationHelper = new AnimationHelper();
 
         //controller
-        controller = new com.mygdx.game.scenes.ControllerPanel(game.getBatch(),animationHelper);
+        controller = new ControllerPanel(game.getBatch(),animationHelper);
 
         //set camera to center
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
@@ -125,8 +130,8 @@ public class GameScreen implements Screen {
         infoPanel = new com.mygdx.game.scenes.InfoPanel(game.getBatch(), levelmanager);
 
         //info
-        heroInventoryPanel = new com.mygdx.game.scenes.HeroInventoryPanel(game.getBatch(), hero, animationHelper);
-        heroAbilitiesPanel = new com.mygdx.game.scenes.HeroAbilitiesPanel(game.getBatch(), hero, animationHelper);
+        heroInventoryPanel = new HeroInventoryPanel(game.getBatch(), hero, animationHelper);
+        heroAbilitiesPanel = new HeroAbilitiesPanel(game.getBatch(), hero, animationHelper);
 
         controller.update(hero);
 
@@ -166,9 +171,7 @@ public class GameScreen implements Screen {
                 camera.position.x = viewport.getWorldWidth() / 2;
             if (hero.getBody().getPosition().y > viewport.getWorldHeight() / 2 )
                 camera.position.y = (hero.getBody().getPosition().y );
-            else if ( hero.getBody().getPosition().y > 6.4 -viewport.getWorldHeight() / 2)  // TODO normal view
-//                camera.position.y = 6.4 -viewport.getWorldHeight() / 2;
-//                        else
+            else
                 camera.position.y = viewport.getWorldHeight() / 2;
 
             if(toZoomIn) {
@@ -196,7 +199,7 @@ public class GameScreen implements Screen {
             //update hero
             hero.update(delta);
 
-            if (hero.getAbilityToCast() != com.mygdx.game.enums.AbilityID.NONE && hero.finishedCasting()) {
+            if (hero.getAbilityToCast() != AbilityID.NONE && hero.finishedCasting()) {
                 activity = hero.activateAbility(hero.getAbilityToCast());
                 if (activity != null)
                     levelmanager.ACTIVITIES.add(activity);
@@ -252,24 +255,11 @@ public class GameScreen implements Screen {
 
     private void handleInput(float delta) {
 
-//        if(abilityToExecuteNext != null && CURRENTTIME > timetoExecuteClickOnAbility) {
-//            if(abilityToExecuteNext.getType() == AbilityType.BUFF)
-//                controller.makeHelpIconInActive(abilityIndex);
-//            if(abilityToExecuteNext.getType() == AbilityType.CLOSE_RANGE_ATACK || abilityToExecuteNext.getType() == AbilityType.LONG_RANGE_ATACK)
-//                controller.makeAtackIconInActive(abilityIndex);
-//            if(abilityToExecuteNext.getType() == AbilityType.CLOSE_RANGE_DEFENSE || abilityToExecuteNext.getType() == AbilityType.LONG_RANGE_DEFENSE)
-//                controller.makeDefenceIconInActive(abilityIndex);
-//
-//            hero.useAbility(abilityToExecuteNext);
-//            abilityToExecuteNext = null;
-//
-//            abilityIndex = 0;
-//        }
-
-
         Vector3 coord;
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P) || controller.inventoryToched || heroInventoryPanel.closeTouched) {
+            heroInventoryPanel.closeTouched = false;
+            controller.inventoryToched = false;
             onInventoryScreen = !onInventoryScreen;
             PAUSE = !PAUSE;
             if(!PAUSE)
@@ -280,12 +270,13 @@ public class GameScreen implements Screen {
 
         //TODO temp
         if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
-            onInventoryScreen = !onInventoryScreen;
             setDay(!isDay);
         }
 
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O) || controller.abilitiesToched || heroAbilitiesPanel.closeTouched) {
+            heroAbilitiesPanel.closeTouched = false;
+            controller.abilitiesToched = false;
             onAbilitiesScreen = !onAbilitiesScreen;
             PAUSE = !PAUSE;
             if(!PAUSE)
@@ -314,7 +305,7 @@ public class GameScreen implements Screen {
 */
 
             if(holdingTimeUP > 0) {
-                if (!controller.touchedUp && !Gdx.input.isKeyPressed(Input.Keys.UP)){
+                if (!controller.touchedUp && !Gdx.input.isKeyPressed(Input.Keys.W)){
                     if(holdingTimeUP > 3)
                         hero.shout();
                     //hero.statusbar.resetCastbar();
@@ -324,7 +315,7 @@ public class GameScreen implements Screen {
 //                    hero.statusbar.updateCastBar("Shout", holdingTimeUP, 1f);
             }
             if(holdingTimeDOWN > 0) {
-                if (!controller.touchedDown && !Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+                if (!controller.touchedDown && !Gdx.input.isKeyPressed(Input.Keys.S)){
                     if(holdingTimeDOWN > 3)
                         hero.hide();
                     holdingTimeDOWN = 0;
@@ -335,8 +326,8 @@ public class GameScreen implements Screen {
             }
 
             if(holdingTimeJUMP > 0) {
-                if (!controller.touchedJump && !Gdx.input.isKeyPressed(Input.Keys.W)){
-                    if(holdingTimeJUMP < 2)
+                if (!controller.touchedJump && !Gdx.input.isKeyPressed(Input.Keys.UP)){
+                    if(holdingTimeJUMP < 1)
                         hero.jump();
                     else
                         if (holdingTimeUP>0)
@@ -354,7 +345,7 @@ public class GameScreen implements Screen {
 
 
             if (holdingTimeABILITY1> 0) {
-                if (! controller.touchedAbility1 &&! Gdx.input.isKeyPressed (Input.Keys.A)) {
+                if (! controller.touchedAbility1 && !Gdx.input.isKeyPressed (Input.Keys.A)) {
                     if (holdingTimeABILITY1 <2)
                         hero.attack (true, false);
                     if (holdingTimeABILITY1>= 2)
@@ -375,10 +366,10 @@ public class GameScreen implements Screen {
                 }
             }
 
-                if (controller.touchedUp || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                if (controller.touchedUp || Gdx.input.isKeyPressed(Input.Keys.W)) {
                     holdingTimeUP = holdingTimeUP + delta;
                     hero.direction.set(hero.direction.x, 1);
-                }else if (controller.touchedDown || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                }else if (controller.touchedDown || Gdx.input.isKeyPressed(Input.Keys.S)) {
                     holdingTimeDOWN = holdingTimeDOWN + delta;
                     hero.direction.set(hero.direction.x, -1);
                 }else hero.direction.set(hero.direction.x, 0);
@@ -392,10 +383,10 @@ public class GameScreen implements Screen {
                 } //else hero.direction.set(0, hero.direction.y);
 
 
-                if (controller.touchedJump || Gdx.input.isKeyPressed(Input.Keys.W)) {
+                if (controller.touchedJump || Gdx.input.isKeyPressed(Input.Keys.UP)) {
                     holdingTimeJUMP = holdingTimeJUMP + delta;
                 }
-                if (controller.touchedUse || Gdx.input.isKeyPressed(Input.Keys.S)) {
+                if (controller.touchedUse || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                     hero.jump();
                 }
                 if (controller.touchedAbility1 || Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -427,7 +418,7 @@ public class GameScreen implements Screen {
                         toZoomOut = true;
                     }
 
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)  || controller.escapeTouched) {
                         STOP_GAME = true;
                     }
 
@@ -452,17 +443,17 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
 
-        fpslogger.log();
+        //fpslogger.log();
 
         update(delta);
 
-            Gdx.gl.glClearColor(1, 1, 1, 1);
+            Gdx.gl.glClearColor(0, 0, 0, 0);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             //maprenderer.render(); // show map
         maprenderer.render(layersToRender);
 
-            // render hero
+
             game.getBatch().setProjectionMatrix(camera.combined);
             game.getBatch().begin();
 
@@ -486,6 +477,7 @@ public class GameScreen implements Screen {
                     activity.draw(game.getBatch());
             }
 
+        // render hero
             hero.draw(game.getBatch());
             hero.creatureAim.draw(game.getBatch());
 
@@ -522,7 +514,7 @@ public class GameScreen implements Screen {
                 dispose();
             }
             if (gameWin()) {
-                game.setScreen(new com.mygdx.game.screens.VictoryScreen(game));
+                game.setScreen(new VictoryScreen(game));
                 dispose();
             }
         if (STOP_GAME) {

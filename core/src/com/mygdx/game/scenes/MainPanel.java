@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.tools.LevelManager;
 
 import java.io.File;
 
@@ -110,7 +111,7 @@ public class MainPanel implements Disposable {
         savedHeroes.add(selectHero);
         Label labelForHeroName;
         Button removeSaveButton;
-        for (String savedHero : com.mygdx.game.tools.LevelManager.getListOfSaveHeros()) {
+        for (String savedHero : LevelManager.getListOfSaveHeros()) {
 
             final String savedHeroLabel = savedHero;
 

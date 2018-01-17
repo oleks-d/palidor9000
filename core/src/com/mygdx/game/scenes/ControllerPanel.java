@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.sprites.creatures.Hero;
+import com.mygdx.game.tools.AnimationHelper;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -25,18 +27,8 @@ import java.util.LinkedList;
  */
 public class ControllerPanel implements Disposable{
 
-    private  Label titemout;
-    private  Label titemout1;
-    private  Label titemout2;
-    private  Label titemout3;
-
     public Stage stage;
     public Viewport viewport;
-
-    public boolean touched0;
-    public boolean touched1;
-    public boolean touched2;
-    public boolean touched3;
 
     public boolean touchedUp;
     public boolean touchedDown;
@@ -46,6 +38,7 @@ public class ControllerPanel implements Disposable{
     public boolean touchedUse;
     public boolean touchedAbility1;
     public boolean touchedAbility2;
+    public boolean showMenuTouched;
 
     public boolean pressedUp;
     public boolean pressedDown;
@@ -57,14 +50,15 @@ public class ControllerPanel implements Disposable{
     Image controllerImage;
     Image buttonsImage;
 
-    Image image0;
-    Image image1;
-    Image image2;
-    Image image3;
-
     Table tableController;
     Table tableButtons;
     Table tableAbilities;
+    Table tableMenu;
+
+    Image menuImage;
+    Image inventoryImage;
+    Image abilitiesImage;
+    Image escapeImage;
 
     Image jumpImage;
     Image useImage;
@@ -79,15 +73,19 @@ public class ControllerPanel implements Disposable{
     LinkedList<Label> defenselabels;
     LinkedList<Label> helpalabels;
 
-    com.mygdx.game.tools.AnimationHelper animhelper;
+    AnimationHelper animhelper;
 
     private Vector2 lastTouch;
     Vector2 newTouch;
 
-    int directionControllerSize = 120;
-    int directionControllerSize3 = 40;
+    int directionControllerSize = 180;
+    int directionControllerSize3 = 60;
+    public boolean escapeTouched;
+    public boolean inventoryToched;
+    public boolean abilitiesToched;
+    private Hero hero;
 
-    public ControllerPanel(SpriteBatch sb, com.mygdx.game.tools.AnimationHelper animhelper){
+    public ControllerPanel(SpriteBatch sb, AnimationHelper animhelper){
 
         viewport = new FitViewport(PalidorGame.WIDTH, PalidorGame.HIGHT, new OrthographicCamera());
 
@@ -106,14 +104,14 @@ public class ControllerPanel implements Disposable{
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     pressedJump = true;
-                    touchedJump = false;
+                    touchedJump = true;
                     return true;
                 }
 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                     pressedJump = false;
-                    touchedJump = true;
+                    touchedJump = false;
                 }
             });
         useImage  = new Image(animhelper.getTextureRegionByIDAndIndex("icon_forward_red")) ;
@@ -121,20 +119,94 @@ public class ControllerPanel implements Disposable{
 
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    touchedUse = false;
+                    touchedUse = true;
                     pressedUse = true;
                     return true;
                 }
 
                 @Override
                 public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    touchedUse = true;
+                    touchedUse = false;
                     pressedUse = false;
                 }
             });
 
+
+        menuImage  = new Image(animhelper.getTextureRegionByIDAndIndex("dialog1")) ;
+        menuImage.addListener(new ClickListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                showMenuTouched = !showMenuTouched;
+                update();
+                return true;
+            }
+        });
+
+        inventoryImage  = new Image(animhelper.getTextureRegionByIDAndIndex("hummer")) ;
+        inventoryImage.addListener(new ClickListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                inventoryToched = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+               inventoryToched = false;
+            }
+        });
+
+        abilitiesImage = new Image(animhelper.getTextureRegionByIDAndIndex("red_bottle")) ;
+        abilitiesImage.addListener(new ClickListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                abilitiesToched = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                abilitiesToched = false;
+            }
+        });
+
+        escapeImage  = new Image(animhelper.getTextureRegionByIDAndIndex("healthbar")) ;
+        escapeImage.addListener(new ClickListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                escapeTouched = true;
+                return true;
+            }
+        });
+
+        updateMenuTabel();
+
         updateDirections();
 
+    }
+
+    void updateMenuTabel(){
+        tableMenu = new Table();
+        tableMenu.left().top();
+        tableMenu.setFillParent(true);
+
+        tableMenu.row().padLeft(5);
+        tableMenu.add(menuImage);
+
+        if(showMenuTouched){
+            tableMenu.row().padLeft(5);
+            tableMenu.add(inventoryImage);
+            tableMenu.row().padLeft(5);
+            tableMenu.add(abilitiesImage);
+            tableMenu.row().padLeft(5);
+            tableMenu.add(escapeImage);
+        }
+
+        stage.addActor(tableMenu);
     }
 
     private void updateDirections() {
@@ -177,6 +249,22 @@ public class ControllerPanel implements Disposable{
         buttonsImage = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "controller_buttons.png"));
         buttonsImage.setSize(directionControllerSize, directionControllerSize);
 
+        buttonsImage.addListener(new ClickListener() {
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    checkButtonsBasedOnCoords(x,y);
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    touchedAbility1 = false;
+                    touchedAbility2 = false;
+                    touchedJump = false;
+                }
+            });
+
         tableButtons = new Table();
         tableButtons.right().bottom();
         tableButtons.setFillParent(true);
@@ -217,11 +305,33 @@ public class ControllerPanel implements Disposable{
 
     }
 
-    public void update(com.mygdx.game.sprites.creatures.Hero hero){
+    private void checkButtonsBasedOnCoords(float x, float y) {
 
+        if(x> directionControllerSize3 && x< 2*directionControllerSize3 && y>2*directionControllerSize3) {
+            touchedJump = true;
+        }
+
+        if(y> directionControllerSize3 && y< 2*directionControllerSize3 && x< directionControllerSize3 ) {
+            touchedAbility1 = true;
+        }
+
+        if(y> directionControllerSize3 && y< 2*directionControllerSize3 && x> 2*directionControllerSize3 ) {
+            touchedAbility2 = true;
+        }
+
+    }
+
+    public void update(){
+        update(hero);
+    }
+
+    public void update(Hero hero){
+
+        this.hero = hero;
         stage.dispose();
 
         updateDirections();
+        updateMenuTabel();
 
         Gdx.input.setInputProcessor(stage);
 
@@ -236,13 +346,13 @@ public class ControllerPanel implements Disposable{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 pressedAbility1 = true;
-                touchedAbility1 = false;
+                touchedAbility1 = true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touchedAbility1 = true;
+                touchedAbility1 = false;
                 pressedAbility1 = false;
             }
         });
@@ -253,38 +363,38 @@ public class ControllerPanel implements Disposable{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 pressedAbility2 = true;
-                touchedAbility2 = false;
+                touchedAbility2 = true;
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                touchedAbility2 = true;
+                touchedAbility2 = false;
                 pressedAbility2 = false;
             }
         });
 
         tableAbilities.row();
-        tableAbilities.row().pad(5,5,5,5);
+        tableAbilities.row().pad(10,10,10,10);
         tableAbilities.add();
         tableAbilities.add();
         tableAbilities.add(jumpImage);
         tableAbilities.add();
         tableAbilities.add();
-        tableAbilities.row().pad(5,5,5,5);;
+        tableAbilities.row().pad(10,10,10,10);;
         tableAbilities.add(ability1);
         tableAbilities.add();
         tableAbilities.add();
         tableAbilities.add();
         tableAbilities.add(ability2);
-        tableAbilities.row().pad(5,5,5,5);
+        tableAbilities.row().pad(10,10,10,10);
         tableAbilities.add();
         tableAbilities.add();
         tableAbilities.add(useImage);
         tableAbilities.add();
         tableAbilities.add();
         tableAbilities.row();
-        tableAbilities.row().pad(5,5,5,5);
+        tableAbilities.row().pad(10,10,10,10);
         tableAbilities.add();
 
         stage.addActor(tableButtons);
@@ -409,7 +519,7 @@ public class ControllerPanel implements Disposable{
         stage.dispose();
     }
 
-    public void updateLabels(com.mygdx.game.sprites.creatures.Hero hero) {
+    public void updateLabels(Hero hero) {
 
 //        for(int i=0;i<hero.selectedAtackAbilities.size;i++)
 //            atackalabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedAtackAbilities.get(i))));

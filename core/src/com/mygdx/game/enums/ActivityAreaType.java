@@ -4,11 +4,12 @@ package com.mygdx.game.enums;
  * Created by odiachuk on 12/22/17.
  */
 public enum ActivityAreaType {
-    ARROW("aim_left",0.5f),
+    ARROW("aim_left",2f),
     BOX("aim_left",0.2f),
     SPRAY("aim_left",0.5f),
     SELF("castbar",0f),
-    BIGBOX("aim_left",0.2f);
+    BIGBOX("aim_left",0.2f),
+    BOOM("aim_left",1 );
     private String aimIcon;
     private float liveTime;
 

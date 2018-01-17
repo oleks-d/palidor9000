@@ -16,7 +16,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.CustomDialog;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
+import com.mygdx.game.stuctures.Skill;
+import com.mygdx.game.tools.AnimationHelper;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,7 +29,7 @@ import java.util.HashMap;
  */
 public class HeroInventoryPanel implements Disposable {
 
-    private final com.mygdx.game.tools.AnimationHelper animhelper;
+    private final AnimationHelper animhelper;
     public Stage stage;
     Viewport viewport;
     CustomDialog dialog;
@@ -35,6 +38,11 @@ public class HeroInventoryPanel implements Disposable {
 
     Label inventoryHeader;
     Label equipedHeader;
+    Label equipedHeadLabel;
+    Label equipedArmorLabel;
+    Label equipedWeapon1Label;
+    Label equipedWeapon2Label;
+
     Label detailsHeader;
     Image background;
 
@@ -42,7 +50,11 @@ public class HeroInventoryPanel implements Disposable {
     Image downButton;
 
     SpriteBatch sb;
-    com.mygdx.game.sprites.creatures.Hero hero;
+    Hero hero;
+
+    Label windowHeader;
+    Image closeWindow;
+    public boolean closeTouched;
 
     public GameItem currentItem = null;
 
@@ -50,7 +62,7 @@ public class HeroInventoryPanel implements Disposable {
     int LAST_DISPLAYED_ROW;
     int INITIAL_DISPLAYED_ROW;
 
-    public HeroInventoryPanel(SpriteBatch sb, com.mygdx.game.sprites.creatures.Hero hero, com.mygdx.game.tools.AnimationHelper animhelper){
+    public HeroInventoryPanel(SpriteBatch sb, Hero hero, AnimationHelper animhelper){
 
         this.sb = sb;
         this.hero = hero;
@@ -65,7 +77,12 @@ public class HeroInventoryPanel implements Disposable {
         equipedHeader= new Label(String.format("<< -  %s - >>", "EQUIPMENT:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
         detailsHeader= new Label(String.format("<< -  %s - >>", "DETAILS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
 
-        background = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "background.png"));
+         equipedHeadLabel = new Label(String.format("%s", "Head:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
+         equipedArmorLabel= new Label(String.format("%s", "Body:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
+         equipedWeapon1Label= new Label(String.format("%s", "Main:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
+         equipedWeapon2Label= new Label(String.format("%s", "Secondary:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
+
+        background = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "background_clear.png"));
 
         LAST_DISPLAYED_ROW = 0;
         INITIAL_DISPLAYED_ROW = 0;
@@ -104,6 +121,18 @@ public class HeroInventoryPanel implements Disposable {
             }
         });
 
+
+        windowHeader = new Label(String.format("  %s ",   "Inventory"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;;
+        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));;
+        closeWindow.addListener(new InputListener(){
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                closeTouched = true;
+                return true;
+            }
+        });
+
         update();
 
 
@@ -116,6 +145,13 @@ public class HeroInventoryPanel implements Disposable {
         Gdx.input.setInputProcessor(stage);
         stage.addActor(background);
 
+        Table titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.center().top();
+        titleTable.row();
+        titleTable.add(windowHeader);
+        titleTable.add(closeWindow);
+
         Table inventorytable = new Table();
         inventorytable.left().top();
         inventorytable.setFillParent(true);
@@ -126,7 +162,9 @@ public class HeroInventoryPanel implements Disposable {
         equipmenttable.right().top();
         equipmenttable.setFillParent(true);
         equipmenttable.row();
+        equipmenttable.add();
         equipmenttable.add(equipedHeader);
+        equipmenttable.row();
 
         Table detailstable = new Table();
         detailstable.bottom();
@@ -150,7 +188,6 @@ public class HeroInventoryPanel implements Disposable {
             else
                 uniqueItems.put(item.itemname, 1);
 
-        //TODO add scroll items
 
         inventorytable.row();
         inventorytable.row();
@@ -170,6 +207,11 @@ public class HeroInventoryPanel implements Disposable {
                 };
 
             }
+
+            if (hero.skills.contains(Skill.DODGE1, true)){
+
+            }
+
             inventorytable.row();
 
 
@@ -244,9 +286,10 @@ public class HeroInventoryPanel implements Disposable {
 
         //equiped tableController update
         equipmenttable.row();
-        equipmenttable.add();
 
         if(hero.head != null) {
+            equipmenttable.row();
+            equipmenttable.add(equipedHeadLabel);
             Image headImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.head.getIcon()));
             headImage.addListener(new InputListener() {
                 @Override
@@ -265,8 +308,9 @@ public class HeroInventoryPanel implements Disposable {
             equipmenttable.add(headImage);
         }
 
-        equipmenttable.row();
         if(hero.armor != null) {
+            equipmenttable.row();
+            equipmenttable.add(equipedArmorLabel);
             Image armorImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.armor.getIcon()));
             equipmenttable.add(armorImage);
             armorImage.addListener(new InputListener() {
@@ -284,10 +328,11 @@ public class HeroInventoryPanel implements Disposable {
                 }
             });
         }
-        equipmenttable.add();
-        equipmenttable.add();
+
 
         if(hero.weapon1 != null) {
+            equipmenttable.row();
+            equipmenttable.add(equipedWeapon1Label);
             Image weaponImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.weapon1.getIcon()));
             weaponImage.addListener(new InputListener() {
                 @Override
@@ -306,10 +351,10 @@ public class HeroInventoryPanel implements Disposable {
             equipmenttable.add(weaponImage);
         }
 
-        equipmenttable.add();
-        equipmenttable.add();
 
         if(hero.weapon2 != null) {
+            equipmenttable.row();
+            equipmenttable.add(equipedWeapon2Label);
             Image weaponImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.weapon2.getIcon()));
             weaponImage.addListener(new InputListener() {
                 @Override
@@ -336,10 +381,11 @@ public class HeroInventoryPanel implements Disposable {
         if(currentItem != null)
             detailstable.add(new Label(String.format("%s", currentItem.itemdescription), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
 
-
+        stage.addActor(titleTable);
         stage.addActor(inventorytable);
         stage.addActor(equipmenttable);
         stage.addActor(detailstable);
+
 
     }
 

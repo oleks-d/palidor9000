@@ -44,11 +44,37 @@ public class WorldContactListener implements ContactListener {
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
-                    if(target.getEffect(EffectID.COVERED_BY_SHIELD) == null) {// creature was covered
+                    if(target.getEffect(EffectID.COVERED_BY_SHIELD) == null && target.getEffect(EffectID.DODGE) == null) {// creature was covered
                         for (Effect effect : act.activeEffects) {
                             target.applyEffect(effect);
                             if (!effect.id.isPositive()) {
                                 target.setIN_BATTLE(true);
+                            }
+                        }
+                    }
+
+                    act.onHit();
+                }
+                break;
+            case PalidorGame.CREATURE_BIT | PalidorGame.ATTACK_BIT:
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT) {
+                    act = ((ActivityWithEffect) fixB.getUserData());
+                    target = ((Creature) fixA.getUserData());
+                } else {
+                    act = ((ActivityWithEffect) fixA.getUserData());
+                    target = ((Creature) fixB.getUserData());
+                }
+
+
+                //creature belongs to your fraction
+                if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
+                    if(target.getEffect(EffectID.COVERED_BY_SHIELD) == null) {// creature was covered
+                        if(target.getEffect(EffectID.DODGE) == null) { // creature dodges
+                            for (Effect effect : act.activeEffects) {
+                                target.applyEffect(effect);
+                                if (!effect.id.isPositive()) {
+                                    target.setIN_BATTLE(true);
+                                }
                             }
                         }
                     } else {

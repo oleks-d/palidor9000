@@ -37,7 +37,7 @@ public class LevelManager implements Disposable{
     private TmxMapLoader mapLoader;
     private TiledMap map;
     JSONLoader loader;
-    public com.mygdx.game.sprites.creatures.Hero hero;
+    public Hero hero;
 
     public static final int GROUND_LAYER = 2+1;
     public static final int TRIGGERS_LAYER = 3+1;
@@ -250,13 +250,13 @@ public class LevelManager implements Disposable{
     }
 
 
-    public com.mygdx.game.sprites.creatures.Hero loadHero(String name){
+    public Hero loadHero(String name){
         String path = PalidorGame.SAVES_DIR + File.separator + name + ".json";
-        hero = loader.loadHero(screen, path);
+        hero = loader.loadHero(screen, Gdx.files.local(path));
         return hero;
     }
 
-    public void saveHero(com.mygdx.game.sprites.creatures.Hero hero) {
+    public void saveHero(Hero hero) {
         loader.saveHero(hero);
     }
 
@@ -271,7 +271,7 @@ public class LevelManager implements Disposable{
 
     public static ArrayList<String> getListOfHeroTypes(){
         ArrayList<String> listOfFiles = new ArrayList<String>();
-        FileHandle dirHandle = Gdx.files.local(PalidorGame.DEFAULT_HERO_DIR);
+        FileHandle dirHandle = Gdx.files.internal(PalidorGame.DEFAULT_HERO_DIR);
         for (FileHandle entry: dirHandle.list()) {
             listOfFiles.add(entry.nameWithoutExtension());
         }
@@ -280,7 +280,7 @@ public class LevelManager implements Disposable{
 
     public Hero createNewHero(String heroName, String newHeroType) {
         String path = PalidorGame.DEFAULT_HERO_DIR + File.separator + newHeroType + ".json";
-        hero = loader.loadHero(screen, path);
+        hero = loader.loadHero(screen, Gdx.files.internal(path));
         hero.name = heroName;
         saveHero(hero);
         return hero;
