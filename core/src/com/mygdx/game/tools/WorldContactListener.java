@@ -44,13 +44,19 @@ public class WorldContactListener implements ContactListener {
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
-                    if(target.getEffect(EffectID.COVERED_BY_SHIELD) == null && target.getEffect(EffectID.DODGE) == null) {// creature was covered
-                        for (Effect effect : act.activeEffects) {
-                            target.applyEffect(effect);
-                            if (!effect.id.isPositive()) {
-                                target.setIN_BATTLE(true);
+                    if(target.shieldEffect == null) {// creature was covered
+                        if(target.getEffect(EffectID.DODGE) == null) { // creature dodges
+                            for (Effect effect : act.activeEffects) {
+                                target.applyEffect(effect);
+                                if (!effect.id.isPositive()) {
+                                    target.setIN_BATTLE(true);
+                                }
                             }
+                        } else {
+                            target.addMessage("Damage avoided by dodge", Fonts.GOOD);
                         }
+                    } else {
+                        target.addMessage("Shield absorbed damage", Fonts.GOOD);
                     }
 
                     act.onHit();
@@ -68,7 +74,7 @@ public class WorldContactListener implements ContactListener {
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
-                    if(target.getEffect(EffectID.COVERED_BY_SHIELD) == null) {// creature was covered
+                    if(target.shieldEffect == null) {// creature was covered
                         if(target.getEffect(EffectID.DODGE) == null) { // creature dodges
                             for (Effect effect : act.activeEffects) {
                                 target.applyEffect(effect);
@@ -76,9 +82,12 @@ public class WorldContactListener implements ContactListener {
                                     target.setIN_BATTLE(true);
                                 }
                             }
+                        } else {
+                            target.addMessage("Damage avoided by dodge", Fonts.GOOD);
                         }
                     } else {
-                        act.createdBy.applyEffect(new Effect(EffectID.STUNED, 3, 0, 0)); // stun if target was protected
+                        target.addMessage("Shield absorbed damage", Fonts.GOOD);
+                        act.createdBy.applyEffect(target.shieldEffect); // stun if target was protected
                     }
                     //   act.addTargetToAlreadyProcessed(target);
                     act.onHit();

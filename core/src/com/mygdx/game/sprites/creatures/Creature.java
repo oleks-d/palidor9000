@@ -102,6 +102,8 @@ public class Creature extends Sprite {
 
     public boolean canPickUpObjects;
 
+    public Effect shieldEffect = null; // effect that will be applied to enemy who is trying to hit creature
+
     public CreatureStatus getStatusbar() {
         return statusbar;
     }

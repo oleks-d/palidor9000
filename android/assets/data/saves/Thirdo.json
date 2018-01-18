@@ -1,25 +1,26 @@
 {
   "hero": {
-    "name": "Secondo",
+    "name": "Thirdo",
     "description": "Player",
     "health": "100",
     "speed": "1",
     "spritesheetregion": "enemy1",
-    "abilities": "PUNCH,SWORD_SWING,SWORD_SMASH,COVER,DODGE,DASH,SHOUT,MASK,LONGBOW_SHOT,FIREBALL,FLY,FIREWALL,FIRESHIELD",
+    "abilities": "PUNCH,SWORD_SWING,SWORD_SMASH,COVER,DODGE,DASH,SHOUT,MASK,LONGBOW_SHOT",
     "org": "1",
     "items": "helmet_1, armor_1, coin, coin, coin, coin, potion_1, helmet_1, armor_1, coin, coin, coin, potion_1, armor_1, coin, coin, coin, coin, armor_1, helmet_1, potion_1, helmet_1, armor_1, coin, coin, coin, coin, armor_1, potion_1, helmet_1",
     "equipeditems": "sword_1,stuff_1,"
   },
 
   "globalStates" : [
-    { "key" : "Flag1", "value" : "Passed"},
-    { "key" : "Flag2", "value" : "Passed"}  ],
+{ "key" : "Flag1", "value" : "Passed"},
+{ "key" : "Flag2", "value" : "Passed"}  ],
 
-  "currentLevel" : "Pit",
-  "previousLevel" : "Start",
+  "currentLevel" : "Underground",
+  "previousLevel" : "Forest",
 
-  "selectedAtackAbilities" : "FIREBALL, DODGE",
-  "selectedDefenseAbilities": "FIREWALL, FIRESHIELD",
+  "selectedAtackAbilities" : "SWORD_SWING, SWORD_SMASH",
+  "selectedDefenseAbilities": "LONGBOW_SHOT, DODGE",
   "skills": "CLOSE_WEAPON1, FIRE1, DODGE1",
+
 
 }

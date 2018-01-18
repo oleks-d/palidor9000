@@ -194,15 +194,15 @@ public class ControllerPanel implements Disposable{
         tableMenu.left().top();
         tableMenu.setFillParent(true);
 
-        tableMenu.row().padLeft(5);
+        tableMenu.row(); //.pad(10,10,10,10);
         tableMenu.add(menuImage);
 
         if(showMenuTouched){
-            tableMenu.row().padLeft(5);
+            tableMenu.row().pad(10,10,10,10);;
             tableMenu.add(inventoryImage);
-            tableMenu.row().padLeft(5);
+            tableMenu.row().pad(10,10,10,10);
             tableMenu.add(abilitiesImage);
-            tableMenu.row().padLeft(5);
+            tableMenu.row().pad(10,10,10,10);
             tableMenu.add(escapeImage);
         }
 

@@ -84,6 +84,7 @@ public class AbilityHandler {
                 break;
             case COVER:
                 creature.applyEffect(new Effect(EffectID.COVERED_BY_SHIELD, 1f, 1f, 0f));
+                creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
                 break;
             case DASH:
 
@@ -126,30 +127,48 @@ public class AbilityHandler {
                 result.setCreatedBy(creature);
                 break;
 
-//            case FIREWALL:
-//                Gdx.app.log("Ability", "Firewall");
-//
-//                    activeEffects = new Array<Effect>();
-//                    activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-//                    activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
-//
-//                    //directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE) : -(PalidorGame.TILE_SIZE);
-//                    //direction = new Vector2(creature.directionRight == true ? 5 : -5, 0);
-//                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
-//
-//                    result = new ActivityWithEffect(
-//                            screen,
-//                            creature.getBody().getPosition().x * PalidorGame.PPM,
-//                            creature.getBody().getPosition().y * PalidorGame.PPM,
-//                            activeEffects,
-//                            id.getActivityAreaType(),
-//                            direction,
-//                            "firewall"); //TODO anim
-//
-//                result.setCreatedBy(creature);
-//            //        creature.setTimeSpentOnCast(0);
-//            //    }
-//                break;
+            case FIREWALL:
+
+                    activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+                    activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+
+                    result = new ActivityWithEffect(
+                            screen,
+                            creature.getBody().getPosition().x * PalidorGame.PPM,
+                            creature.getBody().getPosition().y * PalidorGame.PPM,
+                            activeEffects,
+                            id.getActivityAreaType(),
+                            direction,
+                            "firewall"); //TODO anim
+
+                result.setCreatedBy(creature);
+
+                break;
+            case FIREBALL:
+
+                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+                activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM,
+                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "firewall"); //TODO anim
+
+                result.setCreatedBy(creature);
+
+                break;
+            case FIRESHIELD:
+                creature.applyEffect(new Effect(EffectID.COVERED_BY_FIRE_SHIELD, 1f, 1f, 0f));
+                creature.shieldEffect = new Effect (EffectID.FIRE_DAMAGE, 3,3,0);
+                break;
 //            case ICEWALL:
 //                Gdx.app.log("Ability", "Icewall");
 //

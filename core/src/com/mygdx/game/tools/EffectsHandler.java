@@ -137,7 +137,10 @@ public class EffectsHandler {
                 creature.addMessage("Active (not in stun)", Fonts.IMPORTANT);
                 creature.setStun(false);
                 break;
-
+            case COVERED_BY_FIRE_SHIELD:
+            case COVERED_BY_SHIELD:
+                creature.shieldEffect = null;
+                break;
             default:
                 // No remove process needed
                 //

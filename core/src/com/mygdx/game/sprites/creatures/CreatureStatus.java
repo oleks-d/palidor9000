@@ -100,11 +100,11 @@ public class CreatureStatus extends Sprite {
             }
 
             if(owner.IN_BATTLE){
-                batch.draw(battleMark, getX() + i * PalidorGame.TILE_SIZE / 2 / PPM, getY(), PalidorGame.TILE_SIZE / 2 / PPM, PalidorGame.TILE_SIZE / 2 / PPM);
+           //     batch.draw(battleMark, getX() + i * PalidorGame.TILE_SIZE / 2 / PPM, getY(), PalidorGame.TILE_SIZE / 2 / PPM, PalidorGame.TILE_SIZE / 2 / PPM);
             }
 
             for(int j = 0; j<messages.size+0; j++){
-                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY()  + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
+                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + 1 - (float)(removeMessageTime - owner.existingTime) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 
             Fonts.NAMES.getFont().draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + PalidorGame.TILE_SIZE  / PPM);

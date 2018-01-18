@@ -137,19 +137,20 @@ public class MainPanel implements Disposable {
                 }
             });
 
-            savedHeroes.row();
+            savedHeroes.row().pad(10,10,10,10);
             savedHeroes.add(labelForHeroName);
             savedHeroes.add(removeSaveButton);
+            savedHeroes.add();
         }
 
-        heroTypes.row();
+        heroTypes.row().pad(10,10,10,10);
         heroTypes.add(newHero);
         heroTypes.row();
-        heroTypes.row();
+        heroTypes.row().pad(10,10,10,10);
         heroTypes.add(usernameTextField);
         heroTypes.row();
         heroTypes.row();
-        for (String heroType : com.mygdx.game.tools.LevelManager.getListOfHeroTypes()) {
+        for (String heroType : LevelManager.getListOfHeroTypes()) {
 
             final String newheroType = heroType;
 
@@ -168,11 +169,12 @@ public class MainPanel implements Disposable {
                 }
             });
 
-            heroTypes.row();
+            heroTypes.row().pad(10,10,10,10);
             heroTypes.add(labelForHeroName);
         }
 
         table.bottom();
+        table.row().pad(10,10,10,10);
         table.add(exit);
         table.row();
 
