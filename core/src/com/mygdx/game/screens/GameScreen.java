@@ -164,7 +164,12 @@ public class GameScreen implements Screen {
 
         handleInput(delta);
 
-            // handle camera after hero position update
+//        hero.jump();
+//        hero.move(true);
+//        hero.attack(true, false);
+
+
+        // handle camera after hero position update
             if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 ) //&& hero.getBody().getPosition().x < 32-viewport.getWorldWidth() / 2)
                 camera.position.x = (hero.getBody().getPosition().x );
             else
@@ -325,22 +330,23 @@ public class GameScreen implements Screen {
 //                hero.statusbar.updateCastBar("Hiding...", holdingTimeDOWN, 1f);
             }
 
-            if(holdingTimeJUMP > 0) {
-                if (!controller.touchedJump && !Gdx.input.isKeyPressed(Input.Keys.UP)){
-                    if(holdingTimeJUMP < 1)
-                        hero.jump();
-                    else
-                        if (holdingTimeUP>0)
-                            hero.fly();
-                        else if (holdingTimeDOWN>0)
-                            hero.jumpBack();
-                        else if (controller.touchedLeft || Gdx.input.isKeyPressed(Input.Keys.LEFT) || controller.touchedRight || Gdx.input.isKeyPressed(Input.Keys.RIGHT) )
-                            hero.dash();
-                    else
-                            hero.jump();
-                    holdingTimeJUMP = 0;
-                }
-            }
+            //TODO holding jump button
+//            if(holdingTimeJUMP > 0) {
+//                if (!controller.touchedJump && !Gdx.input.isKeyPressed(Input.Keys.UP)){
+//                    if(holdingTimeJUMP < 1)
+//                        hero.jump();
+//                    else
+//                        if (holdingTimeUP>0)
+//                            hero.fly();
+//                        else if (holdingTimeDOWN>0)
+//                            hero.jumpBack();
+//                        else if (controller.touchedLeft || Gdx.input.isKeyPressed(Input.Keys.LEFT) || controller.touchedRight || Gdx.input.isKeyPressed(Input.Keys.RIGHT) )
+//                            hero.dash();
+//                    else
+//                            hero.jump();
+//                    holdingTimeJUMP = 0;
+//                }
+//            }
 
 
 
@@ -383,8 +389,10 @@ public class GameScreen implements Screen {
                 } //else hero.direction.set(0, hero.direction.y);
 
 
-                if (controller.touchedJump || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                if (controller.touchedJump || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                     holdingTimeJUMP = holdingTimeJUMP + delta;
+                    hero.jump();
+                    controller.touchedJump = false;
                 }
                 if (controller.touchedUse || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                     hero.jump();
@@ -477,7 +485,6 @@ public class GameScreen implements Screen {
                     activity.draw(game.getBatch());
             }
 
-        // render hero
             hero.draw(game.getBatch());
             hero.creatureAim.draw(game.getBatch());
 

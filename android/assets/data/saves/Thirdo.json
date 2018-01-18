@@ -15,8 +15,8 @@
 { "key" : "Flag1", "value" : "Passed"},
 { "key" : "Flag2", "value" : "Passed"}  ],
 
-  "currentLevel" : "Underground",
-  "previousLevel" : "Forest",
+  "currentLevel" : "Forest",
+  "previousLevel" : "Underground",
 
   "selectedAtackAbilities" : "SWORD_SWING, SWORD_SMASH",
   "selectedDefenseAbilities": "LONGBOW_SHOT, DODGE",

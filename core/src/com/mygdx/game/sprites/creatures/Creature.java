@@ -120,6 +120,7 @@ public class Creature extends Sprite {
     } // TODO set all to setters/getters
 
     public AbilityID abilityToCast;
+    public Animation abilityToCastAnimation;
     public float timeSpentOnCast;
     public float abilityToCastExecutionTime;
 
@@ -200,11 +201,15 @@ public class Creature extends Sprite {
         stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 0);
         deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 10);
         runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.1f, 0,1);
-        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
-        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
-        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
-        pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
+
+        //pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
         jumpAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
+
+        //abilityToCastAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
+
+//        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
+//        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
+//        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
 
     }
     public Creature (GameScreen screen, float x, float y, CreatureDescription description) {
@@ -352,13 +357,16 @@ public class Creature extends Sprite {
                 region = (TextureRegion) jumpAnimation.getKeyFrame(stateTimer);
                 break;
             case CASTING:
-                region = (TextureRegion) castAnimation.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, true);
+                //region = (TextureRegion) castAnimation.getKeyFrame(stateTimer, true);
                 break;
             case KICKING:
-                region = (TextureRegion) kickAnimation.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, true);
+                //region = (TextureRegion) kickAnimation.getKeyFrame(stateTimer, true);
                 break;
             case SHOTING:
-                region = (TextureRegion) shotAnimation.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, true);
+                //region = (TextureRegion) shotAnimation.getKeyFrame(stateTimer, true);
                 break;
 
             default:
@@ -415,6 +423,11 @@ public class Creature extends Sprite {
 //            resetTimeSpentOnCast();
 //        }
         if(!stuned)
+
+            //TODO
+//            body.getFixtureList().get(0).setDensity(10);
+//            body.resetMassData();
+
             if ( currentState != State.JUMPING && currentState != State.FALLING  ) {
                 //getBody().setLinearVelocity(0,0);
                 //getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
@@ -468,7 +481,7 @@ public class Creature extends Sprite {
         if(!stuned) {
             setInvisible(false); // make visible
             resetTimeSpentOnCast(); // reset casting time
-            getBody().setLinearVelocity(0, 0); // STOP
+            //getBody().setLinearVelocity(0, 0); // STOP
             cooldowns.put(ability, AbilityHandler.getAbilityCooldownTime(this,ability) + existingTime); // put cooldown
             setIN_BATTLE(true); // set In_Battle state
             return AbilityHandler.getAbilityAndUseIt(screen, this, ability); // return ability
@@ -646,6 +659,8 @@ public class Creature extends Sprite {
     }
 
     public void setAbilityToCast(AbilityID abilityToCast) {
+        if(abilityToCast != AbilityID.NONE)
+            this.abilityToCastAnimation = AbilityHandler.getAnimation(screen, abilityToCast, spritesheetRegion);
         this.abilityToCast = abilityToCast;
     }
 
@@ -669,8 +684,13 @@ public class Creature extends Sprite {
     @Override
     public void draw(Batch batch) {
         if(!destroyed) {
-            super.draw(batch);
-            statusbar.draw(batch);
+    //        try {
+                super.draw(batch);
+                statusbar.draw(batch);
+    //        }catch(Exception e){ //TODO
+         //       super.draw(batch);
+         //       statusbar.draw(batch);
+    //        }
             //creatureAim.draw(batch);
         }else
             batch.draw(deadBody, getX(),getY(),getWidth(),getHeight());

@@ -57,7 +57,7 @@ public class GameItem extends Sprite {
     public void createBody(float x, float y){
         this.world = screen.world;
         setPosition(x, y);
-        setBounds(x, y, PalidorGame.TILE_SIZE / PalidorGame.PPM, PalidorGame.TILE_SIZE / PalidorGame.PPM);
+        setBounds(x, y, PalidorGame.TILE_SIZE/2 / PalidorGame.PPM, PalidorGame.TILE_SIZE/2 / PalidorGame.PPM);
 
         toDestroy = false;
         destroyed = false;
@@ -68,7 +68,7 @@ public class GameItem extends Sprite {
         body = world.createBody(bodyDef);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(PalidorGame.TILE_SIZE / 2 / PalidorGame.PPM );
+        shape.setRadius(PalidorGame.TILE_SIZE / 4 / PalidorGame.PPM );
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;

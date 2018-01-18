@@ -68,7 +68,7 @@ public class ActivityWithEffect extends Sprite {
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
 
-        runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, 0.5f, 0, 1);
+        runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.5f, 0, 1);
         region = new TextureRegion();
     }
 

@@ -1,16 +1,19 @@
 package com.mygdx.game.tools;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.EffectID;
+import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.stuctures.Effect;
 
 
 public class AbilityHandler {
-    static public ActivityWithEffect getAbilityAndUseIt(com.mygdx.game.screens.GameScreen screen, Creature creature, com.mygdx.game.enums.AbilityID id) {
+    static public ActivityWithEffect getAbilityAndUseIt(GameScreen screen, Creature creature, AbilityID id) {
         com.mygdx.game.sprites.activities.ActivityWithEffect result = null;
 
         Array<com.mygdx.game.stuctures.Effect> activeEffects = new Array<Effect>();
@@ -364,4 +367,16 @@ public class AbilityHandler {
         return ability.getCooldownTime();
     }
 
+    public static Animation getAnimation(GameScreen screen, AbilityID abilityToCast, String spritesheetRegion) {
+        switch(abilityToCast) {
+            case LONGBOW_SHOT:
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 4, 5);
+            case PUNCH:
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 2, 3);
+            case FIREWALL:
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 6, 7);
+            default:
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
+        }
+    }
 }

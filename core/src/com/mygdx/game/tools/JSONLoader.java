@@ -144,7 +144,8 @@ public class JSONLoader {
         }catch (Exception e) {
             //no hero found
 
-            Gdx.app.log("No hero found", "Loading failed " + file + "." + e.toString());
+            Gdx.app.log("No hero found", "Loading failed " + file );
+            e.printStackTrace();
             return null;
         }
     }

@@ -59,4 +59,16 @@ public class AnimationHelper {
         frames.clear();
         return finalAnimation;
     }
+
+    public Animation getAnimationByID(String region, int tileWidth, int tileHigth,  float duration, int... indexes) {
+        Animation finalAnimation = null;
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        for (int index : indexes) {
+            frames.add(new TextureRegion(getAtlas().findRegion(region), index * tileWidth, 0, tileWidth, tileHigth));
+            finalAnimation = new Animation(duration, frames);
+        }
+        frames.clear();
+        return finalAnimation;
+    }
 }

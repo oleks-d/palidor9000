@@ -1,5 +1,7 @@
 package com.mygdx.game.enums;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+
 /**
  * Created by odiachuk on 12/22/17.
  */
@@ -144,4 +146,5 @@ public enum AbilityID{
     public ActivityAreaType getActivityAreaType() {
         return activityAreaType;
     }
+
 }
