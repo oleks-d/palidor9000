@@ -1,0 +1,26 @@
+{
+  "hero": {
+    "name": "jj",
+    "description": "Player",
+    "health": "10",
+    "speed": "1",
+    "spritesheetregion": "enemy1",
+    "abilities": "CROSSBOW_SHOT,SLING_SHOT,LONGBOW_SHOT,AXE_SWING,SWORD_SWING,HUMMER_SWING",
+    "org": "1",
+    "equipeditems": "sword_1,bow_1,"
+  },
+
+    "items": "key_2, coin, fire_1, coin, coin, sword_1",
+  "globalStates" : [
+{ "key" : "MainStory", "value" : "Step2"}  ],
+
+  "currentLevel" : "HuntersWillage",
+  "previousLevel" : "Forest",
+  "exp" : "800",
+
+  "selectedAtackAbilities" : "SWORD_SWING",
+  "selectedDefenseAbilities": "LONGBOW_SHOT",
+  "skills": "ACCURACY1, STRENGTH1",
+
+
+}

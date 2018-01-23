@@ -16,17 +16,6 @@ public class ItemDescription {
     public Array<Effect> effects;
     public String id;
 
-    public ItemDescription(String id, String name, String description, String image, int value) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.image = image;
-        this.value = value;
-        this.type = com.mygdx.game.enums.EquipmentType.NONE;
-        this.usable = false;
-        this.effects = new Array<Effect>();
-    }
-
 
     public ItemDescription(String id, String name, String description, String image, int value, com.mygdx.game.enums.EquipmentType type, boolean usable, String effects) {
         this.id = id;

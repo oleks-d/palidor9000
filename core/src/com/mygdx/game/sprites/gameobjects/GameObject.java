@@ -1,55 +1,52 @@
 package com.mygdx.game.sprites.gameobjects;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.mygdx.game.enums.EquipmentType;
+import com.mygdx.game.enums.GameObjectType;
 import com.mygdx.game.screens.GameScreen;
-import com.mygdx.game.stuctures.Effect;
-import com.mygdx.game.stuctures.descriptions.ItemDescription;
+import com.mygdx.game.stuctures.descriptions.ObjectDescription;
 
-public class GameItem extends Sprite {
+/**
+ * Created by odiachuk on 1/23/18.
+ */
+public class GameObject extends Sprite {
+
     protected GameScreen screen;
     protected World world;
     public boolean toDestroy;
     protected boolean destroyed;
     protected Body body;
 
-    public String itemname;
-    public String itemdescription;
-    int itemvalue;
 
-    Array<Effect> effects;
-    EquipmentType type;
-    private boolean usable;
+    GameObjectType type;
+    private String program;
     private String icon;
     public String id;
 
-    public GameItem(GameScreen screen, ItemDescription description){
+    public Array<GameItem> items;
+
+    public GameObject(GameScreen screen, float x, float y, ObjectDescription objectDescription, String items, String program) {
+
         super();
 
         this.screen = screen;
-        this.id = description.id;
-        this.icon = description.image;
-        this.itemname = description.name;
-        this.itemdescription = description.description;
-        this.itemvalue = description.value;
-        this.type = description.type;
-        this.usable = description.usable;
+        this.id = objectDescription.id;
+        this.icon = objectDescription.image;
+        this.type = objectDescription.type;
+        this.program = program;
 
-        //get all effects
-        this.effects = new Array<Effect>();
-        for(Effect effect : description.effects)
-            this.effects.add(effect);
+        this.items = new Array<GameItem>();
 
-        setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(description.image));
+        // add all items from inventory  -  get items from item descriptions in levelmanager
+        if(items != null && !"".equals(items))
+            for (String itemd : items.split(",")){
+                this.items.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
+            }
 
-    }
-
-    public GameItem(GameScreen screen, float x, float y, ItemDescription description){
-        this(screen,description);
+        setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(objectDescription.image));
 
         createBody(x, y);
     }
@@ -63,7 +60,7 @@ public class GameItem extends Sprite {
         destroyed = false;
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(getX() / PalidorGame.PPM, getY()/ PalidorGame.PPM );
         body = world.createBody(bodyDef);
 
@@ -72,9 +69,9 @@ public class GameItem extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = PalidorGame.ITEM_BIT;
-        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.GROUND_BIT;
+        fixtureDef.isSensor = false;
+        fixtureDef.filter.categoryBits = PalidorGame.OBJECT_BIT;
+        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.ACTIVITY_BIT;
 
 
         body.createFixture(fixtureDef).setUserData(this);
@@ -105,17 +102,10 @@ public class GameItem extends Sprite {
         return destroyed;
     }
 
-    public Array<Effect> getEffects() {
-        return effects;
-    }
-
-    public EquipmentType getType() {
+    public GameObjectType getType() {
         return type;
     }
 
-    public boolean isUsable() {
-        return usable;
-    }
 
     public String getIcon() {
         return icon;
@@ -128,5 +118,17 @@ public class GameItem extends Sprite {
 
     public Body getBody() {
         return body;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+
+    public String getRequiredKey() {
+        return program;
+    }
+
+    public Array<GameItem> getItems() {
+        return items;
     }
 }

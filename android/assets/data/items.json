@@ -6,11 +6,27 @@
     "value" : "0",
     "image" : "key1"
   },
+
+  {
+    "id":"key_2",
+    "name" : "Key from door",
+    "description" : "Key from some door",
+    "value" : "0",
+    "image" : "key1"
+  },
+
   {
     "id":"coin",
     "name" : "Treasure",
     "description" : "Money,money,money...",
-    "value" : "100",
+    "value" : "1",
+    "image" : "gem2"
+  },
+  {
+    "id":"gem",
+    "name" : "Ruby",
+    "description" : "Red gem",
+    "value" : "10",
     "image" : "gem1"
   },
   {
@@ -28,16 +44,33 @@
     "description" : "Sword",
     "value" : "100",
     "image" : "sword",
-    "type" : "WEAPON",
+    "type" : "WEAPON_SWORD",
     "effects": "PLUS_CUT_DAMAGE 0 1 0,PLUS_ICE_DAMAGE 0 1 0"
   },
   {
-    "id":"stuff_1",
+    "id":"bow_1",
+    "name" : "Bow",
+    "description" : "Sword",
+    "value" : "100",
+    "image" : "sword",
+    "type" : "WEAPON_BOW"
+  },
+  {
+    "id":"axe_1",
+    "name" : "Axe",
+    "description" : "Rusty axe",
+    "value" : "100",
+    "image" : "axe",
+    "type" : "WEAPON_AXE",
+    "effects": "PLUS_CUT_DAMAGE 0 1 0"
+  },
+  {
+    "id":"fire_1",
     "name" : "Fire stuff",
     "description" : "Stuff",
     "value" : "100",
     "image" : "stuff_red",
-    "type" : "WEAPON",
+    "type" : "WEAPON_MAGIC_FIRE",
     "effects": ""
   },
   {
@@ -50,12 +83,12 @@
     "effects": "MINUS_CUT_DAMAGE 0 1 0,MINUS_CRUSH_DAMAGE 0 1 0"
   },
   {
-    "id":"potion_1",
-    "name" : "Potion of healing",
-    "description" : "Potion of healing",
+    "id":"potion_speed",
+    "name" : "Potion of speed",
+    "description" : "Potion of speed",
     "value" : "100",
     "image" : "red_bottle",
     "usable" : "TRUE",
-    "effects" : "FAST 10 10 0"
+    "effects" : "FAST 10 1 0"
   }
 ]}

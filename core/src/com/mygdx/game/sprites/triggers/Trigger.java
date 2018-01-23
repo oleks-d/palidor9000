@@ -7,11 +7,18 @@ public class Trigger {
 
     private String type;
     private String value;
+    private String key;
 
-    public Trigger(String name) {
-        this.type = name.split("_")[0];
-        this.value = name.split("_")[1];
+    public Trigger(String type,  String key, String value, String description) {
+        this.type = type;
+        this.value = value;
+        this.key = key;
+        this.description = description;
     }
+
+    private String description;
+
+
 
     public String getType() {
         return type;
@@ -19,5 +26,13 @@ public class Trigger {
 
     public String getValue() {
         return value;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

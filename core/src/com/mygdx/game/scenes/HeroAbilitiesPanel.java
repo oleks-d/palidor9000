@@ -20,6 +20,7 @@ import com.mygdx.game.CustomDialog;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.sprites.creatures.Hero;
+import com.mygdx.game.stuctures.Skill;
 import com.mygdx.game.tools.AnimationHelper;
 
 import java.io.File;
@@ -32,18 +33,13 @@ public class HeroAbilitiesPanel implements Disposable {
     private final AnimationHelper animhelper;
     public Stage stage;
     Viewport viewport;
-    CustomDialog dialog;
 
     //Integer score;
 
-    Label selectedHeader;
     Label abilitiesHeader;
     Label detailsHeader;
     Image background;
 
-    Label atackLabel;
-    Label defenseLabel;
-    Label helpLabel;
 
     Image upButton;
     Image downButton;
@@ -57,9 +53,10 @@ public class HeroAbilitiesPanel implements Disposable {
     public boolean closeTouched;
 
     public AbilityID currentAbility = null;
+    public Skill currentSkill = null;
 
 
-    int MAX_NUMBER_OF_ROWS = 8;
+    int MAX_NUMBER_OF_ROWS = 18;
     int LAST_DISPLAYED_ROW;
     int INITIAL_DISPLAYED_ROW;
 
@@ -70,22 +67,23 @@ public class HeroAbilitiesPanel implements Disposable {
         this.animhelper = animhelper;
         viewport = new FitViewport(PalidorGame.WIDTH, PalidorGame.HIGHT, new OrthographicCamera());
 
+        background = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "background_clear.png"));
+
         // locatin of all widgets
         stage = new Stage(viewport,sb);
 
-        selectedHeader = new Label(String.format("<< -  %s - >>", "SELECTED:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
         abilitiesHeader= new Label(String.format("<< -  %s - >>", "ABILITIES:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
-        detailsHeader= new Label(String.format("<< -  %s - >>", "DETAILS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
 
-        background = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "background_clear.png"));
+        windowHeader = new Label(String.format("  %s ",   "Skills/Abilities"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;;
+        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));;
+        closeWindow.addListener(new InputListener(){
 
-        atackLabel = new Label(String.format(" %s: ",   "Atack  "), new Label.LabelStyle(new BitmapFont(), Color.RED));;
-        defenseLabel = new Label(String.format(" %s: ", "Defense"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
-        helpLabel = new Label(String.format(" %s: ",    "Buff   "), new Label.LabelStyle(new BitmapFont(), Color.RED));;
-
-
-        LAST_DISPLAYED_ROW = 0;
-        INITIAL_DISPLAYED_ROW = 0;
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                closeTouched = true;
+                return true;
+            }
+        });
 
         upButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));
         upButton.addListener(new InputListener(){
@@ -121,18 +119,6 @@ public class HeroAbilitiesPanel implements Disposable {
             }
         });
 
-
-        windowHeader = new Label(String.format("  %s ",   "Skills/Abilities"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;;
-        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));;
-        closeWindow.addListener(new InputListener(){
-
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                closeTouched = true;
-                return true;
-            }
-        });
-
         update();
 
     }
@@ -153,20 +139,20 @@ public class HeroAbilitiesPanel implements Disposable {
         titleTable.add(closeWindow);
 
 
-        Table selectedTable = new Table();
-        selectedTable.right().top();
-        selectedTable.setFillParent(true);
-        selectedTable.row();
-        selectedTable.add(selectedHeader);
+        Table skillsTable = new Table();
+        skillsTable.right().bottom();
+        skillsTable.debug();
+        skillsTable.setFillParent(true);
+        skillsTable.row();
 
-        Table abilitiestable = new Table();
+        final Table abilitiestable = new Table();
         abilitiestable.left().top();
         abilitiestable.setFillParent(true);
         abilitiestable.row();
         abilitiestable.add(abilitiesHeader);
 
         Table detailstable = new Table();
-        detailstable.bottom();
+        detailstable.right().top();
         detailstable.setFillParent(true);
         detailstable.row();
         detailstable.add(detailsHeader);
@@ -177,21 +163,25 @@ public class HeroAbilitiesPanel implements Disposable {
         Array<Image> abilityItemsImage = new Array<Image>();
 
 
-        //TODO add scroll items
 
-        //equiped table update
-        selectedTable.row();
-        selectedTable.add(atackLabel);
+        Label skillImage;
+        Image takeButton;
 
-        for(int i =0; i < hero.selectedAtackAbilities.size; i++) {
-            final int index = i;
-            Image headImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedAtackAbilities.get(index).getIcon()));
-            headImage.addListener(new InputListener() {
+
+        skillsTable.row();
+
+        for(int i=0; i<Skill.values().length; i++) {
+            final Skill skill = Skill.values()[i];
+
+            if(!hero.skills.contains(skill,true))
+                skillImage = new Label(String.format(" %s ", skill.name()), new Label.LabelStyle(new BitmapFont(), Color.DARK_GRAY));
+            else
+                skillImage = new Label(String.format(" %s ", skill.name()), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+            skillImage.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.selectedAtackAbilities.get(index);
-                    hero.deselectAtackAbility(index);
-                    System.out.println("DeSelect:" + currentAbility.getName());
+                    currentSkill = skill;
+                    currentAbility = null;
                     return true;
                 }
 
@@ -200,34 +190,40 @@ public class HeroAbilitiesPanel implements Disposable {
                     update();
                 }
             });
-            selectedTable.add(headImage);
+
+
+            skillsTable.add(skillImage);
+            if(!hero.skills.contains(skill,true)) {
+
+                takeButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_cross_blue"));
+                takeButton.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        currentSkill = skill;
+                        if (hero.experience >= skill.getPrice()) {
+                            hero.skills.add(skill);
+                            hero.addAbilities(skill.getAbilities());
+                            hero.experience = hero.experience - skill.getPrice();
+                            //update();
+                        }
+                        return true;
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        update();
+                    }
+                });
+            }else{
+                takeButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));
+            }
+            skillsTable.add(takeButton);
+
+
+            if(((i+1)%3)==0) skillsTable.row();
         }
 
-        selectedTable.row();
-        selectedTable.add(defenseLabel);
-
-        for(int i =0; i < hero.selectedDefenseAbilities.size; i++) {
-            final int index = i;
-            Image headImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedDefenseAbilities.get(index).getIcon()));
-            headImage.addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.selectedDefenseAbilities.get(index);
-                    hero.deselectDefenseAbility(index);
-                    System.out.println("DeSelect:" + currentAbility.getName());
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    update();
-                }
-            });
-            selectedTable.add(headImage);
-        }
-
-        selectedTable.row();
-
+        // show all abilities
 
         abilitiestable.row();
         abilitiestable.row();
@@ -262,17 +258,15 @@ public class HeroAbilitiesPanel implements Disposable {
 
         for (int i = INITIAL_DISPLAYED_ROW; i< LAST_DISPLAYED_ROW; i++)  {
             Label item  = abilityItems.get(i);
-            Image select = abilityItemsImage.get(i);
             final int index = i;
             abilitiestable.add(item);
-            abilitiestable.add(select);
             abilitiestable.row();
             item.addListener(new InputListener(){
 
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     currentAbility = hero.getAbilities().get(index);
-                    System.out.println(currentAbility.getName());
+                    currentSkill = null;
                     return true;
                 }
 
@@ -282,19 +276,6 @@ public class HeroAbilitiesPanel implements Disposable {
                 }
             });
 
-            select.addListener(new InputListener(){
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.getAbilities().get(index);
-                    hero.selectAbility(currentAbility);
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    update();
-                }
-            });
 
         }
         abilitiestable.row();
@@ -310,10 +291,12 @@ public class HeroAbilitiesPanel implements Disposable {
         detailstable.row();
         if (currentAbility != null)
             detailstable.add(new Label(String.format("%s", currentAbility.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
+        else if (currentSkill != null)
+            detailstable.add(new Label(String.format("%s", currentSkill.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
 
 
         stage.addActor(abilitiestable);
-        stage.addActor(selectedTable);
+        stage.addActor(skillsTable);
         stage.addActor(detailstable);
         stage.addActor(titleTable);
 

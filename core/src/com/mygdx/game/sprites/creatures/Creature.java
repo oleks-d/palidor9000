@@ -10,13 +10,12 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.ai.AI;
-import com.mygdx.game.enums.AbilityID;
-import com.mygdx.game.enums.AbilityType;
-import com.mygdx.game.enums.EffectID;
-import com.mygdx.game.enums.State;
+import com.mygdx.game.enums.*;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.gameobjects.GameItem;
+import com.mygdx.game.sprites.gameobjects.GameObject;
+import com.mygdx.game.tools.TriggerHandler;
 import com.mygdx.game.stuctures.Characteristics;
 import com.mygdx.game.stuctures.Effect;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
@@ -25,7 +24,6 @@ import com.mygdx.game.tools.EffectsHandler;
 import com.mygdx.game.tools.Fonts;
 
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -39,6 +37,8 @@ public class Creature extends Sprite {
 
     protected TextureRegion stand;
     protected TextureRegion deadBody;
+
+    TextureRegion region;
 
     protected State currentState;
     protected State previousState;
@@ -56,7 +56,7 @@ public class Creature extends Sprite {
 
     public boolean directionRight;
 
-    public Vector2 direction;
+    public Vector2 direction; // TODO process if required aming
 
     public Array<Effect> activeEffects;
     Array<Integer> effectsToRemove;
@@ -82,7 +82,7 @@ public class Creature extends Sprite {
     public boolean stuned;
     public boolean hidden;
     public boolean IN_BATTLE;
-    private long ID;
+    public String id;
 
     float JUMP_BASE = 5;
     float SPEED_BASE = 0.3f;
@@ -93,11 +93,17 @@ public class Creature extends Sprite {
     private int organization;
 
     public CreatureStatus statusbar;
-    public CreatureAim creatureAim;
+    //public CreatureAim creatureAim;
+
+    Creature closeNeighbor;  // close creature - you can talk with
+
+    Array<Integer> dialogs; // list of dialog ids assigned to creature
 
     private int reputation; // representation of reputation
 
-    private HashMap<AbilityID, Double> cooldowns;
+    boolean isActive;
+
+    HashMap<AbilityID, Double> cooldowns;
     public Vector2 targetVector;
 
     public boolean canPickUpObjects;
@@ -138,17 +144,19 @@ public class Creature extends Sprite {
         this.IN_BATTLE = IN_BATTLE;
     }
 
-    public Creature(com.mygdx.game.screens.GameScreen screen, CreatureDescription description){
+    public Creature(GameScreen screen, CreatureDescription description, String items){
         super();
         this.screen = screen;
 
-        this.ID = description.name.hashCode() + new Random().nextInt(1000);
+        this.id = description.id;
         this.name = description.name;
         this.description = description.description;
 
         this.stats = new Characteristics(description.stats);
 
         this.organization = description.organization;
+
+        this.dialogs = description.dialogs;
 
         canPickUpObjects = false;
         toDestroy = false;
@@ -171,6 +179,8 @@ public class Creature extends Sprite {
         hidden = false;
         IN_BATTLE = false;
 
+        isActive = false;
+
         this.brain = new AI();
 
         for(Effect effect: description.effects){
@@ -187,14 +197,11 @@ public class Creature extends Sprite {
         }
 
         // add all items from inventory  -  get items from item descriptions in levelmanager
-        for (String itemd : description.inventory){
-            inventory.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd)));
+        if(items != null && !"".equals(items))
+        for (String itemd : items.split(",")){
+            inventory.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
         }
 
-        //equip
-        for (String itemd : description.equiped){
-            equipItem(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd)));
-        }
 
         // set animations
         spritesheetRegion = description.region;
@@ -212,10 +219,15 @@ public class Creature extends Sprite {
 //        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
 
     }
-    public Creature (GameScreen screen, float x, float y, CreatureDescription description) {
+    public Creature (GameScreen screen, float x, float y, CreatureDescription description, String items) {
         //super(screen.getAtlas().findRegion(description.region));
 
-        this(screen, description);
+        this(screen, description, items);
+
+        //equip
+        for (String itemd : description.equiped){
+            equipItem(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
+        }
 
         makeAlive(x, y);
     }
@@ -234,7 +246,7 @@ public class Creature extends Sprite {
         targetVector = new Vector2(0.5f,0.5f);
 
         statusbar = new CreatureStatus(this);
-        creatureAim  = new CreatureAim(this);
+        //creatureAim  = new CreatureAim(this); //TODO process aiming
 
     }
 
@@ -264,13 +276,15 @@ public class Creature extends Sprite {
         fixtureDef.filter.categoryBits = PalidorGame.CREATURE_BIT;
         fixtureDef.filter.maskBits =
                 PalidorGame.CREATURE_BIT|
-                PalidorGame.OBJECT_BIT |
+                PalidorGame.GROUND_BIT |
                 PalidorGame.ITEM_BIT |
                 PalidorGame.ACTIVITY_BIT |
                 PalidorGame.ATTACK_BIT|
                 PalidorGame.JUMP_POINT |
-                PalidorGame.NO_LEFT_POINT |
-                PalidorGame.NO_RIGHT_POINT|
+                PalidorGame.MOVE_LEFT_POINT |
+                PalidorGame.MOVE_RIGHT_POINT|
+                        PalidorGame.STAND_POINT|
+                        PalidorGame.OBJECT_BIT|
                 PalidorGame.TRIGGER_POINT;
 
         body.createFixture(fixtureDef).setUserData(this);
@@ -292,7 +306,7 @@ public class Creature extends Sprite {
         if(toDestroy && !destroyed){
             world.destroyBody(body);
             destroyed = true;
-            Gdx.app.log("Destroyed", ID + " ");
+            Gdx.app.log("Destroyed", name);
         }
 
         if(!toDestroy && !destroyed) {
@@ -316,7 +330,7 @@ public class Creature extends Sprite {
             }
 
             statusbar.updatePosition();
-            creatureAim.updatePosition();
+            //creatureAim.updatePosition(); //TODO aiming
             if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
                 statusbar.removeMessage();
 
@@ -345,8 +359,6 @@ public class Creature extends Sprite {
 
     public TextureRegion getFrame(float dt) {
         currentState = getState();
-
-        TextureRegion region;
 
         switch (currentState) {
 
@@ -422,7 +434,6 @@ public class Creature extends Sprite {
 //        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
 //            resetTimeSpentOnCast();
 //        }
-        if(!stuned)
 
             //TODO
 //            body.getFixtureList().get(0).setDensity(10);
@@ -431,9 +442,18 @@ public class Creature extends Sprite {
             if ( currentState != State.JUMPING && currentState != State.FALLING  ) {
                 //getBody().setLinearVelocity(0,0);
                 //getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
-                getBody().applyLinearImpulse(new Vector2(0, JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
-                currentState = State.JUMPING;
+                powerjump();
             }
+    }
+
+    public void stop() {
+        if(!stuned)
+            getBody().setLinearVelocity(0,getBody().getLinearVelocity().y);
+    }
+
+    public void powerjump() {
+        getBody().applyLinearImpulse(new Vector2(0, JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
+        currentState = State.JUMPING;
     }
 
     public void move(boolean moveright){
@@ -477,7 +497,7 @@ public class Creature extends Sprite {
         }
     }
 
-    public ActivityWithEffect activateAbility(AbilityID ability) {
+    public Array<ActivityWithEffect> activateAbility(AbilityID ability) {
         if(!stuned) {
             setInvisible(false); // make visible
             resetTimeSpentOnCast(); // reset casting time
@@ -543,7 +563,7 @@ public class Creature extends Sprite {
         }
     }
 
-    private void removeEffect(Effect effect) {
+    public void removeEffect(Effect effect) {
 
         //check if effect is still active
         for(int i = 0; i < activeEffects.size; i++){
@@ -600,7 +620,17 @@ public class Creature extends Sprite {
                 armor = item;
                 break;
             // TODO add all
-            case WEAPON:
+            case WEAPON_MAGIC_ICE:
+            case WEAPON_MAGIC_FIRE:
+            case WEAPON_MAGIC_NATURE:
+            case WEAPON_MAGIC_DEATH:
+            case    WEAPON_AXE:
+            case    WEAPON_SWORD:
+            case    WEAPON_HUMMER:
+            case    WEAPON_BOW:
+            case    WEAPON_SLING:
+            case    WEAPON_XBOW:
+            case    WEAPON_SHIELD:
                 if(weapon1 == null)
                     weapon1 = item;
                 else if (weapon2 == null)
@@ -625,7 +655,17 @@ public class Creature extends Sprite {
             case ARMOR:
                 armor = null;
                 break;
-            case WEAPON:
+            case WEAPON_MAGIC_ICE:
+            case WEAPON_MAGIC_FIRE:
+            case WEAPON_MAGIC_NATURE:
+            case WEAPON_MAGIC_DEATH:
+            case    WEAPON_AXE:
+            case    WEAPON_SWORD:
+            case    WEAPON_HUMMER:
+            case    WEAPON_BOW:
+            case    WEAPON_SLING:
+            case    WEAPON_XBOW:
+            case    WEAPON_SHIELD:
                 if(weapon1 != null)
                     weapon1 = null;
                 else if (weapon2 != null)
@@ -639,11 +679,18 @@ public class Creature extends Sprite {
     }
 
     //throw to ground
-    public GameItem throwFromInventory(GameItem item) {
+    public void throwFromInventory(GameItem item) {
         inventory.removeValue(item, true);
         float direction = directionRight ?  -(PalidorGame.TILE_SIZE + PalidorGame.TILE_SIZE/2) : (PalidorGame.TILE_SIZE + PalidorGame.TILE_SIZE/2) ;
         item.createBody((getBody().getPosition().x ) * PalidorGame.PPM + direction, getBody().getPosition().y * PalidorGame.PPM);
-        return item;
+
+        if(item!=null)
+            screen.levelmanager.ITEMS.add(item);
+    }
+
+    public void throwFromInventory() {
+        if(inventory.size > 0)
+            throwFromInventory(inventory.get(0));
     }
 
     //use item
@@ -678,19 +725,19 @@ public class Creature extends Sprite {
         setState(State.DEAD);
         int inventorySize = getInventory().size;
         for(int i =0; i<inventorySize;i++)
-            screen.levelmanager.ITEMS.add(throwFromInventory(getInventory().get(0)));
+            throwFromInventory(getInventory().get(0));
     }
 
     @Override
     public void draw(Batch batch) {
         if(!destroyed) {
-    //        try {
+            try {
                 super.draw(batch);
                 statusbar.draw(batch);
-    //        }catch(Exception e){ //TODO
-         //       super.draw(batch);
+            }catch(Exception e){ //TODO
+         //       batch.draw(region, getX()/100,getY()/100); //TODO
          //       statusbar.draw(batch);
-    //        }
+            }
             //creatureAim.draw(batch);
         }else
             batch.draw(deadBody, getX(),getY(),getWidth(),getHeight());
@@ -708,7 +755,7 @@ public class Creature extends Sprite {
     }
 
     public void activateTrigger(com.mygdx.game.sprites.triggers.Trigger trigger) {
-            com.mygdx.game.sprites.triggers.TriggerHandler.runProcess(this, trigger);
+        TriggerHandler.runProcess(this, trigger);
     }
 
     public Array<AbilityID> getAbilities() {
@@ -720,6 +767,8 @@ public class Creature extends Sprite {
     }
 
     public void setInvisible(boolean b) {
+        if(!b)
+            removeEffectByID(EffectID.INVISIBLE);
         hidden = b;
     }
 
@@ -782,9 +831,59 @@ public class Creature extends Sprite {
         this.brain.setHasToJump(hasToJump);
     }
 
+    public void setStandStill(boolean b) {
+        this.brain.setStandStill(b);
+    }
 
-    public void addMessage(String message, Fonts font) {
+    // to status bar
+    public void addStatusMessage(String message, Fonts font) {
         if(statusbar != null)
-        statusbar.addMessage(message, existingTime + 2f, font);
+            statusbar.addMessage(message, existingTime + 2f, font);
+    }
+
+    public void setNeighbor(Creature neighbor) {
+        this.closeNeighbor = neighbor;
+    }
+
+    public Array<Integer> getDialogs() {
+        return dialogs;
+    }
+
+    public void makeActive() {
+        isActive = true;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void touchObject(GameObject object) {
+        if (object.getType() == GameObjectType.DOOR) {
+            if (checkInInventory(object.getRequiredKey())) {
+                object.destroyBody();
+            }
+        }
+        if (object.getType() == GameObjectType.CHEST) {
+            if (checkInInventory(object.getRequiredKey())) {
+                inventory.addAll(object.items);
+                object.destroyBody();
+            }
+        }
+        if (object.getType() == GameObjectType.SPIKE){
+            doDamage(5);
+        }
+    }
+
+    private void doDamage(int damageValue) {
+        stats.health.current = stats.health.current - damageValue;
+        addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+    }
+
+    private boolean checkInInventory(String itemID) {
+        for(GameItem item: inventory){
+            if(item.id.equals(itemID))
+                return true;
+        }
+        return false;
     }
 }

@@ -62,7 +62,9 @@ public enum EffectID {
 
     COVERED_BY_SHIELD("shield",false),
     DODGE("boots", false),
-    COVERED_BY_FIRE_SHIELD("shield_red",false);
+    COVERED_BY_FIRE_SHIELD("shield_red",false),
+    INVISIBLE("icon_cross_blue",false),
+    THROW_FROM_INVENTORY("icon_cross_blue",false);
 
     private String icon;
     private boolean positive;  // is it possitive effect

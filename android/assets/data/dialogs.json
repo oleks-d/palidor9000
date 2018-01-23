@@ -1,0 +1,16 @@
+{"dialogs" : [
+
+  {"id":1,
+    "replics": [
+      {"replic" : "Hi Hero!",
+      "answer" : "Hi Mark"}
+      ]
+  },
+  {"id":2,
+    "replics": [
+      {"replic" : "Bye Hero!",
+        "answer" : "Bye Mark"}
+    ]
+  }
+]
+}

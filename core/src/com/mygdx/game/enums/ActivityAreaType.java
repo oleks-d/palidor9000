@@ -6,25 +6,24 @@ import com.mygdx.game.PalidorGame;
  * Created by odiachuk on 12/22/17.
  */
 public enum ActivityAreaType {
-    ARROW("aim_left",2f,32,32),
-    BOX("aim_left",0.2f,96,48),
-    SPRAY("aim_left",0.5f,32,32),
-    SELF("castbar",0f),
-    BIGBOX("aim_left",0.2f),
-    BOOM("aim_left",1 );
+    ARROW(2f,32,32),
+    BOX(0.2f,96,48),
+    SPRAY(0.5f,192,48),
+    SELF(0f),
+    BIGBOX(0.2f),
+    BOOM(1 );
     private String aimIcon;
     private float liveTime;
     private int width;
     private int higth;
 
 
-    ActivityAreaType(String aimIcon, float liveTime) {
-        this(aimIcon, liveTime, PalidorGame.TILE_SIZE, PalidorGame.TILE_SIZE);
+    ActivityAreaType(float liveTime) {
+        this(liveTime, PalidorGame.TILE_SIZE, PalidorGame.TILE_SIZE);
     }
 
 
-    ActivityAreaType(String aimIcon, float liveTime, int width, int higth) {
-        this.aimIcon = aimIcon;
+    ActivityAreaType(float liveTime, int width, int higth) {
         this.liveTime = liveTime;
         this.width=width;
         this.higth=higth;

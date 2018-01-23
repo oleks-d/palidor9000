@@ -1,6 +1,7 @@
 package com.mygdx.game.ai;
 
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.CreatureAction;
 import com.mygdx.game.sprites.creatures.Creature;
@@ -13,16 +14,9 @@ import static com.mygdx.game.PalidorGame.PPM;
 public class AI {
     private boolean moveLeft;
     private boolean moveRight;
-
-    public boolean isHasToJump() {
-        return hasToJump;
-    }
-
-    public void setHasToJump(boolean hasToJump) {
-        this.hasToJump = hasToJump;
-    }
-
+    private boolean standStill;
     boolean hasToJump;
+
     public void getNextStep(Creature creature, com.mygdx.game.screens.GameScreen screen) {
 
         //return CreatureAction.STOP;
@@ -91,14 +85,18 @@ public class AI {
             result = CreatureAction.JUMP;
         }
 
-        creature.direction.set(-(targetX - creature.getBody().getPosition().x), targetY - creature.getBody().getPosition().y );
-        creature.direction.clamp(1,1);
+        //creature.direction.set(-(targetX - creature.getBody().getPosition().x), targetY - creature.getBody().getPosition().y );
+        if(targetX > creature.getBody().getPosition().x)
+            creature.direction.set(-1,0);
+        else
+            creature.direction.set(1,0);
+        //creature.direction.clamp(1,1);
         //creature.direction.set(creature.targetVector.x > 1 ? 1: (creature.targetVector.x < -1 ? -1f : creature.targetVector.x), creature.targetVector.y > 1 ? 1:(creature.targetVector.y < -1 ? -1f : creature.targetVector.y));
 
 
 
 
-        if(creature.abilityToCast == com.mygdx.game.enums.AbilityID.NONE)
+        if(creature.abilityToCast == AbilityID.NONE)
         switch (result){
             case MOVE_LEFT:
                 if(!moveRight)
@@ -150,4 +148,16 @@ public class AI {
     public void setMoveRight(boolean moveRight) {
         this.moveRight = moveRight;
     }
+
+    public void setStandStill(boolean standStill) {
+        this.standStill = standStill;
+    }
+
+    public boolean isHasToJump() {
+        return hasToJump;
+    }
+    public void setHasToJump(boolean hasToJump) {
+        this.hasToJump = hasToJump;
+    }
+
 }

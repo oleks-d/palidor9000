@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.CustomDialog;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.enums.EquipmentType;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.stuctures.Skill;
@@ -49,6 +51,10 @@ public class HeroInventoryPanel implements Disposable {
     Image upButton;
     Image downButton;
 
+    Label selectedHeader;
+    Label atackLabel;
+    Label defenseLabel;
+
     SpriteBatch sb;
     Hero hero;
 
@@ -57,6 +63,7 @@ public class HeroInventoryPanel implements Disposable {
     public boolean closeTouched;
 
     public GameItem currentItem = null;
+    public AbilityID currentAbility = null;
 
     int MAX_NUMBER_OF_ROWS = 8;
     int LAST_DISPLAYED_ROW;
@@ -81,6 +88,11 @@ public class HeroInventoryPanel implements Disposable {
          equipedArmorLabel= new Label(String.format("%s", "Body:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
          equipedWeapon1Label= new Label(String.format("%s", "Main:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
          equipedWeapon2Label= new Label(String.format("%s", "Secondary:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
+
+        selectedHeader = new Label(String.format("<< -  %s - >>", "SELECTED:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
+
+        atackLabel = new Label(String.format(" %s: ",   "Atack  "), new Label.LabelStyle(new BitmapFont(), Color.RED));;
+        defenseLabel = new Label(String.format(" %s: ", "Defense"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
 
         background = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "background_clear.png"));
 
@@ -172,6 +184,13 @@ public class HeroInventoryPanel implements Disposable {
         detailstable.row();
         detailstable.add(detailsHeader);
 
+        Table selectedTable = new Table();
+        selectedTable.right().center();
+        selectedTable.setFillParent(true);
+        selectedTable.row();
+        selectedTable.add(selectedHeader);
+
+
         // inventory tableController update
 
         Array<Label> inventoryItems = new Array<Label>();
@@ -205,10 +224,6 @@ public class HeroInventoryPanel implements Disposable {
                     uniqueItems.put(item.itemname,0);
                     inventoryIndex.add(i);
                 };
-
-            }
-
-            if (hero.skills.contains(Skill.DODGE1, true)){
 
             }
 
@@ -247,7 +262,8 @@ public class HeroInventoryPanel implements Disposable {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         currentItem = hero.getInventory().get(index);
-                        System.out.println(currentItem.itemname);
+                        currentAbility = null;
+                                System.out.println(currentItem.itemname);
                         return true;
                     }
 
@@ -261,9 +277,11 @@ public class HeroInventoryPanel implements Disposable {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         currentItem = hero.getInventory().get(index);
-                        if(currentItem.getType() != com.mygdx.game.enums.EquipmentType.NONE) {
+                        currentAbility = null;
+                        if(currentItem.getType() != EquipmentType.NONE) {
                             hero.equipItem(hero.getInventory().get(index));
                             System.out.println("Equip:" + currentItem.itemname);
+
                         } else
                         if (currentItem.isUsable())
                             hero.useItem(currentItem);
@@ -329,7 +347,6 @@ public class HeroInventoryPanel implements Disposable {
             });
         }
 
-
         if(hero.weapon1 != null) {
             equipmenttable.row();
             equipmenttable.add(equipedWeapon1Label);
@@ -374,38 +391,66 @@ public class HeroInventoryPanel implements Disposable {
         }
 
 
+        selectedTable.row();
+        selectedTable.add(atackLabel);
+
+        for(int i =0; i < hero.selectedAtackAbilities.size; i++) {
+            final int index = i;
+            Image headImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedAtackAbilities.get(index).getIcon()));
+            headImage.addListener(new InputListener(){
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    currentAbility = hero.selectedAtackAbilities.get(index);
+                    currentItem = null;
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    update();
+                }
+            });
+            selectedTable.add(headImage);
+        }
+
+        //selected abilities
+        selectedTable.row();
+        selectedTable.add(defenseLabel);
+
+        for(int i =0; i < hero.selectedDefenseAbilities.size; i++) {
+            final int index = i;
+            Image headImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedDefenseAbilities.get(index).getIcon()));
+            headImage.addListener(new InputListener(){
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    currentAbility = hero.selectedDefenseAbilities.get(index);
+                    currentItem = null;
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    update();
+                }
+            });
+            selectedTable.add(headImage);
+        }
 
         //details tableController update
         detailstable.row();
         detailstable.row();
         if(currentItem != null)
             detailstable.add(new Label(String.format("%s", currentItem.itemdescription), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
+        else if (currentAbility != null)
+            detailstable.add(new Label(String.format("%s", currentAbility.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
 
         stage.addActor(titleTable);
         stage.addActor(inventorytable);
         stage.addActor(equipmenttable);
+        stage.addActor(selectedTable);
         stage.addActor(detailstable);
-
-
-    }
-
-    private void setAbility(com.mygdx.game.enums.AbilityID currentAbility) {
-        //Skin uiskin = new Skin(Gdx.files.internal("skin/uiskin.json"));
-
-        //dialog = new CustomDialog("Exit?", uiskin);
-        //dialog.getTitleTable().add(new Label("Error", new Label.LabelStyle(new BitmapFont(), Color.WHITE))).center().expand();
-
-        //CustomDialog dialog = new CustomDialog("Exit?", uiskin);
-        //stage.addActor(dialog);
-
-        //dialog.show(stage);
-
-//        Table detailstable = new Table();
-//        detailstable.center();
-//        detailstable.setFillParent(true);
-//        detailstable.row();
-//        detailstable.add(new Label(String.format("%s", "OOOOOO"), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
-//        stage.addActor(detailstable);
     }
 
     @Override

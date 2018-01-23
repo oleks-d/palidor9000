@@ -1,0 +1,22 @@
+{"objects":[
+  {
+    "id":"door_1",
+    "image" : "key1",
+    "type" : "DOOR",
+  },
+  {
+    "id":"chest_1",
+    "image" : "castbar",
+    "type" : "CHEST",
+  },
+  {
+    "id":"box_1",
+    "image" : "healthbar",
+    "type" : "BLOCK"
+  },
+  {
+    "id":"spike_1",
+    "image" : "healthbar",
+    "type" : "SPIKE"
+  }
+]}

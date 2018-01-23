@@ -22,6 +22,7 @@ import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
+import com.mygdx.game.sprites.gameobjects.GameObject;
 import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.LevelManager;
 
@@ -62,6 +63,7 @@ public class GameScreen implements Screen {
     boolean PAUSE;
     boolean onInventoryScreen = false;
     boolean onAbilitiesScreen = false;
+    boolean onDialogScreen = false;
 
     double CURRENTTIME = 0;
 
@@ -71,6 +73,11 @@ public class GameScreen implements Screen {
     float holdingTimeABILITY2 = 0;
     float holdingTimeJUMP = 0;
     float holdingTimeUSE = 0;
+
+    boolean jumpWasJustPressed;
+    boolean useWasJustPressed;
+    boolean a1WasJustPressed;
+    boolean a2WasJustPressed;
 
     com.mygdx.game.enums.AbilityID abilityToExecuteNext = null;
     int abilityIndex = 0;
@@ -124,7 +131,7 @@ public class GameScreen implements Screen {
         } else
             hero = levelmanager.loadHero(heroName);
 
-        levelmanager.loadLevel(hero.currentLevel);
+        levelmanager.loadLevel(hero.currentLevel, hero.name);
 
         //info
         infoPanel = new com.mygdx.game.scenes.InfoPanel(game.getBatch(), levelmanager);
@@ -160,14 +167,9 @@ public class GameScreen implements Screen {
 
     void update(float delta){
 
-        ActivityWithEffect activity;
+        Array<ActivityWithEffect> activity;
 
         handleInput(delta);
-
-//        hero.jump();
-//        hero.move(true);
-//        hero.attack(true, false);
-
 
         // handle camera after hero position update
             if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 ) //&& hero.getBody().getPosition().x < 32-viewport.getWorldWidth() / 2)
@@ -207,20 +209,32 @@ public class GameScreen implements Screen {
             if (hero.getAbilityToCast() != AbilityID.NONE && hero.finishedCasting()) {
                 activity = hero.activateAbility(hero.getAbilityToCast());
                 if (activity != null)
-                    levelmanager.ACTIVITIES.add(activity);
+                    levelmanager.ACTIVITIES.addAll(activity);
             }
 
             //update all enemies
             for (Creature creature : levelmanager.CREATURES) {
-                creature.update(delta);
-                creature.nextStep();
+                if(!creature.isActive()) {
+                    if (creature.getBody().getPosition().x < camera.position.x + viewport.getWorldWidth() / 2 && creature.getBody().getPosition().x > camera.position.x - viewport.getWorldWidth() / 2)
+                        creature.makeActive();
+                }else {
+                    creature.update(delta);
+                    creature.nextStep();
 
-                if (creature.getAbilityToCast() != com.mygdx.game.enums.AbilityID.NONE && creature.finishedCasting()) {
-                    activity = creature.activateAbility(creature.getAbilityToCast());
-                    if (activity != null)
-                        levelmanager.ACTIVITIES.add(activity);
+                    if (creature.getAbilityToCast() != AbilityID.NONE && creature.finishedCasting()) {
+                        activity = creature.activateAbility(creature.getAbilityToCast());
+                        if (activity != null)
+                            levelmanager.ACTIVITIES.addAll(activity);
+                    };
                 }
-                ;
+            }
+
+            //update all objects
+            for (int i = 0; i < levelmanager.OBJECTS.size; i++){
+                GameObject object = levelmanager.OBJECTS.get(i);
+                object.update(delta);
+                if (object.isDestroyed())
+                    levelmanager.OBJECTS.removeIndex(i);
             }
 
             //update items
@@ -231,13 +245,6 @@ public class GameScreen implements Screen {
                     levelmanager.ITEMS.removeIndex(i);
                     //itemsToRemove.add(i);
             }
-
-//            if (itemsToRemove.size > 0) {
-//                for (int i = itemsToRemove.size-1; i >= 0  ; i--) {
-//                    levelmanager.ITEMS.removeIndex(itemsToRemove.get(i));
-//                }
-//                itemsToRemove.clear();
-//            }
 
             //update activities
             for (int i = 0; i < levelmanager.ACTIVITIES.size; i++) {
@@ -262,7 +269,7 @@ public class GameScreen implements Screen {
 
         Vector3 coord;
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.P) || controller.inventoryToched || heroInventoryPanel.closeTouched) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I) || controller.inventoryToched || heroInventoryPanel.closeTouched) {
             heroInventoryPanel.closeTouched = false;
             controller.inventoryToched = false;
             onInventoryScreen = !onInventoryScreen;
@@ -271,11 +278,6 @@ public class GameScreen implements Screen {
                 controller.update(hero);
             else
                 heroInventoryPanel.update();
-        }
-
-        //TODO temp
-        if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
-            setDay(!isDay);
         }
 
 
@@ -290,12 +292,18 @@ public class GameScreen implements Screen {
                 heroAbilitiesPanel.update();
         }
 
+        //TODO temp
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+            setDay(!isDay);
+        }
 
         if (PAUSE) {
             if(Gdx.input.justTouched()) {
                  coord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
                 getInfoFromObjectByCoordinates(coord.x,coord.y);
             }
+            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+                endDialog();
         } else {
                 ActivityWithEffect activity = null;
 
@@ -309,23 +317,23 @@ public class GameScreen implements Screen {
                 //hero.direction = hero.direction.rotateRad(mouseVector.angleRad(hero.direction));
 */
 
-            if(holdingTimeUP > 0) {
-                if (!controller.touchedUp && !Gdx.input.isKeyPressed(Input.Keys.W)){
-                    if(holdingTimeUP > 3)
-                        hero.shout();
-                    //hero.statusbar.resetCastbar();
-                    holdingTimeUP = 0;
-                }
+//            if(holdingTimeUP > 0) {
+//                if (!controller.touchedUp && !Gdx.input.isKeyPressed(Input.Keys.W)){
+//                    if(holdingTimeUP > 3)
+//                        hero.shout();
+//                    //hero.statusbar.resetCastbar();
+//                    holdingTimeUP = 0;
+//                }
 // else
 //                    hero.statusbar.updateCastBar("Shout", holdingTimeUP, 1f);
-            }
-            if(holdingTimeDOWN > 0) {
-                if (!controller.touchedDown && !Gdx.input.isKeyPressed(Input.Keys.S)){
-                    if(holdingTimeDOWN > 3)
-                        hero.hide();
-                    holdingTimeDOWN = 0;
-                    //hero.statusbar.resetCastbar();
-                }
+//            }
+//            if(holdingTimeDOWN > 0) {
+//                if (!controller.touchedDown && !Gdx.input.isKeyPressed(Input.Keys.S)){
+//                    if(holdingTimeDOWN > 3)
+//                        hero.hide();
+//                    holdingTimeDOWN = 0;
+//                    //hero.statusbar.resetCastbar();
+//                }
                 //else
 //                hero.statusbar.updateCastBar("Hiding...", holdingTimeDOWN, 1f);
             }
@@ -349,34 +357,35 @@ public class GameScreen implements Screen {
 //            }
 
 
+//
+//            if (holdingTimeABILITY1> 0) {
+//                if (! controller.touchedAbility1 && !Gdx.input.isKeyPressed (Input.Keys.A)) {
+//                    if (holdingTimeABILITY1 <2)
+//                        hero.attack (true, false);
+//                    if (holdingTimeABILITY1>= 2)
+//                        hero.attack (true, true);
+//
+//                    holdingTimeABILITY1 = 0;
+//                    }
+//            }
+//
+//            if (holdingTimeABILITY2> 0) {
+//                if (! controller.touchedAbility2 &&! Gdx.input.isKeyPressed (Input.Keys.D)) {
+//                    if (holdingTimeABILITY2 <2)
+//                        hero.attack (false, false);
+//                    if (holdingTimeABILITY2>= 2)
+//                        hero.attack (false, true);
+//
+//                holdingTimeABILITY2 = 0;
+//                }
+//            }
 
-            if (holdingTimeABILITY1> 0) {
-                if (! controller.touchedAbility1 && !Gdx.input.isKeyPressed (Input.Keys.A)) {
-                    if (holdingTimeABILITY1 <2)
-                        hero.attack (true, false);
-                    if (holdingTimeABILITY1>= 2)
-                        hero.attack (true, true);
-
-                    holdingTimeABILITY1 = 0;
-                    }
-            }
-
-            if (holdingTimeABILITY2> 0) {
-                if (! controller.touchedAbility2 &&! Gdx.input.isKeyPressed (Input.Keys.D)) {
-                    if (holdingTimeABILITY2 <2)
-                        hero.attack (false, false);
-                    if (holdingTimeABILITY2>= 2)
-                        hero.attack (false, true);
-
-                holdingTimeABILITY2 = 0;
-                }
-            }
 
                 if (controller.touchedUp || Gdx.input.isKeyPressed(Input.Keys.W)) {
-                    holdingTimeUP = holdingTimeUP + delta;
+                    //holdingTimeUP = holdingTimeUP + delta;
                     hero.direction.set(hero.direction.x, 1);
                 }else if (controller.touchedDown || Gdx.input.isKeyPressed(Input.Keys.S)) {
-                    holdingTimeDOWN = holdingTimeDOWN + delta;
+                    //holdingTimeDOWN = holdingTimeDOWN + delta;
                     hero.direction.set(hero.direction.x, -1);
                 }else hero.direction.set(hero.direction.x, 0);
 
@@ -390,18 +399,55 @@ public class GameScreen implements Screen {
 
 
                 if (controller.touchedJump || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                    holdingTimeJUMP = holdingTimeJUMP + delta;
-                    hero.jump();
+                    //holdingTimeJUMP = holdingTimeJUMP + delta;
+
+                    if(jumpWasJustPressed) {
+                        hero.powerjump();
+                        jumpWasJustPressed = false;
+                    } else {
+                        hero.jump();
+                        jumpWasJustPressed = true;
+                    }
                     controller.touchedJump = false;
                 }
-                if (controller.touchedUse || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                    hero.jump();
+                if (controller.touchedUse || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                    controller.touchedUse = false;
+
+                    if(hero.getNeighbor() != null)
+                        startDialog(hero.getNeighbor());
+                    else {
+                        if (useWasJustPressed) {
+                            if (hero.isHidden())
+                                hero.useAbility(AbilityID.PICKPOCKET);
+                            else
+                                hero.hide();
+                            useWasJustPressed = false;
+                        } else {
+                            hero.stop();
+                            useWasJustPressed = true;
+                        }
+                    }
+
                 }
-                if (controller.touchedAbility1 || Gdx.input.isKeyPressed(Input.Keys.A)) {
-                    holdingTimeABILITY1 = holdingTimeABILITY1 + delta;
+                if (controller.touchedAbility1 || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+                    if(!a1WasJustPressed){
+                        hero.attack(true, false);
+                        a1WasJustPressed = true;
+                    }else{
+                        hero.attack(true, true);
+                        a1WasJustPressed = false;
+                    }
+                    //holdingTimeABILITY1 = holdingTimeABILITY1 + delta;
                 }
-                if (controller.touchedAbility2 || Gdx.input.isKeyPressed(Input.Keys.D)) {
-                    holdingTimeABILITY2 = holdingTimeABILITY2 + delta;
+                if (controller.touchedAbility2 || Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+                    if(!a2WasJustPressed){
+                        hero.attack(false, false);
+                        a2WasJustPressed = true;
+                    }else{
+                        hero.attack(false, true);
+                        a2WasJustPressed = false;
+                    }
+                    //holdingTimeABILITY2 = holdingTimeABILITY2 + delta;
                 }
 
 
@@ -414,8 +460,8 @@ public class GameScreen implements Screen {
             //    hero.direction = hero.direction.rotate(-30);
 
 
-                    if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-                        levelmanager.ITEMS.add(hero.throwFromInventory(hero.getInventory().get(0))); // TODO adjust
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+                        hero.throwFromInventory();
                     }
 
                     if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
@@ -430,9 +476,22 @@ public class GameScreen implements Screen {
                         STOP_GAME = true;
                     }
 
-                }
+           //     }
            // }
     }
+
+    void startDialog(Creature actor){
+        PAUSE = true;
+        //TODO
+        Gdx.app.log("Dialog", "Started'");
+
+    }
+
+    void endDialog(){
+        PAUSE = false;
+        Gdx.app.log("Dialog", "Closed'");
+    }
+
 
     private void getInfoFromObjectByCoordinates(float x, float y) {
         for(GameItem item : levelmanager.ITEMS){
@@ -474,19 +533,31 @@ public class GameScreen implements Screen {
             }
 
 
-        //render all enemies
-        for (Creature creature : levelmanager.CREATURES) {
-            creature.draw(game.getBatch());
-        }
+            //render all enemies
+            for (Creature creature : levelmanager.CREATURES) {
+                creature.draw(game.getBatch());
+            }
 
+        //render all objects
+        for (GameObject object : levelmanager.OBJECTS) {
+            object.draw(game.getBatch());
+        }
             //render all activities
             for (ActivityWithEffect activity : levelmanager.ACTIVITIES) {
                 if (!activity.isDestroyed())
-                    activity.draw(game.getBatch());
+                    try {
+                    //TODO fix
+                        //game.getBatch().draw(activity.region, activity.getX(), activity.getY(), activity.region.getRegionWidth() / PPM / 2, activity.region.getRegionHeight() / PPM / 2, activity.region.getRegionWidth() / PPM, activity.region.getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
+                    }catch(Exception e){
+                        activity.draw(game.getBatch());
+                    }
+                //activity.draw(game.getBatch());
+                    //game.getBatch().draw(activity.getFrame(delta), activity.getX(), activity.getY(), activity.getFrame(delta).getRegionWidth() / PPM / 2, activity.getFrame(delta).getRegionHeight() / PPM / 2, activity.getFrame(delta).getRegionWidth() / PPM, activity.getFrame(delta).getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
+
             }
 
             hero.draw(game.getBatch());
-            hero.creatureAim.draw(game.getBatch());
+            //hero.creatureAim.draw(game.getBatch()); //todo aiming
 
             game.getBatch().end();
 
@@ -503,6 +574,8 @@ public class GameScreen implements Screen {
                 //heroAbilitiesPanel.update();
                 game.getBatch().setProjectionMatrix(heroAbilitiesPanel.stage.getCamera().combined);
                 heroAbilitiesPanel.stage.draw();
+            } else if (onDialogScreen){
+                infoPanel.stage.draw();
             }
 
         } else {

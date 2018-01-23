@@ -5,12 +5,11 @@
     "id" : "animal_1",
     "name" : "Rolf",
     "description": "Regular rolf",
-    "health" : "100",
+    "health" : "10",
     "speed" : "1",
     "spritesheetregion" : "enemy2",
     "effects" : "CRUSH_DAMAGE 1 1 0",
     "abilities" : "LONGBOW_SHOT",
-    "items" : "coin,sword_1",
     "equipeditems" : "",
     "org" : "2"
   },
@@ -19,13 +18,26 @@
     "id" : "animal_2",
     "name" : "Fast Rolf",
     "description": "Fast rolf",
-    "health" : "100",
-    "speed" : "0",
+    "health" : "10",
+    "speed" : "1",
     "spritesheetregion" : "enemy2",
     "effects" : "CUT_DAMAGE 1 1 0",
     "abilities" : "PUNCH",
-    "items" : "coin,coin",
     "org" : "2"
+  },
+
+
+  {
+    "id" : "mark",
+    "name" : "Mark",
+    "description": "Mark !",
+    "health" : "10",
+    "speed" : "0",
+    "spritesheetregion" : "enemy1",
+    "effects" : "CUT_DAMAGE 1 1 0",
+    "abilities" : "PUNCH",
+    "org" : "1",
+    "dialogs" : "1,2"
   }
 
 ]}

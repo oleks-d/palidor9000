@@ -36,13 +36,13 @@ public enum AbilityID{
 //    PUSH("Push","Push forward","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.BOX, 0.1f , 60f),
 //    PULL("Pull","Pull to me","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.ARROW, 0.1f , 60f),
 
-    HUMMER_SWING("Hummer swing",  "Melee strike", "humer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 0.1f ),
-    AXE_SWING("Axe swing",  "Melee strike", "axe", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 0.1f ),
-    SWORD_SWING("Sword swing",  "Melee strike", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 0.1f ),
+    HUMMER_SWING("Hummer swing",  "Melee strike", "hummer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
+    AXE_SWING("Axe swing",  "Melee strike", "axe", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
+    SWORD_SWING("Sword swing",  "Melee strike", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
 
-    HUMMER_SMASH("Hummer SMASH",  "Stunning Melee strike", "humer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
+    HUMMER_SMASH("Hummer SMASH",  "Stunning Melee strike", "hummer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
     AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
-    SWORD_SMASH("Sword SMASH",  "Melee strike with multiple targets ", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BIGBOX, 0.1f, 10f ),
+    SWORD_SMASH("Sword SMASH",  "Melee strike with multiple targets ", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
 
 
     DITRUCTING_SHOT("Stuning shot", "Stunning shot", "bow", State.SHOTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.1f, 10f),
@@ -63,7 +63,7 @@ public enum AbilityID{
 
     MASK("Hide", "Hide from everyone", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
 
-    FIREWALL("Firewall", "Fire", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 0.1f, 0.1f),
+    FIREWALL("Firewall", "Fire", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 0.1f, 1f),
     ICEWALL("Icewall", "Ice", "ice_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 0.1f, 0.1f),
     FIRESHIELD("Fireshield", "Fireshield", "shield_red", State.CASTING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.SELF, 0.1f, 3f),
     ICESHIELD("Iceshield", "Iceshield", "shield", State.CASTING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.SELF, 0.1f, 3f),
@@ -71,7 +71,7 @@ public enum AbilityID{
     ICESTORM("Icestorm", "Icestorm", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.BOOM, 0.1f, 0.1f),
 
 
-    PICKPOCKET("Pickpocket", "Steal", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    PICKPOCKET("Pickpocket", "Steal", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
     INVISIBILITY("Invisibility", "Hide from everyone", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 10f),
     TRADE("Trade", "Make influence", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
     FULLPROTECTION("Fullprotection", "Immune to any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
@@ -79,7 +79,8 @@ public enum AbilityID{
     SILENT_STRIKE("Silent strike", "Damage from hide", "sword", State.KICKING, AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 60f),
     TELEPORT("Fullprotection", "Immune to any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
 
-    POWER_SHOUT("Fullprotection", "Immune to any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.BIGBOX, 0.1f, 60f);
+    POWER_SHOUT("Fullprotection", "Immune to any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.BIGBOX, 0.1f, 60f),
+    POWERJUMP("Powerjump", "Jump twice", "icon_blank",State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 1f);
 
     private final com.mygdx.game.enums.AbilityType type;
     String value;

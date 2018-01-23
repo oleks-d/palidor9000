@@ -46,9 +46,6 @@
   <object id="110" x="1056" y="288" width="35" height="32"/>
   <object id="111" x="927" y="351" width="33" height="32"/>
  </objectgroup>
- <objectgroup name="jumppoints">
-  <object id="88" name="hero_Forest" x="177" y="83"/>
- </objectgroup>
  <objectgroup name="triggers">
   <object id="86" name="route" x="33" y="98" width="28" height="28">
    <properties>
@@ -59,6 +56,8 @@
  <objectgroup name="entities">
   <object id="94" name="key_1" x="2927" y="237"/>
  </objectgroup>
- <objectgroup name="creatures"/>
- <objectgroup name="objects"/>
+ <objectgroup name="creatures">
+  <object id="88" name="hero_Forest" x="177" y="83"/>
+ </objectgroup>
+ <objectgroup name="jumppoints"/>
 </map>

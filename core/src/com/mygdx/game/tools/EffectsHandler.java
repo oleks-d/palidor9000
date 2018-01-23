@@ -1,10 +1,8 @@
 package com.mygdx.game.tools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.sprites.creatures.Creature;
-import com.mygdx.game.sprites.creatures.CreatureStatus;
 
 
 public class EffectsHandler {
@@ -21,14 +19,14 @@ public class EffectsHandler {
 
                             if(damageValue > 0) {// if was not stoped by armor/buffs
                                 creature.stats.health.current = creature.stats.health.current - damageValue;
-                                creature.addMessage(String.valueOf(damageValue), Fonts.BAD);
+                                creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                             }
                     }else { // if had shield remove shield
-                        creature.addMessage("Has shield to " + EffectID.CUT_DAMAGE.toString(), Fonts.IMPORTANT);
+                        creature.addStatusMessage("Has shield to " + EffectID.CUT_DAMAGE.toString(), Fonts.IMPORTANT);
                         creature.removeEffectByID(creature.getEffect(EffectID.HAS_SHIELD_AGAINST_CUT_DAMAGE).id);
                     }
                 else
-                    creature.addMessage("Immune to " + EffectID.CUT_DAMAGE.toString(), Fonts.IMPORTANT);
+                    creature.addStatusMessage("Immune to " + EffectID.CUT_DAMAGE.toString(), Fonts.IMPORTANT);
                     // creature is immune to this type of damage
                 break;
             case CRUSH_DAMAGE:
@@ -42,14 +40,14 @@ public class EffectsHandler {
 
                         if(damageValue > 0) {// if was not stoped by armor/buffs
                             creature.stats.health.current = creature.stats.health.current - damageValue;
-                            creature.addMessage(String.valueOf(damageValue), Fonts.BAD);
+                            creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                         }
                     }else { // if had shield remove shield
-                        creature.addMessage("Has shiled to " + EffectID.CRUSH_DAMAGE.toString(), Fonts.IMPORTANT);
+                        creature.addStatusMessage("Has shiled to " + EffectID.CRUSH_DAMAGE.toString(), Fonts.IMPORTANT);
                         creature.removeEffectByID(creature.getEffect(EffectID.HAS_SHIELD_AGAINST_CRUSH_DAMAGE).id);
                     }
                 else
-                    creature.addMessage("Immune to " + EffectID.CRUSH_DAMAGE.toString(), Fonts.IMPORTANT);
+                    creature.addStatusMessage("Immune to " + EffectID.CRUSH_DAMAGE.toString(), Fonts.IMPORTANT);
                 // creature is immune to this type of damage
                 break;
             case FIRE_DAMAGE:
@@ -63,14 +61,14 @@ public class EffectsHandler {
 
                         if(damageValue > 0) { // if was not stoped by armor/buffs
                             creature.stats.health.current = creature.stats.health.current - damageValue;
-                            creature.addMessage(String.valueOf(damageValue), Fonts.BAD);
+                            creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                         }
                     }else { // if had shield remove shield
-                        creature.addMessage("Has shield to " + EffectID.FIRE_DAMAGE.toString(), Fonts.IMPORTANT);
+                        creature.addStatusMessage("Has shield to " + EffectID.FIRE_DAMAGE.toString(), Fonts.IMPORTANT);
                         creature.removeEffectByID(creature.getEffect(EffectID.HAS_SHIELD_AGAINST_FIRE_DAMAGE).id);
                     }
                 else
-                    creature.addMessage("Immune to " + EffectID.FIRE_DAMAGE.toString(), Fonts.IMPORTANT);
+                    creature.addStatusMessage("Immune to " + EffectID.FIRE_DAMAGE.toString(), Fonts.IMPORTANT);
                 // creature is immune to this type of damage
                 break;
             case ICE_DAMAGE:
@@ -84,29 +82,29 @@ public class EffectsHandler {
 
                         if(damageValue > 0) {// if was not stoped by armor/buffs
                             creature.stats.health.current = creature.stats.health.current - damageValue;
-                            creature.addMessage(String.valueOf(damageValue), Fonts.BAD);
+                            creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                         }
                     }else { // if had shield remove shield
-                        creature.addMessage("Has shield to " + EffectID.ICE_DAMAGE.toString(), Fonts.IMPORTANT);
+                        creature.addStatusMessage("Has shield to " + EffectID.ICE_DAMAGE.toString(), Fonts.IMPORTANT);
                         creature.removeEffectByID(creature.getEffect(EffectID.HAS_SHIELD_AGAINST_ICE_DAMAGE).id);
                     }
                 else
-                    creature.addMessage("Immune to " + EffectID.ICE_DAMAGE.toString(), Fonts.IMPORTANT);
+                    creature.addStatusMessage("Immune to " + EffectID.ICE_DAMAGE.toString(), Fonts.IMPORTANT);
                 // creature is immune to this type of damage
                 break;
 
 
             case SLOW:
-                creature.addMessage("Slow", Fonts.BAD);
+                creature.addStatusMessage("Slow", Fonts.BAD);
                 creature.stats.speed.current--;
                 break;
             case FAST:
-                creature.addMessage("Fast", Fonts.GOOD);
+                creature.addStatusMessage("Fast", Fonts.GOOD);
                 creature.stats.speed.current  = (int) Math.abs(magnitude); //TODO fix
                 break;
 
             case STUNED:
-                creature.addMessage("Stuned", Fonts.BAD);
+                creature.addStatusMessage("Stuned", Fonts.BAD);
                 creature.setStun(true);
                 break;
 
@@ -116,6 +114,8 @@ public class EffectsHandler {
             case MOVE_RIGHT:
                 creature.getBody().applyLinearImpulse(new Vector2(magnitude,0), creature.getBody().getWorldCenter(), true);
                 break;
+            case INVISIBLE:
+                creature.setInvisible(true);
 
 //            default:
 //                Gdx.app.log("No such effect or no processing needed", id.toString());
@@ -125,21 +125,27 @@ public class EffectsHandler {
     public static void resetEffect(Creature creature, EffectID id, float magnitude){
         switch (id){
             case SLOW:
-                creature.addMessage("Fast againg", Fonts.IMPORTANT);
+                creature.addStatusMessage("Fast againg", Fonts.IMPORTANT);
                 creature.stats.speed.current++;
                 break;
             case FAST:
-                creature.addMessage("Slow againg", Fonts.IMPORTANT);
+                creature.addStatusMessage("Slow againg", Fonts.IMPORTANT);
                 creature.stats.speed.current--;
                 break;
 
             case STUNED:
-                creature.addMessage("Active (not in stun)", Fonts.IMPORTANT);
+                creature.addStatusMessage("Active (not in stun)", Fonts.IMPORTANT);
                 creature.setStun(false);
                 break;
             case COVERED_BY_FIRE_SHIELD:
             case COVERED_BY_SHIELD:
                 creature.shieldEffect = null;
+                break;
+            case INVISIBLE:
+                creature.setInvisible(false);
+                break;
+            case THROW_FROM_INVENTORY:
+                creature.throwFromInventory();
                 break;
             default:
                 // No remove process needed

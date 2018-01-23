@@ -10,10 +10,9 @@ import com.mygdx.game.stuctures.Characteristics;
 import com.mygdx.game.stuctures.Skill;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
 import com.mygdx.game.stuctures.descriptions.ItemDescription;
+import com.mygdx.game.stuctures.descriptions.ObjectDescription;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +30,7 @@ public class JSONLoader {
         {
             results.put(component.getString("id"),
                     new CreatureDescription(
+                            component.getString("id"),
                             component.getString("name"),
                             component.getString("description"),
                             component.getString("spritesheetregion"),
@@ -41,9 +41,8 @@ public class JSONLoader {
                             Integer.valueOf(component.getString("org")),
                             tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                             tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                            tryToGetValue(component, "items") != null ? component.getString("items") : "",
-                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
-
+                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : "",
+                            tryToGetValue(component, "dialogs") != null ? component.getString("dialogs") : ""
                             ));
             //System.out.println(component.get("asset").getString("relativePath"));
         }
@@ -96,9 +95,12 @@ public class JSONLoader {
 
         Array<AbilityID> selectedAtackAbilities = new Array<AbilityID>();
         Array<AbilityID> selectedDefenseAbilities = new Array<AbilityID>();
-        Array<AbilityID> selectedHelpAbilities = new Array<AbilityID>();
+//        Array<AbilityID> selectedHelpAbilities = new Array<AbilityID>();
 
         Array<Skill> skills = new Array<Skill>();
+        String items = null;
+
+        int experience= 0;
 
         JsonReader json = new JsonReader();
         try {
@@ -108,6 +110,7 @@ public class JSONLoader {
             JsonValue component = base.get("hero");
 
             heroDescription = new CreatureDescription(
+                    "HERO",
                     component.getString("name"),
                     component.getString("description"),
                     component.getString("spritesheetregion"),
@@ -118,29 +121,36 @@ public class JSONLoader {
                     Integer.valueOf(component.getString("org")),
                     tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                     tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                    tryToGetValue(component, "items") != null ? component.getString("items") : "",
-                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
+                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : "",
+                    "" // no dialogs for hero
             );
+
+            items = tryToGetValue(base, ("items"));
 
             for (JsonValue state : base.get("globalStates")) {
                 globalStates.put(state.getString("key"), state.getString("value"));
             }
 
+            experience = Integer.valueOf(base.getString("exp"));
 
+
+            if(base.getString("selectedAtackAbilities") != null && !"".equals(base.getString("selectedAtackAbilities").trim()))
             for (String item : base.getString("selectedAtackAbilities").split(","))
                 selectedAtackAbilities.add(AbilityID.valueOf(item.trim()));
+            if(base.getString("selectedDefenseAbilities") != null && !"".equals(base.getString("selectedDefenseAbilities").trim()))
             for (String item : base.getString("selectedDefenseAbilities").split(","))
                 selectedDefenseAbilities.add(AbilityID.valueOf(item.trim()));
 //            for (String item : base.getString("selectedHelpAbilities").split(","))
 //                selectedHelpAbilities.add(AbilityID.valueOf(item.trim()));
 
+            if(base.getString("skills") != null && !"".equals(base.getString("skills").trim()))
             for (String item : base.getString("skills").split(","))
                 skills.add(Skill.valueOf(item.trim()));
 
             currentLevel = base.getString("currentLevel");
             previousLevel = base.getString("previousLevel");
 
-            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, skills);
+            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, skills, experience, items);
         }catch (Exception e) {
             //no hero found
 
@@ -182,16 +192,17 @@ public class JSONLoader {
                 "    \"spritesheetregion\": \"" + hero.spritesheetRegion + "\",\n" +
                 "    \"abilities\": \"" + hero.getAbilities().toString(",") + "\",\n" +
                 "    \"org\": \"1\",\n" +
-                "    \"items\": \"" + hero.getInventory().toString().replaceAll("[\\[\\]]","") + "\",\n" +
                 "    \"equipeditems\": \"" + equipedItems + "\"\n" +
                 "  },\n" +
                 "\n" +
+                "    \"items\": \"" + hero.getInventory().toString().replaceAll("[\\[\\]]","") + "\",\n" +
                 "  \"globalStates\" : [\n" +
                 globalStates +
                 "  ],\n" +
                 "\n" +
                 "  \"currentLevel\" : \"" + hero.currentLevel + "\",\n" +
                 "  \"previousLevel\" : \"" + hero.previousLevel + "\",\n" +
+                "  \"exp\" : \"" + hero.experience + "\",\n" +
                 "\n" +
                 "  \"selectedAtackAbilities\" : \"" + hero.selectedAtackAbilities.toString().replaceAll("[\\[\\]]", "") + "\",\n" +
                 "  \"selectedDefenseAbilities\": \"" + hero.selectedDefenseAbilities.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
@@ -212,5 +223,26 @@ public class JSONLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public HashMap<String, ObjectDescription> loadObjects() {
+        HashMap<String, ObjectDescription> results = new HashMap<>();
+        JsonReader json = new JsonReader();
+        JsonValue base = json.parse(Gdx.files.internal("data" + File.separator + "objects.json"));
+
+        for (JsonValue component : base.get("objects"))
+        {
+            results.put(component.getString("id"),
+                    new ObjectDescription(
+                            component.getString("id"),
+                            component.getString("type"),
+                            component.getString("image"),
+                            tryToGetValue(component, "program") != null ? component.getString("program") : "",
+                            tryToGetValue(component, "items") != null ? component.getString("items") : ""
+                            )
+            );
+        }
+
+        return results;
     }
 }

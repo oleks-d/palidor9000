@@ -131,7 +131,7 @@ public class MainPanel implements Disposable {
 
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    com.mygdx.game.tools.LevelManager.removeSave(savedHeroLabel);
+                    LevelManager.removeSave(savedHeroLabel);
                     update();
                     return true;
                 }
