@@ -103,7 +103,7 @@ public class CreatureStatus extends Sprite {
            //     batch.draw(battleMark, getX() + i * PalidorGame.TILE_SIZE / 2 / PPM, getY(), PalidorGame.TILE_SIZE / 2 / PPM, PalidorGame.TILE_SIZE / 2 / PPM);
             }
 
-            for(int j = 0; j<messages.size+0; j++){
+            for(int j = 0; j<messages.size; j++){
                 messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + 1 - (float)(removeMessageTime - owner.existingTime) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 

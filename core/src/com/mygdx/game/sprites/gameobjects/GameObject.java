@@ -2,6 +2,9 @@ package com.mygdx.game.sprites.gameobjects;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
@@ -28,7 +31,15 @@ public class GameObject extends Sprite {
 
     public Array<GameItem> items;
 
-    public GameObject(GameScreen screen, float x, float y, ObjectDescription objectDescription, String items, String program) {
+    public char[] steps = null;
+    char currentStep;
+    double existingTime;
+    double timeForNextStep;
+    double speedInCurrentStep;
+    int currentStepNumber;
+Vector2 direction;
+
+    public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String items, String program) {
 
         super();
 
@@ -37,6 +48,13 @@ public class GameObject extends Sprite {
         this.icon = objectDescription.image;
         this.type = objectDescription.type;
         this.program = program;
+
+        if(type != GameObjectType.DOOR && type != GameObjectType.CHEST && program != null && !program.equals(""))
+            steps = program.toCharArray();
+
+        currentStepNumber = 0;
+
+        direction = new Vector2(0,0);
 
         this.items = new Array<GameItem>();
 
@@ -48,27 +66,32 @@ public class GameObject extends Sprite {
 
         setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(objectDescription.image));
 
-        createBody(x, y);
+        createBody(rectangle);
+
+        if(steps != null)
+            nextStep(0);
     }
 
-    public void createBody(float x, float y){
+    public void createBody(Rectangle rect){
         this.world = screen.world;
-        setPosition(x, y);
-        setBounds(x, y, PalidorGame.TILE_SIZE/2 / PalidorGame.PPM, PalidorGame.TILE_SIZE/2 / PalidorGame.PPM);
+        setPosition(rect.x, rect.y);
+        setBounds(rect.x, rect.y, rect.getWidth() / PalidorGame.PPM, rect.getHeight() / PalidorGame.PPM);
 
         toDestroy = false;
         destroyed = false;
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(getX() / PalidorGame.PPM, getY()/ PalidorGame.PPM );
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set((rect.getX() + rect.getWidth() / 2) / PalidorGame.PPM, (rect.getY() + rect.getHeight() / 2) / PalidorGame.PPM);
         body = world.createBody(bodyDef);
 
-        CircleShape shape = new CircleShape();
-        shape.setRadius(PalidorGame.TILE_SIZE / 4 / PalidorGame.PPM );
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(rect.getWidth() / 2 / PalidorGame.PPM, rect.getHeight() / 2 / PalidorGame.PPM);
 
         FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.friction = 2;
         fixtureDef.shape = shape;
+
         fixtureDef.isSensor = false;
         fixtureDef.filter.categoryBits = PalidorGame.OBJECT_BIT;
         fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.ACTIVITY_BIT;
@@ -84,6 +107,35 @@ public class GameObject extends Sprite {
             world.destroyBody(body);
             destroyed = true;
         }
+
+        if(steps != null) {
+            existingTime = existingTime + dt;
+
+            if (existingTime >= timeForNextStep) {
+                nextStep(dt);
+                currentStepNumber++;
+            }
+
+            body.setLinearVelocity(direction);
+        }
+
+    }
+
+    private void nextStep(float dt) {
+        if(currentStepNumber>=steps.length)
+            currentStepNumber = 0;
+        currentStep = steps[currentStepNumber];
+        if(currentStep == 'u')
+            direction.set(0,1);
+        if(currentStep == 'd')
+            direction.set(0,-1);
+        if(currentStep == 'r')
+            direction.set(1,0);
+        if(currentStep == 'l')
+            direction.set(-1,0);
+
+        timeForNextStep = existingTime + 1f;
+
     }
 
     public void draw(Batch batch){
@@ -121,7 +173,7 @@ public class GameObject extends Sprite {
     }
 
     public String getProgram() {
-        return program;
+        return program==null?"":program;
     }
 
     public String getRequiredKey() {

@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
  */
 public enum Fonts {
     INFO(Color.DARK_GRAY, 0.01f),
-    IMPORTANT(Color.BLUE, 0.01f),
+    IMPORTANT(Color.BLACK, 0.01f),
     BAD(Color.RED, 0.01f),
     GOOD(Color.GREEN, 0.01f),
     NAMES(Color.GOLD, 0.01f);

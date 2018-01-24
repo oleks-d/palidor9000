@@ -15,13 +15,10 @@ import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.sprites.gameobjects.GameObject;
-import com.mygdx.game.tools.TriggerHandler;
+import com.mygdx.game.tools.*;
 import com.mygdx.game.stuctures.Characteristics;
 import com.mygdx.game.stuctures.Effect;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
-import com.mygdx.game.tools.AbilityHandler;
-import com.mygdx.game.tools.EffectsHandler;
-import com.mygdx.game.tools.Fonts;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -109,6 +106,7 @@ public class Creature extends Sprite {
     public boolean canPickUpObjects;
 
     public Effect shieldEffect = null; // effect that will be applied to enemy who is trying to hit creature
+    public String deathProcess = null;
 
     public CreatureStatus getStatusbar() {
         return statusbar;
@@ -144,7 +142,7 @@ public class Creature extends Sprite {
         this.IN_BATTLE = IN_BATTLE;
     }
 
-    public Creature(GameScreen screen, CreatureDescription description, String items){
+    public Creature(GameScreen screen, CreatureDescription description, String items, String deathProcess, int organization, String dialogs){
         super();
         this.screen = screen;
 
@@ -154,9 +152,9 @@ public class Creature extends Sprite {
 
         this.stats = new Characteristics(description.stats);
 
-        this.organization = description.organization;
+        this.organization = organization;
 
-        this.dialogs = description.dialogs;
+        this.deathProcess = deathProcess==null?"":deathProcess;
 
         canPickUpObjects = false;
         toDestroy = false;
@@ -165,6 +163,8 @@ public class Creature extends Sprite {
         this.activeEffects = new Array<Effect>();
         this.effectsToRemove = new Array<Integer>();
         this.inventory = new Array<GameItem>() ;
+        this.dialogs = new Array<Integer>();
+
 
         directionRight = false;
         stateTimer = 0f;
@@ -218,11 +218,19 @@ public class Creature extends Sprite {
 //        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
 //        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
 
+        if(dialogs != null && !dialogs.equals("")) {
+            for (String curItem : dialogs.split(",")) {
+                if(!curItem.equals(""))
+                    this.dialogs.add(Integer.valueOf(curItem.trim()));
+            }
+        }
+
+
     }
-    public Creature (GameScreen screen, float x, float y, CreatureDescription description, String items) {
+    public Creature (GameScreen screen, float x, float y, CreatureDescription description, String items, String deathProcess, int organization, String dialogs) {
         //super(screen.getAtlas().findRegion(description.region));
 
-        this(screen, description, items);
+        this(screen, description, items, deathProcess, organization, dialogs);
 
         //equip
         for (String itemd : description.equiped){
@@ -337,19 +345,6 @@ public class Creature extends Sprite {
         }
     }
 
-    public void nextStep(){
-        brain.getNextStep(this,screen);
-    }
-
-    public AbilityID findAbility(AbilityType type) {
-        for(AbilityID ability : abilities){
-            if(ability.getType().equals(type) && cooldowns.get(ability) <= existingTime) {
-                return ability;
-            }
-        };
-        return null;
-    }
-
 
     public void updatePosition(float dt){
         this.setPosition(body.getPosition().x - getWidth()/2 , body.getPosition().y - getHeight() /2);
@@ -390,11 +385,11 @@ public class Creature extends Sprite {
             region.flip(true, false);
             //directionRight = false;
         } else
-        //if ((body.getLinearVelocity().x > 0 || directionRight) && region.isFlipX()){
+            //if ((body.getLinearVelocity().x > 0 || directionRight) && region.isFlipX()){
             if (directionRight && region.isFlipX()){
                 region.flip(true,false);
-            //directionRight = true;
-        }
+                //directionRight = true;
+            }
 
         stateTimer = currentState == previousState ? stateTimer + dt: 0;
         previousState = currentState;
@@ -428,6 +423,84 @@ public class Creature extends Sprite {
     public Body getBody() {
         return body;
     }
+
+
+    @Override
+    public void draw(Batch batch) {
+        if(!destroyed) {
+            try {
+                super.draw(batch);
+                statusbar.draw(batch);
+            }catch(Exception e){ //TODO
+                //       batch.draw(region, getX()/100,getY()/100); //TODO
+                //       statusbar.draw(batch);
+            }
+            //creatureAim.draw(batch);
+        }else
+            batch.draw(deadBody, getX(),getY(),getWidth(),getHeight());
+    }
+
+    ///// AI
+
+    //next AI step
+    public void nextStep(){
+        brain.getNextStep(this,screen);
+    }
+
+    // find ability by type for AI
+    public AbilityID findAbility(AbilityType type) {
+        for(AbilityID ability : abilities){
+            if(ability.getType().equals(type) && cooldowns.get(ability) <= existingTime) {
+                return ability;
+            }
+        };
+        return null;
+    }
+
+    public void makeActive() {
+        isActive = true;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setMoveLeft(boolean b) {
+        this.brain.setMoveLeft(b);
+    }
+
+    public void setMoveRight(boolean b) {
+        this.brain.setMoveRight(b);
+    }
+
+    public void setHasToJump(boolean hasToJump) {
+        this.brain.setHasToJump(hasToJump);
+    }
+
+    public void setStandStill(boolean b) {
+        this.brain.setStandStill(b);
+    }
+
+
+    public int getToughness() {
+        int result = stats.health.current + getReputation();
+        return result;
+    }
+
+    public int getReputation() {
+        return reputation;
+    }
+
+    public boolean isEnemy(Creature creature) {
+        if(screen.getRivalOrganizations().get(this.organization).contains(String.valueOf(creature.getOrganization())))
+            return true;
+        return false;
+    }
+
+    public int getOrganization() {
+        return organization;
+    }
+
 
     // ACTIONS
     public void jump() {
@@ -521,6 +594,9 @@ public class Creature extends Sprite {
         return cooldowns.get(ability) <= existingTime;
     }
 
+
+    ///// EFFECTS
+
     public void applyEffect(Effect neweffect){
         activeEffects.add(new Effect(
                 neweffect.id,
@@ -597,6 +673,35 @@ public class Creature extends Sprite {
 
     }
 
+
+    // get first effect of a type
+    public Effect getEffect(EffectID id) {
+        for(int i = activeEffects.size-1;i>=0;i--){
+            if(activeEffects.get(i).id == id){
+                return activeEffects.get(i);
+            }
+        }
+        return null;
+    }
+
+    //check effect
+    public boolean checkEffect(EffectID id) {
+        return getEffect(id) != null;
+    }
+    //get sum of all effects
+    public float getEffectsSum(EffectID id) {
+        float result = 0;
+        for(int i = activeEffects.size-1;i>=0;i--){
+            if(activeEffects.get(i).id == id){
+                result = result + activeEffects.get(i).magnitude;
+            }
+        }
+        return result;
+    }
+
+
+    /// INVENTORY
+
     // add item to inventory
     public void addToInventory(GameItem item) {
         //if(!toDestroy && !item.toDestroy) {
@@ -604,6 +709,33 @@ public class Creature extends Sprite {
             item.destroyBody();
             inventory.add(item);
         }
+    }
+
+    //check item in inventory
+    public boolean checkInInventory(String itemID) {
+        for(GameItem item: inventory){
+            if(item.id.equals(itemID))
+                return true;
+        }
+        return false;
+    }
+
+    // remove item from inventory
+    public void removeItemByID(String itemID) {
+        if(checkInInventory(itemID)){
+                for(int i=0; i<inventory.size;i++) {
+                    GameItem item = inventory.get(i);
+                    if (item.id.equals(itemID)){
+                        inventory.removeIndex(i);
+                        return;
+                    }
+                }
+        }
+    }
+
+    //add item to inventory
+    public void addItemByID(String itemd) {
+        inventory.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
     }
 
     // put item on and apply effect
@@ -688,6 +820,24 @@ public class Creature extends Sprite {
             screen.levelmanager.ITEMS.add(item);
     }
 
+    public void throwFromInventory(String itemID) {
+        GameItem item = null;
+        for(int i = 0; i<inventory.size;i++){
+            if(inventory.get(i).id.equals(itemID)) {
+                item = inventory.get(i);
+                inventory.removeIndex(i);
+            }
+        }
+
+        if(item != null) {
+            float direction = directionRight ? -(PalidorGame.TILE_SIZE + PalidorGame.TILE_SIZE / 2) : (PalidorGame.TILE_SIZE + PalidorGame.TILE_SIZE / 2);
+            item.createBody((getBody().getPosition().x) * PalidorGame.PPM + direction, getBody().getPosition().y * PalidorGame.PPM);
+
+            if (item != null)
+                screen.levelmanager.ITEMS.add(item);
+        }
+    }
+
     public void throwFromInventory() {
         if(inventory.size > 0)
             throwFromInventory(inventory.get(0));
@@ -705,6 +855,9 @@ public class Creature extends Sprite {
         return inventory;
     }
 
+
+    /// CASTING PROCESS
+
     public void setAbilityToCast(AbilityID abilityToCast) {
         if(abilityToCast != AbilityID.NONE)
             this.abilityToCastAnimation = AbilityHandler.getAnimation(screen, abilityToCast, spritesheetRegion);
@@ -719,6 +872,7 @@ public class Creature extends Sprite {
 //        return ID;
 //    }
 
+    // DEATH processing
     public void toDie(){
         Gdx.app.log("Dead",name + " ");
         toDestroy = true;
@@ -726,33 +880,10 @@ public class Creature extends Sprite {
         int inventorySize = getInventory().size;
         for(int i =0; i<inventorySize;i++)
             throwFromInventory(getInventory().get(0));
+
+        ConditionProcessor.conditionProcess(this, deathProcess);
     }
 
-    @Override
-    public void draw(Batch batch) {
-        if(!destroyed) {
-            try {
-                super.draw(batch);
-                statusbar.draw(batch);
-            }catch(Exception e){ //TODO
-         //       batch.draw(region, getX()/100,getY()/100); //TODO
-         //       statusbar.draw(batch);
-            }
-            //creatureAim.draw(batch);
-        }else
-            batch.draw(deadBody, getX(),getY(),getWidth(),getHeight());
-    }
-
-    public boolean isEnemy(Creature creature) {
-        //if (this.enemyOrganizations.contains(creature.getOrganization()))
-        if(this.organization != creature.getOrganization())
-            return true;
-        return false;
-    }
-
-    public int getOrganization() {
-        return organization;
-    }
 
     public void activateTrigger(com.mygdx.game.sprites.triggers.Trigger trigger) {
         TriggerHandler.runProcess(this, trigger);
@@ -784,14 +915,6 @@ public class Creature extends Sprite {
 //        resetTimeSpentOnCast();
 //    }
 
-    public int getToughness() {
-        int result = stats.health.current + getReputation();
-        return result;
-    }
-
-    public int getReputation() {
-        return reputation;
-    }
 
     public double showWhenAbilityWillBeAvailable(AbilityID ability) {
         if(cooldowns.get(ability) - existingTime <= 0)
@@ -800,45 +923,17 @@ public class Creature extends Sprite {
     }
 
 
-    public Effect getEffect(EffectID id) {
-        for(int i = activeEffects.size-1;i>=0;i--){
-            if(activeEffects.get(i).id == id){
-                return activeEffects.get(i);
-            }
-        }
-        return null;
-    }
 
-    public float getEffectsSum(EffectID id) {
-        float result = 0;
-        for(int i = activeEffects.size-1;i>=0;i--){
-            if(activeEffects.get(i).id == id){
-                result = result + activeEffects.get(i).magnitude;
-            }
-        }
-        return result;
-    }
-
-    public void setMoveLeft(boolean b) {
-        this.brain.setMoveLeft(b);
-    }
-
-    public void setMoveRight(boolean b) {
-        this.brain.setMoveRight(b);
-    }
-
-    public void setHasToJump(boolean hasToJump) {
-        this.brain.setHasToJump(hasToJump);
-    }
-
-    public void setStandStill(boolean b) {
-        this.brain.setStandStill(b);
-    }
 
     // to status bar
     public void addStatusMessage(String message, Fonts font) {
         if(statusbar != null)
             statusbar.addMessage(message, existingTime + 2f, font);
+    }
+
+    public void doDamage(int damageValue) {
+        stats.health.current = stats.health.current - damageValue;
+        addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
     }
 
     public void setNeighbor(Creature neighbor) {
@@ -849,41 +944,13 @@ public class Creature extends Sprite {
         return dialogs;
     }
 
-    public void makeActive() {
-        isActive = true;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
 
     public void touchObject(GameObject object) {
-        if (object.getType() == GameObjectType.DOOR) {
-            if (checkInInventory(object.getRequiredKey())) {
-                object.destroyBody();
-            }
-        }
-        if (object.getType() == GameObjectType.CHEST) {
-            if (checkInInventory(object.getRequiredKey())) {
-                inventory.addAll(object.items);
-                object.destroyBody();
-            }
-        }
-        if (object.getType() == GameObjectType.SPIKE){
-            doDamage(5);
-        }
+        ObjectTouchProcessor.touchObject(this,object);
     }
 
-    private void doDamage(int damageValue) {
-        stats.health.current = stats.health.current - damageValue;
-        addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
-    }
 
-    private boolean checkInInventory(String itemID) {
-        for(GameItem item: inventory){
-            if(item.id.equals(itemID))
-                return true;
-        }
-        return false;
+    public String getDeathProcess() {
+        return deathProcess;
     }
 }

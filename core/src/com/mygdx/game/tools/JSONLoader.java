@@ -38,11 +38,11 @@ public class JSONLoader {
                                     Integer.valueOf(component.getString("health")),
                                     Integer.valueOf(component.getString("speed")),
                                     Integer.valueOf(1)),
-                            Integer.valueOf(component.getString("org")),
+                            //Integer.valueOf(component.getString("org")),
                             tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                             tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : "",
-                            tryToGetValue(component, "dialogs") != null ? component.getString("dialogs") : ""
+                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
+                            //tryToGetValue(component, "dialogs") != null ? component.getString("dialogs") : ""
                             ));
             //System.out.println(component.get("asset").getString("relativePath"));
         }
@@ -118,11 +118,11 @@ public class JSONLoader {
                             Integer.valueOf(component.getString("health")),
                             Integer.valueOf(component.getString("speed")),
                             Integer.valueOf(1)),
-                    Integer.valueOf(component.getString("org")),
+                    //Integer.valueOf(component.getString("org")),
                     tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                     tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : "",
-                    "" // no dialogs for hero
+                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
+                    //"" // no dialogs for hero
             );
 
             items = tryToGetValue(base, ("items"));

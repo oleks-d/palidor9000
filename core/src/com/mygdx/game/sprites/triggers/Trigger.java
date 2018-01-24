@@ -5,20 +5,24 @@ package com.mygdx.game.sprites.triggers;
  */
 public class Trigger {
 
+    public String getCondition() {
+        return condition;
+    }
+
+    private final String condition;
     private String type;
     private String value;
     private String key;
 
-    public Trigger(String type,  String key, String value, String description) {
+    public Trigger(String type,  String key, String value, String description, String condition) {
         this.type = type;
         this.value = value;
         this.key = key;
         this.description = description;
+        this.condition = condition;
     }
 
     private String description;
-
-
 
     public String getType() {
         return type;

@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -18,6 +19,7 @@ import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.scenes.ControllerPanel;
 import com.mygdx.game.scenes.HeroAbilitiesPanel;
 import com.mygdx.game.scenes.HeroInventoryPanel;
+import com.mygdx.game.scenes.InfoPanel;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.creatures.Hero;
@@ -25,6 +27,8 @@ import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.sprites.gameobjects.GameObject;
 import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.LevelManager;
+
+import java.util.HashMap;
 
 import static com.mygdx.game.PalidorGame.PPM;
 
@@ -134,7 +138,7 @@ public class GameScreen implements Screen {
         levelmanager.loadLevel(hero.currentLevel, hero.name);
 
         //info
-        infoPanel = new com.mygdx.game.scenes.InfoPanel(game.getBatch(), levelmanager);
+        infoPanel = new InfoPanel(game.getBatch(), this);
 
         //info
         heroInventoryPanel = new HeroInventoryPanel(game.getBatch(), hero, animationHelper);
@@ -302,7 +306,7 @@ public class GameScreen implements Screen {
                  coord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
                 getInfoFromObjectByCoordinates(coord.x,coord.y);
             }
-            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.justTouched())
                 endDialog();
         } else {
                 ActivityWithEffect activity = null;
@@ -480,8 +484,17 @@ public class GameScreen implements Screen {
            // }
     }
 
+    public void showDialog(){
+        PAUSE = true;
+        onDialogScreen = true;
+        //TODO
+        Gdx.app.log("Dialog", "Started'");
+
+    }
+
     void startDialog(Creature actor){
         PAUSE = true;
+        onDialogScreen = true;
         //TODO
         Gdx.app.log("Dialog", "Started'");
 
@@ -489,7 +502,9 @@ public class GameScreen implements Screen {
 
     void endDialog(){
         PAUSE = false;
+        onDialogScreen = false;
         Gdx.app.log("Dialog", "Closed'");
+        infoPanel.reset();
     }
 
 
@@ -626,6 +641,8 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         viewport.update(width,height);
         controller.viewport.update(width,height);
+
+        //TODO add other panels
     }
 
     @Override
@@ -673,4 +690,7 @@ public class GameScreen implements Screen {
         return font;
     }
 
+    public HashMap<Integer,String> getRivalOrganizations() {
+        return hero.getRivalOrganizations();
+    }
 }

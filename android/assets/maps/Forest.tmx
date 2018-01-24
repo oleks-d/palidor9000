@@ -78,6 +78,7 @@
   </object>
   <object id="109" name="story" x="181" y="599">
    <properties>
+    <property name="condition" value="T:MainStory:Started"/>
     <property name="key" value="MainStory"/>
     <property name="text" value="You see FOREIGNERS"/>
     <property name="value" value="Step2"/>

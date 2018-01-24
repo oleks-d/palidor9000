@@ -13,7 +13,7 @@ public class TriggerHandler {
     public static void runProcess(Creature creature, Trigger trigger) {
         //TODO describe triggers
         switch(trigger.getType()){
-            case "route":
+            case "route": // movement to other locations
                 if(creature.equals(creature.screen.hero)) {
                     creature.screen.levelmanager.removeDeadBodies();
                     creature.screen.levelmanager.saveLevel(creature.screen.hero.currentLevel, creature.screen.hero.name);
@@ -22,13 +22,16 @@ public class TriggerHandler {
                     creature.screen.infoPanel.update();
                 }
             break;
-            case "story":
+            case "story": // story points
                 if(creature.equals(creature.screen.hero)) {
-                    creature.screen.hero.changeGlobalState(trigger.getKey(),trigger.getValue());
-                    creature.screen.hero.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
+                    if ((ConditionProcessor.conditionSatisfied(creature.screen.hero, trigger.getCondition()))){
+                        creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
+                        creature.screen.infoPanel.addMessage(trigger.getDescription(), "Story", "book");
+                        creature.screen.showDialog();
+                    }
                 }
                 break;
-            case "label":
+            case "label": // text labe
                 if(creature.equals(creature.screen.hero)) {
                     if(creature.screen.hero.skills.contains(Skill.INTELLIGENCE1, true))
                         creature.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
@@ -36,12 +39,20 @@ public class TriggerHandler {
                         creature.addStatusMessage("You cannot read", Fonts.IMPORTANT);
                 }
                 break;
-            case "acient_label":
+            case "acient_label": //acient label
+                if(creature.equals(creature.screen.hero)) {
+                    if(creature.screen.hero.skills.contains(Skill.INTELLIGENCE3, true))
+                        creature.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
+                    else
+                        creature.addStatusMessage("You cannot read Acient text", Fonts.IMPORTANT);
+                }
+                break;
+            case "foreign_label": //foreign label
                 if(creature.equals(creature.screen.hero)) {
                     if(creature.screen.hero.skills.contains(Skill.INTELLIGENCE2, true))
                         creature.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
                     else
-                        creature.addStatusMessage("You cannot read Acient text", Fonts.IMPORTANT);
+                        creature.addStatusMessage("You cannot read Foreign text", Fonts.IMPORTANT);
                 }
                 break;
         }

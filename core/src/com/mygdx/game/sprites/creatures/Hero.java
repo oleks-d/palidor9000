@@ -21,12 +21,14 @@ public class Hero extends Creature {
     public Array<AbilityID> selectedDefenseAbilities = new Array<AbilityID> ();
 
     HashMap<String,String> GLOBAL_STATES;
+    HashMap<Integer, String> rivalOrganizations;
 
     public String currentLevel;
     public String previousLevel;
 
     public Array<Skill> skills;
     public int experience = 0;
+
 
     public Hero (GameScreen screen,
                  CreatureDescription heroDescription,
@@ -38,7 +40,7 @@ public class Hero extends Creature {
                  Array<Skill> skills,
                  int experience,
                  String items){
-        super(screen, heroDescription, items);
+        super(screen, heroDescription, items, null, 0, null);
 
         this.canPickUpObjects = true;
 
@@ -53,6 +55,11 @@ public class Hero extends Creature {
         this.skills = skills;
 
         this.experience= experience;
+
+        rivalOrganizations = new HashMap<Integer,String>();  // TODO detect rivals
+        rivalOrganizations.put(0,"1,2");
+        rivalOrganizations.put(1,"0,2");
+        rivalOrganizations.put(2,"0,1");
 
         //equip
         for (String itemd : heroDescription.equiped){
@@ -324,5 +331,9 @@ public class Hero extends Creature {
 
     public Creature getNeighbor() {
         return closeNeighbor;
+    }
+
+    public HashMap<Integer, String> getRivalOrganizations() {
+        return rivalOrganizations;
     }
 }

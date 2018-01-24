@@ -29,6 +29,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.badlogic.gdx.utils.JsonValue.ValueType.object;
+
 /**
  * Created by odiachuk on 12/20/17.
  *
@@ -58,7 +60,7 @@ public class LevelManager implements Disposable{
     public Array<Creature> CREATURES;
     public Array<GameObject> OBJECTS;
     public Array<ActivityWithEffect> ACTIVITIES;
-    public Array<UnavailableObject> UNAVAILABLE_CREATURES; // creatures that does not correspond to condition
+    public Array<UnavailableCreatures> UNAVAILABLE_CREATURES; // creatures that does not correspond to condition
     public Array<UnavailableObject> UNAVAILABLE_OBJECTS;
 
     //public Sprite background;
@@ -110,7 +112,7 @@ public class LevelManager implements Disposable{
         CREATURES = new Array<Creature> ();
         OBJECTS = new Array<GameObject> ();
         ACTIVITIES = new Array<ActivityWithEffect>();
-        UNAVAILABLE_CREATURES = new Array<UnavailableObject>();
+        UNAVAILABLE_CREATURES = new Array<UnavailableCreatures>();
         UNAVAILABLE_OBJECTS = new Array<UnavailableObject>();
 
         for (MapObject object : map.getLayers().get(GROUND_LAYER).getObjects().getByType(RectangleMapObject.class)) {
@@ -156,45 +158,38 @@ public class LevelManager implements Disposable{
     }
 
     public void createCreature(GameScreen screen, MapObject object) {
-        String conditionKey;
-        String conditionValue;
+
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
         String items = (String)object.getProperties().get("items");
+        String deathProcess = (String)object.getProperties().get("deathprocess");
+        String organizationID = (String)object.getProperties().get("organization");
+        Integer organization =  organizationID==null ? 0 : Integer.valueOf(organizationID) ;
+        String dialogs = (String)object.getProperties().get("dialogs");
         String condition = (String)object.getProperties().get("condition");
-        if(condition!=null && !"".equals(condition)) {
-            conditionKey = condition.split(":")[0];
-            conditionValue = condition.split(":")[1];
-            if(!screen.hero.getGlobalState(conditionKey).equals(conditionValue)){
-                UNAVAILABLE_CREATURES.add(new UnavailableObject(object.getName(), rect,  condition, items));
+        if(!(ConditionProcessor.conditionSatisfied(hero, condition))) {
+                UNAVAILABLE_CREATURES.add(new UnavailableCreatures(object.getName(), rect,  condition, items, deathProcess, organization, dialogs));
                 return; //do not create if condition did not pass
-            }
-
         }
-        CREATURES.add(new Creature(screen, rect.getX() , rect.getY(), CREATURE_DESCRIPTIONS.get(object.getName()), items));
+        CREATURES.add(new Creature(screen, rect.getX() , rect.getY(), CREATURE_DESCRIPTIONS.get(object.getName()), items==null?"":items, deathProcess==null?"":deathProcess, organization==null?0:organization, dialogs==null?"":dialogs));
 
     }
 
-    public void createCreature(com.mygdx.game.screens.GameScreen screen, int x, int y, String object) {
-            CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null));
+    public void createCreature(GameScreen screen, int x, int y, String object) {
+            CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null ,-1 , null));
     }
 
     public void createInteractiveObject(GameScreen screen, MapObject object) {
-        String conditionKey;
-        String conditionValue;
+
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
         String items = (String)object.getProperties().get("items");
         String condition = (String)object.getProperties().get("condition");
         String program = (String)object.getProperties().get("program");
-        if(condition!=null && !"".equals(condition)) {
-            conditionKey = condition.split(":")[0];
-            conditionValue = condition.split(":")[1];
-            if(!screen.hero.getGlobalState(conditionKey).equals(conditionValue)){
+        if(!(ConditionProcessor.conditionSatisfied(hero, condition))) {
                 UNAVAILABLE_OBJECTS.add(new UnavailableObject(object.getName(), rect,  condition, items, program));
                 return; //do not create if condition did not pass
-            }
-
         }
-        OBJECTS.add(new GameObject(screen, rect.getX() , rect.getY(), OBJECT_DESCRIPTIONS.get(object.getName()), items, program));
+
+        OBJECTS.add(new GameObject(screen, rect, OBJECT_DESCRIPTIONS.get(object.getName()), items, program));
 
     }
 
@@ -252,6 +247,8 @@ public class LevelManager implements Disposable{
     }
 
     private void createTriggerPoint(World world, MapObject object) {
+
+
         BodyDef bdef = new BodyDef();
 
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
@@ -269,9 +266,11 @@ public class LevelManager implements Disposable{
 
         Fixture fixture = body.createFixture(fixtureDef);
         fixture.setUserData(new Trigger(object.getName(),
-                (String)object.getProperties().get("key"),
-                (String)object.getProperties().get("value"),
-                (String)object.getProperties().get("text"))); // add trigger data
+                (String) object.getProperties().get("key"),
+                (String) object.getProperties().get("value"),
+                (String) object.getProperties().get("text"),
+                (String) object.getProperties().get("condition")
+        )); // add trigger data
 
 
         Filter filter = new Filter();
@@ -336,9 +335,9 @@ public class LevelManager implements Disposable{
 
     public void saveLevel(String previousLevel, String saveDir) {
 
-            //create save dir
-            if (!Gdx.files.local(PalidorGame.SAVES_DIR  + File.separator + saveDir).exists())
-                Gdx.files.local(PalidorGame.SAVES_DIR  + File.separator + saveDir).mkdirs();
+        //create save dir
+        if (!Gdx.files.local(PalidorGame.SAVES_DIR + File.separator + saveDir).exists())
+            Gdx.files.local(PalidorGame.SAVES_DIR + File.separator + saveDir).mkdirs();
 
 //        //copy TSX file
 //        if(!Gdx.files.local(PalidorGame.SAVES_DIR  + File.separator + saveDir + File.separator + "Hunters.tsx").exists())
@@ -354,105 +353,111 @@ public class LevelManager implements Disposable{
 //        Gdx.files.local(PalidorGame.MAPS_DIR + File.separator +  previousLevel + ".tmx")
 //                .copyTo(Gdx.files.local(PalidorGame.SAVES_DIR  + File.separator + saveDir + File.separator + previousLevel + ".tmx"));
 
-            try (
-                BufferedReader reader = new BufferedReader(new FileReader(Gdx.files.local(PalidorGame.MAPS_DIR + File.separator +  previousLevel + ".tmx").file()));
-                BufferedWriter writer = new BufferedWriter(new FileWriter(Gdx.files.local(PalidorGame.SAVES_DIR  + File.separator + saveDir + File.separator + previousLevel + ".tmx").file()));
-            ){
-                String line = null;
-                while((line = reader.readLine()) != null){
+        try (
+                BufferedReader reader = new BufferedReader(new FileReader(Gdx.files.local(PalidorGame.MAPS_DIR + File.separator + previousLevel + ".tmx").file()));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(Gdx.files.local(PalidorGame.SAVES_DIR + File.separator + saveDir + File.separator + previousLevel + ".tmx").file()));
+        ) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
 
-                    if(line.contains("<tileset firstgid=\"1\" source=\"Hunters.tsx\"/>")) {
-                        writer.write("<tileset firstgid=\"1\" source=\"../../../maps/Hunters.tsx\"/>");
-                        writer.write("\n");
-                    }else if( line.contains("<objectgroup name=\"entities\"") ){
-                        break;
-                    } else {
-                        writer.write(line);
-                        writer.write("\n");
-                    }
-
-                }
-
-                // fill map
-                writer.write("<objectgroup name=\"entities\">");
-                writer.write("\n");
-                // write all entities
-                for(int i=0;i<ITEMS.size;i++) {
-                    writer.write("<object id=\"" + 200 + i + "\" name=\"" + ITEMS.get(i).id + "\" x=\"" + ITEMS.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - ITEMS.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\"/>");
+                if (line.contains("<tileset firstgid=\"1\" source=\"Hunters.tsx\"/>")) {
+                    writer.write("<tileset firstgid=\"1\" source=\"../../../maps/Hunters.tsx\"/>");
+                    writer.write("\n");
+                } else if (line.contains("<objectgroup name=\"entities\"")) {
+                    break;
+                } else {
+                    writer.write(line);
                     writer.write("\n");
                 }
-                writer.write("</objectgroup>");
-                writer.write("\n");
 
-                // creatures
-                writer.write("<objectgroup name=\"creatures\">");
-                writer.write("\n");
-                // write creatures
-                for(int i=0;i<CREATURES.size;i++) {
-                    writer.write("<object id=\"" + 400 + i + "\" name=\"" + CREATURES.get(i).id + "\" x=\"" + CREATURES.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - CREATURES.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\">\n");
-
-                    writer.write("   <properties>\n" +
-                            "    <property name=\"condition\" value=\"\"/>\n" +
-                            "    <property name=\"items\" value=\"" + CREATURES.get(i).getInventory().toString().replaceAll("[\\[\\]]","") + "\"/>\n" +
-                            "   </properties>\n");
-                    writer.write("\n");
-                    writer.write("</object>");
-                }
-
-                for(int i=0;i<UNAVAILABLE_CREATURES.size;i++) {
-                    writer.write("<object id=\"" + 600 + i + "\" name=\"" + UNAVAILABLE_CREATURES.get(i).id + "\" x=\"" + UNAVAILABLE_CREATURES.get(i).rect.x  + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_CREATURES.get(i).rect.y) + "\">\n");
-
-                    writer.write("   <properties>\n" +
-                            "    <property name=\"condition\" value=\""+UNAVAILABLE_CREATURES.get(i).condition+"\"/>\n" +
-                            "    <property name=\"items\" value=\"" + UNAVAILABLE_CREATURES.get(i).items + "\"/>\n" +
-                            "   </properties>\n");
-                    writer.write("\n");
-                    writer.write("</object>");
-                }
-
-                writer.write("</objectgroup>");
-                writer.write("\n");
-
-                //objects
-
-                writer.write("<objectgroup name=\"objects\">");
-                writer.write("\n");
-                // write objects
-                for(int i=0;i<OBJECTS.size;i++) {
-                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\">\n");
-
-                    writer.write("   <properties>\n" +
-                            "    <property name=\"condition\" value=\"\"/>\n" +
-                            "    <property name=\"items\" value=\"" + OBJECTS.get(i).getItems().toString().replaceAll("[\\[\\]]","") + "\"/>\n" +
-                            "    <property name=\"program\" value=\"" + OBJECTS.get(i).getProgram() + "\"/>\n" +
-                            "   </properties>\n");
-                    writer.write("\n");
-                    writer.write("</object>");
-                }
-
-                for(int i=0;i<UNAVAILABLE_OBJECTS.size;i++) {
-                    writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).id + "\" x=\"" + UNAVAILABLE_OBJECTS.get(i).rect.x  + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y) + "\">\n");
-
-                    writer.write("   <properties>\n" +
-                            "    <property name=\"condition\" value=\""+UNAVAILABLE_OBJECTS.get(i).condition+"\"/>\n" +
-                            "    <property name=\"items\" value=\"" + UNAVAILABLE_OBJECTS.get(i).items + "\"/>\n" +
-                            "    <property name=\"program\" value=\"" + UNAVAILABLE_OBJECTS.get(i).details + "\"/>\n" +
-                            "   </properties>\n");
-                    writer.write("\n");
-                    writer.write("</object>");
-                }
-
-                writer.write("</objectgroup>");
-                writer.write("\n");
-
-                writer.write("</map>");
-                writer.write("\n");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+
+            // fill map
+            writer.write("<objectgroup name=\"entities\">");
+            writer.write("\n");
+            // write all entities
+            for (int i = 0; i < ITEMS.size; i++) {
+                writer.write("<object id=\"" + 200 + i + "\" name=\"" + ITEMS.get(i).id + "\" x=\"" + ITEMS.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - ITEMS.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\"/>");
+                writer.write("\n");
+            }
+            writer.write("</objectgroup>");
+            writer.write("\n");
+
+            // creatures
+            writer.write("<objectgroup name=\"creatures\">");
+            writer.write("\n");
+            // write creatures
+            for (int i = 0; i < CREATURES.size; i++) {
+                writer.write("<object id=\"" + 400 + i + "\" name=\"" + CREATURES.get(i).id + "\" x=\"" + CREATURES.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - CREATURES.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\">\n");
+
+                writer.write("   <properties>\n" +
+                        "    <property name=\"condition\" value=\"\"/>\n" +
+                        "    <property name=\"items\" value=\"" + CREATURES.get(i).getInventory().toString().replaceAll("[\\[\\]]", "") + "\"/>\n" +
+                        "    <property name=\"deathprocess\" value=\"" + CREATURES.get(i).getDeathProcess() + "\"/>" +
+                        "    <property name=\"organization\" value=\"" + CREATURES.get(i).getOrganization() + "\"/>" +
+                        "    <property name=\"dialogs\" value=\"" + CREATURES.get(i).getDialogs().toString().replaceAll("[\\[\\]]", "") + "\"/>" +
+                        "   </properties>\n");
+                writer.write("\n");
+                writer.write("</object>");
+            }
+
+            for (int i = 0; i < UNAVAILABLE_CREATURES.size; i++) {
+                writer.write("<object id=\"" + 600 + i + "\" name=\"" + UNAVAILABLE_CREATURES.get(i).name + "\" x=\"" + UNAVAILABLE_CREATURES.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_CREATURES.get(i).rect.y) + "\">\n");
+
+                writer.write("   <properties>\n" +
+                        "    <property name=\"condition\" value=\"" + UNAVAILABLE_CREATURES.get(i).getConditions() + "\"/>\n" +
+                        "    <property name=\"items\" value=\"" + UNAVAILABLE_CREATURES.get(i).getItems() + "\"/>\n" +
+                        "    <property name=\"deathprocess\" value=\"" + UNAVAILABLE_CREATURES.get(i).getDeathProcess() + "\"/>" +
+                        "    <property name=\"organization\" value=\"" + UNAVAILABLE_CREATURES.get(i).getOrganization() + "\"/>" +
+                        "    <property name=\"dialogs\" value=\"" + UNAVAILABLE_CREATURES.get(i).getDialogs() + "\"/>" +
+                        "   </properties>\n");
+                writer.write("\n");
+                writer.write("</object>");
+            }
+
+            writer.write("</objectgroup>");
+            writer.write("\n");
+
+            //objects
+
+            writer.write("<objectgroup name=\"objects\">");
+            writer.write("\n");
+            // write objects
+            for (int i = 0; i < OBJECTS.size; i++) {
+                writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\" width=\""+ OBJECTS.get(i).getWidth()* PalidorGame.PPM +"\" height=\""+ OBJECTS.get(i).getHeight()* PalidorGame.PPM  +"\" >\n");
+
+                writer.write("   <properties>\n" +
+                        "    <property name=\"condition\" value=\"\"/>\n" +
+                        "    <property name=\"items\" value=\"" + OBJECTS.get(i).getItems().toString().replaceAll("[\\[\\]]", "") + "\"/>\n" +
+                        "    <property name=\"program\" value=\"" + OBJECTS.get(i).getProgram() + "\"/>\n" +
+                        "   </properties>\n");
+                writer.write("\n");
+                writer.write("</object>");
+            }
+
+            for (int i = 0; i < UNAVAILABLE_OBJECTS.size; i++) {
+                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + UNAVAILABLE_OBJECTS.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y) + "\" width=\""+ UNAVAILABLE_OBJECTS.get(i).rect.getWidth() * PalidorGame.PPM +"\" height=\""+ UNAVAILABLE_OBJECTS.get(i).rect.getHeight()* PalidorGame.PPM  +"\" >\n");
+
+                writer.write("   <properties>\n" +
+                        "    <property name=\"condition\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getCondition() + "\"/>\n" +
+                        "    <property name=\"items\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getItems() + "\"/>\n" +
+                        "    <property name=\"program\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getProgram() + "\"/>\n" +
+                        "   </properties>\n");
+                writer.write("\n");
+                writer.write("</object>");
+            }
+
+            writer.write("</objectgroup>");
+            writer.write("\n");
+
+            writer.write("</map>");
+            writer.write("\n");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
     public void removeDeadBodies() {
         for(int i = 0; i < CREATURES.size; i++)
@@ -466,22 +471,74 @@ public class LevelManager implements Disposable{
         Rectangle rect;
         String condition;
         String items;
-        String details;
+        String program;
 
 
-        public UnavailableObject(String id, Rectangle rect, String condition, String items) {
+        public UnavailableObject(String id, Rectangle rect, String condition, String items, String program) {
             this.id = id;
             this.rect = rect;
             this.condition = condition;
             this.items = items;
+            this.program = program;
         }
 
-        public UnavailableObject(String id, Rectangle rect, String condition, String items, String details) {
-            this.id = id;
+        public String getID() {
+            return id;
+        }
+
+        public String getCondition() {
+            return condition==null?"":condition;
+        }
+
+        public String getItems() {
+            return items==null?"":items;
+        }
+
+        public String getProgram() {
+            return program==null?"":program;
+        }
+    }
+
+    private class UnavailableCreatures {
+        String name;
+        Rectangle rect;
+        private String conditions;
+
+        public UnavailableCreatures(String name, Rectangle rect, String condition, String items, String deathProcess, Integer organization, String dialogs) {
+            this.name = name;
             this.rect = rect;
             this.condition = condition;
             this.items = items;
-            this.details = details;
+            this.deathProcess = deathProcess;
+            this.organization = organization;
+            this.dialogs = dialogs;
+        }
+
+        String condition;
+        String items;
+        String deathProcess;
+        Integer organization;
+        String dialogs;
+
+
+        public String getDialogs() {
+            return dialogs==null?"":dialogs;
+        }
+
+        public Integer getOrganization() {
+            return organization==null?0:organization;
+        }
+
+        public String getDeathProcess() {
+            return deathProcess==null?"":deathProcess;
+        }
+
+        public String getItems() {
+            return items==null?"":items;
+        }
+
+        public String getConditions() {
+            return conditions==null?"":conditions;
         }
     }
 }

@@ -21,8 +21,8 @@ public class CreatureDescription {
     public Array<Effect> effects;
     //public Array<String> inventory;
     public Array<String> equiped;
-    public int organization;
-    public Array<Integer> dialogs;
+//    public int organization;
+//    public Array<Integer> dialogs;
 
 
     public CreatureDescription(
@@ -31,12 +31,13 @@ public class CreatureDescription {
             String description,
             String region,
             Characteristics characteristics,
-            int organization,
+            //int organization,
             String abilities,
             String effects,
             //String inventory,
-            String equiped,
-            String dialogs) {
+            String equiped
+     //       String dialogs
+    ) {
 
         this.id = id;
         this.name = name;
@@ -47,7 +48,7 @@ public class CreatureDescription {
         this.effects = new Array<Effect>();
         //this.inventory = new Array<String>();
         this.equiped = new Array<String>();
-        this.dialogs = new Array<Integer>();
+        //this.dialogs = new Array<Integer>();
 
         if(!abilities.equals("")) {
             for (String curAbiility : abilities.split(",")) {
@@ -75,13 +76,13 @@ public class CreatureDescription {
             }
         }
 
-        if(!dialogs.equals("")) {
-            for (String curItem : dialogs.split(",")) {
-                if(!curItem.equals(""))
-                    this.dialogs.add(Integer.valueOf(curItem.trim()));
-            }
-        }
-
-        this.organization = organization;
+//        if(!dialogs.equals("")) {
+//            for (String curItem : dialogs.split(",")) {
+//                if(!curItem.equals(""))
+//                    this.dialogs.add(Integer.valueOf(curItem.trim()));
+//            }
+//        }
+//
+//        this.organization = organization;
     }
 }

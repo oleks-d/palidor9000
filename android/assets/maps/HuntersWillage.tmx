@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="92">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="95">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="100" height="20">
   <data encoding="base64">
@@ -103,6 +103,13 @@
     <property name="value" value="Mountains"/>
    </properties>
   </object>
+  <object id="94" name="story" x="2593" y="328.333" width="20" height="17.3333">
+   <properties>
+    <property name="key" value="MainStory"/>
+    <property name="text" value="uuuu"/>
+    <property name="value" value="Started"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="entities">
   <object id="55" name="axe_1" x="973" y="561"/>
@@ -116,15 +123,20 @@
   <object id="76" name="animal_1" x="1615" y="590">
    <properties>
     <property name="items" value="coin,sword_1"/>
+    <property name="organization" value="1"/>
    </properties>
   </object>
   <object id="84" name="mark" x="2768" y="597">
    <properties>
-    <property name="condition" value="MainStory:Step2"/>
+    <property name="condition" value="T:MainStory:Step2"/>
     <property name="items" value="coin"/>
    </properties>
   </object>
-  <object id="77" name="animal_2" x="1969" y="332"/>
+  <object id="77" name="animal_2" x="1969" y="332">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="objects">
   <object id="86" name="door_1" x="1379" y="324" width="27" height="56">
@@ -132,16 +144,21 @@
     <property name="program" value="key_2"/>
    </properties>
   </object>
-  <object id="88" name="door_1" x="1505.67" y="326.667" width="27" height="56">
+  <object id="88" name="door_1" x="1505" y="326" width="27" height="56">
    <properties>
     <property name="program" value="key_2"/>
    </properties>
   </object>
-  <object id="89" name="spike_1" x="1393" y="597.333"/>
-  <object id="90" name="chest_1" x="945.333" y="438.667">
+  <object id="89" name="spike_1" x="1393" y="564" width="14" height="33"/>
+  <object id="90" name="chest_1" x="945" y="418" width="25" height="20">
    <properties>
     <property name="items" value="coin"/>
     <property name="program" value="key_2"/>
+   </properties>
+  </object>
+  <object id="93" name="box_1" x="817" y="316" width="140" height="21">
+   <properties>
+    <property name="program" value="rldrlu"/>
    </properties>
   </object>
  </objectgroup>

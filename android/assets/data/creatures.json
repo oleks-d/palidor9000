@@ -11,7 +11,6 @@
     "effects" : "CRUSH_DAMAGE 1 1 0",
     "abilities" : "LONGBOW_SHOT",
     "equipeditems" : "",
-    "org" : "2"
   },
 
   {
@@ -23,7 +22,6 @@
     "spritesheetregion" : "enemy2",
     "effects" : "CUT_DAMAGE 1 1 0",
     "abilities" : "PUNCH",
-    "org" : "2"
   },
 
 
@@ -36,8 +34,6 @@
     "spritesheetregion" : "enemy1",
     "effects" : "CUT_DAMAGE 1 1 0",
     "abilities" : "PUNCH",
-    "org" : "1",
-    "dialogs" : "1,2"
   }
 
 ]}

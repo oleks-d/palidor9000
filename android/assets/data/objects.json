@@ -11,7 +11,7 @@
   },
   {
     "id":"box_1",
-    "image" : "healthbar",
+    "image" : "castbar",
     "type" : "BLOCK"
   },
   {
