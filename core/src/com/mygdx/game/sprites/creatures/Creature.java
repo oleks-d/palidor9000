@@ -82,7 +82,7 @@ public class Creature extends Sprite {
     public String id;
 
     float JUMP_BASE = 5;
-    float SPEED_BASE = 0.3f;
+    float SPEED_BASE = 0.2f;
 
     public AI brain;
     private Set<Integer> enemyOrganizations;
@@ -280,6 +280,7 @@ public class Creature extends Sprite {
         fixtureDef.shape = shape;
         //fixtureDef.friction = 0.5f;
         //fixtureDef.restitution = 0.5f;
+        //fixtureDef.density = 0.001f;
 
         fixtureDef.filter.categoryBits = PalidorGame.CREATURE_BIT;
         fixtureDef.filter.maskBits =
@@ -875,13 +876,14 @@ public class Creature extends Sprite {
     // DEATH processing
     public void toDie(){
         Gdx.app.log("Dead",name + " ");
+
+        ConditionProcessor.conditionProcess(this, deathProcess);
+
         toDestroy = true;
         setState(State.DEAD);
         int inventorySize = getInventory().size;
         for(int i =0; i<inventorySize;i++)
             throwFromInventory(getInventory().get(0));
-
-        ConditionProcessor.conditionProcess(this, deathProcess);
     }
 
 

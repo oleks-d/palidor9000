@@ -306,8 +306,9 @@ public class GameScreen implements Screen {
                  coord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
                 getInfoFromObjectByCoordinates(coord.x,coord.y);
             }
-            if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.justTouched())
-                endDialog();
+            if(onDialogScreen)
+                if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.justTouched())
+                    endDialog();
         } else {
                 ActivityWithEffect activity = null;
 

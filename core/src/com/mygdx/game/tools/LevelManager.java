@@ -424,7 +424,7 @@ public class LevelManager implements Disposable{
             writer.write("\n");
             // write objects
             for (int i = 0; i < OBJECTS.size; i++) {
-                writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\" width=\""+ OBJECTS.get(i).getWidth()* PalidorGame.PPM +"\" height=\""+ OBJECTS.get(i).getHeight()* PalidorGame.PPM  +"\" >\n");
+                writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + (OBJECTS.get(i).getBody().getPosition().x - OBJECTS.get(i).getWidth()/2) * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - (OBJECTS.get(i).getBody().getPosition().y + OBJECTS.get(i).getHeight()/2) * PalidorGame.PPM) + "\" width=\""+ OBJECTS.get(i).getWidth()* PalidorGame.PPM +"\" height=\""+ OBJECTS.get(i).getHeight()* PalidorGame.PPM  +"\" >\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"\"/>\n" +
@@ -502,7 +502,6 @@ public class LevelManager implements Disposable{
     private class UnavailableCreatures {
         String name;
         Rectangle rect;
-        private String conditions;
 
         public UnavailableCreatures(String name, Rectangle rect, String condition, String items, String deathProcess, Integer organization, String dialogs) {
             this.name = name;
@@ -538,7 +537,7 @@ public class LevelManager implements Disposable{
         }
 
         public String getConditions() {
-            return conditions==null?"":conditions;
+            return condition==null?"":condition;
         }
     }
 }

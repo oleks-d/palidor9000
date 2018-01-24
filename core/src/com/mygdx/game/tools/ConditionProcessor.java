@@ -75,17 +75,22 @@ public class ConditionProcessor {
     }
 
     public static void conditionProcess(Creature creature, String condition) {
+        String[] parts = condition.split(":");
 
         if (condition != null && !"".equals(condition)) {
+
             String conditionType = condition.split(":")[0];
             String conditionKey = condition.split(":")[1];
-            String conditionValue = condition.split(":")[2];
+            String conditionValue = "";
+            if(parts.length>2)
+                conditionValue = condition.split(":")[2];
 
             switch (conditionType) {
                 case "T" :  //put trigger
                     creature.screen.hero.getGlobalStates().put(conditionKey,conditionValue);
                     break;
                 case "IR" : // item REMOVE
+                    creature.addItemByID(conditionKey);
                     creature.throwFromInventory(conditionKey);
                     break;
                 case "AE" : //add effect

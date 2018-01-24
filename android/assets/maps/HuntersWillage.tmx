@@ -122,6 +122,7 @@
  <objectgroup name="creatures">
   <object id="76" name="animal_1" x="1615" y="590">
    <properties>
+    <property name="deathprocess" value="IR:key_2::"/>
     <property name="items" value="coin,sword_1"/>
     <property name="organization" value="1"/>
    </properties>
