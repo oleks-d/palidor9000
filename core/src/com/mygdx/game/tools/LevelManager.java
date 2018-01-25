@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.dialogs.GameDialog;
 import com.mygdx.game.enums.State;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
@@ -55,6 +56,7 @@ public class LevelManager implements Disposable{
     public HashMap<String, ItemDescription> ITEMS_DESCRIPTIONS;
     public HashMap<String, CreatureDescription>  CREATURE_DESCRIPTIONS;
     public HashMap<String, ObjectDescription>  OBJECT_DESCRIPTIONS;
+    public HashMap<Integer, GameDialog> DIALOGS;
 
     public Array<GameItem> ITEMS;
     public Array<Creature> CREATURES;
@@ -78,6 +80,7 @@ public class LevelManager implements Disposable{
         ITEMS_DESCRIPTIONS = loader.loadItems();
         CREATURE_DESCRIPTIONS = loader.loadCreatures();
         OBJECT_DESCRIPTIONS = loader.loadObjects();
+        DIALOGS = loader.loadDialogs();
     }
 
     public void loadNextLevel(String levelName, String heroName) {
@@ -269,7 +272,8 @@ public class LevelManager implements Disposable{
                 (String) object.getProperties().get("key"),
                 (String) object.getProperties().get("value"),
                 (String) object.getProperties().get("text"),
-                (String) object.getProperties().get("condition")
+                (String) object.getProperties().get("condition"),
+                (String) object.getProperties().get("process")
         )); // add trigger data
 
 
@@ -424,7 +428,10 @@ public class LevelManager implements Disposable{
             writer.write("\n");
             // write objects
             for (int i = 0; i < OBJECTS.size; i++) {
-                writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + (OBJECTS.get(i).getBody().getPosition().x - OBJECTS.get(i).getWidth()/2) * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - (OBJECTS.get(i).getBody().getPosition().y + OBJECTS.get(i).getHeight()/2) * PalidorGame.PPM) + "\" width=\""+ OBJECTS.get(i).getWidth()* PalidorGame.PPM +"\" height=\""+ OBJECTS.get(i).getHeight()* PalidorGame.PPM  +"\" >\n");
+                if(OBJECTS.get(i).originalRectangle == null)
+                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + (OBJECTS.get(i).getBody().getPosition().x - OBJECTS.get(i).getWidth()/2) * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - (OBJECTS.get(i).getBody().getPosition().y + OBJECTS.get(i).getHeight()/2) * PalidorGame.PPM) + "\" width=\""+ OBJECTS.get(i).getWidth()* PalidorGame.PPM +"\" height=\""+ OBJECTS.get(i).getHeight()* PalidorGame.PPM  +"\" >\n");
+                else
+                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).originalRectangle.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).originalRectangle.y - OBJECTS.get(i).originalRectangle.height)  + "\" width=\""+ OBJECTS.get(i).originalRectangle.width +"\" height=\"" + OBJECTS.get(i).originalRectangle.height  +"\" >\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"\"/>\n" +

@@ -76,7 +76,7 @@
   <object id="53" name="hero_Start" x="872" y="551"/>
  </objectgroup>
  <objectgroup name="triggers">
-  <object id="54" name="story" x="873" y="571">
+  <object id="54" name="story" x="1143.59" y="560.44">
    <properties>
     <property name="key" value="MainStory"/>
     <property name="text" value="You have strange feeling that something GREAT will start today..."/>
@@ -130,6 +130,7 @@
   <object id="84" name="mark" x="2768" y="597">
    <properties>
     <property name="condition" value="T:MainStory:Step2"/>
+    <property name="dialogs" value="1,2"/>
     <property name="items" value="coin"/>
    </properties>
   </object>

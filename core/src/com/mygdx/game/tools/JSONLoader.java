@@ -3,6 +3,9 @@ package com.mygdx.game.tools;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.*;
+import com.mygdx.game.dialogs.DialogAnswer;
+import com.mygdx.game.dialogs.DialogReplic;
+import com.mygdx.game.dialogs.GameDialog;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Hero;
@@ -75,6 +78,48 @@ public class JSONLoader {
         return results;
     }
 
+    public HashMap<Integer, GameDialog> loadDialogs(){
+        HashMap<Integer,GameDialog>  results = new HashMap<Integer,GameDialog> ();
+        JsonReader json = new JsonReader();
+        JsonValue base = json.parse(Gdx.files.internal("data" + File.separator + "dialogs.json"));
+
+        for (JsonValue component : base.get("dialogs"))
+        {
+            GameDialog dialog = new GameDialog(component.getInt("id"));
+            dialog.setTitle(component.getString("title"));
+            String condition = tryToGetValue(component,"condition");
+            if(condition != null && !"".equals(condition))
+                dialog.setCondition(condition);
+
+            for(JsonValue replicsComponent : component.get("replics")) {
+                DialogReplic replic = new DialogReplic();
+
+                replic.setID(replicsComponent.getInt("id"));
+                replic.setText(replicsComponent.getString("text"));
+                String conditionForReplic = tryToGetValue(component,"condition");
+                if(conditionForReplic != null && !"".equals(conditionForReplic))
+                    replic.setCondition(conditionForReplic);
+
+                for (JsonValue answer : replicsComponent.get("answers")) {
+                    DialogAnswer dialogOption = new DialogAnswer();
+                    dialogOption.setText(answer.getString("text"));
+                    String value = tryToGetValue(answer, "condition");
+                    dialogOption.setCondition(value == null ? "" : value);
+                    value = tryToGetValue(answer, "process");
+                    dialogOption.setProcess(value == null ? "" : value);
+                    dialogOption.setNext(answer.getInt("next"));
+                    replic.addAnswer(dialogOption);
+                }
+
+                dialog.addReplic(replic.getID(),replic);
+
+            }
+            results.put(component.getInt("id"), dialog);
+        }
+
+        return results;
+    }
+
     private String  tryToGetValue(JsonValue component, String fieldname) {
         String result = null;
         try{
@@ -101,6 +146,7 @@ public class JSONLoader {
         String items = null;
 
         int experience= 0;
+        int money= 0;
 
         JsonReader json = new JsonReader();
         try {
@@ -132,6 +178,7 @@ public class JSONLoader {
             }
 
             experience = Integer.valueOf(base.getString("exp"));
+            money = Integer.valueOf(base.getString("money"));
 
 
             if(base.getString("selectedAtackAbilities") != null && !"".equals(base.getString("selectedAtackAbilities").trim()))
@@ -150,7 +197,7 @@ public class JSONLoader {
             currentLevel = base.getString("currentLevel");
             previousLevel = base.getString("previousLevel");
 
-            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, skills, experience, items);
+            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, skills, experience, money, items);
         }catch (Exception e) {
             //no hero found
 
@@ -203,6 +250,7 @@ public class JSONLoader {
                 "  \"currentLevel\" : \"" + hero.currentLevel + "\",\n" +
                 "  \"previousLevel\" : \"" + hero.previousLevel + "\",\n" +
                 "  \"exp\" : \"" + hero.experience + "\",\n" +
+                "  \"money\" : \"" + hero.money + "\",\n" +
                 "\n" +
                 "  \"selectedAtackAbilities\" : \"" + hero.selectedAtackAbilities.toString().replaceAll("[\\[\\]]", "") + "\",\n" +
                 "  \"selectedDefenseAbilities\": \"" + hero.selectedDefenseAbilities.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +

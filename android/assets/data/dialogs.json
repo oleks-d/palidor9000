@@ -1,16 +1,26 @@
 {"dialogs" : [
 
   {"id":1,
+    "title":"Greetings",
     "replics": [
-      {"replic" : "Hi Hero!",
-      "answer" : "Hi Mark"}
-      ]
+      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
+      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+    ]
   },
   {"id":2,
+    "title":"About axe...",
+    "condition" : "A:AXE_SWING;I:axe_1",
     "replics": [
-      {"replic" : "Bye Hero!",
-        "answer" : "Bye Mark"}
+      {"id":1,
+        "text" : "You have AXE! Do you want to buy other AXEs?",
+        "answers" : [
+          {"condition" : "A:AXE_SMASH", "text":"I WILL TAKE SMASH ONE","process":"IA:axe_2", "next":0},
+          {"condition" : "A:AXE_SMASH", "text":"I WILL TAKE SMASH ONE", "next":0},
+          {"condition" : "I:axe_1","text":"I want to sell it","process":"IR:axe_1;MA:100", "next":0} ]
+      }
     ]
+
   }
-]
+      ]
 }

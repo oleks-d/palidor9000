@@ -12,6 +12,7 @@
   },
 
   "exp":"1000",
+  "money" : "100",
 
   "globalStates" : [{"key" : "MainStory", "value" : "NotStarted"}
   ],

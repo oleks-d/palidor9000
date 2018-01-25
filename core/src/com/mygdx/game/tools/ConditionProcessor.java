@@ -14,31 +14,67 @@ public class ConditionProcessor {
 
         boolean result = true;
         if (condition != null && !"".equals(condition)) {
-            String conditionType = condition.split(":")[0];
-            String conditionKey = condition.split(":")[1];
-            String conditionValue = condition.split(":")[2];
 
-            switch (conditionType) {
-                case "T" :  //check trigger
-                    if (hero.getGlobalState(conditionKey)!=null && hero.getGlobalState(conditionKey).equals(conditionValue))
-                        return true;
-                    else
-                        return false;
-                case "I" : //check item
-                    if (hero.checkInInventory(conditionKey))
-                        return true;
-                    else
-                        return false;
-                case "A" : //check ability
-                    if (hero.getAbilities().contains(AbilityID.valueOf(conditionKey),true))
-                        return true;
-                    else
-                        return false;
-                case "E" : //check ability
-                    if (hero.checkEffect(EffectID.valueOf(conditionKey)))
-                        return true;
-                    else
-                        return false;
+        for(String subcondition : condition.split(";")) {
+            String[] parts = subcondition.split(":");
+
+                String conditionType = parts[0];
+                String conditionKey = parts[1];
+                String conditionValue = "";
+                if (parts.length > 2)
+                    conditionValue = parts[2];
+
+                switch (conditionType) {
+                    case "T":  //check trigger
+                        if (hero.getGlobalState(conditionKey) != null && hero.getGlobalState(conditionKey).equals(conditionValue))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "I": //check item
+                        if (hero.checkInInventory(conditionKey))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "A": //check ability
+                        if (hero.getAbilities().contains(AbilityID.valueOf(conditionKey), true))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "E": //check ability
+                        if (hero.checkEffect(EffectID.valueOf(conditionKey)))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    //negative triggers
+                    case "NT":  //check trigger
+                        if (!(hero.getGlobalState(conditionKey) != null && hero.getGlobalState(conditionKey).equals(conditionValue)))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "NI": //check item
+                        if (!hero.checkInInventory(conditionKey))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "NA": //check ability
+                        if (!hero.getAbilities().contains(AbilityID.valueOf(conditionKey), true))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "NE": //check ability
+                        if (!hero.checkEffect(EffectID.valueOf(conditionKey)))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                }
             }
         }
         return result;
@@ -48,55 +84,67 @@ public class ConditionProcessor {
     public static void conditionProcess(Hero hero, String condition) {
 
         if (condition != null && !"".equals(condition)) {
-            String conditionType = condition.split(":")[0];
-            String conditionKey = condition.split(":")[1];
-            String conditionValue = condition.split(":")[2];
 
-            switch (conditionType) {
-                case "T":  //put trigger
-                    hero.getGlobalStates().put(conditionKey, conditionValue);
-                    break;
-                case "IR": // item REMOVE
-                    hero.removeItemByID(conditionKey);
-                    break;
-                case "IA": // item ADD
-                    hero.addItemByID(conditionKey);
-                    break;
-                case "A": //add ability
-                    hero.addAbilities(new AbilityID[]{AbilityID.valueOf(conditionKey)});
-                    break;
-                case "AE": //add effect
-                    hero.applyEffect(new Effect(conditionKey));
-                    break;
+            for(String subcondition : condition.split(";")) {
+                String[] parts = subcondition.split(":");
 
+                String conditionType = parts[0];
+                String conditionKey = parts[1];
+                String conditionValue = "";
+                if (parts.length > 2)
+                    conditionValue = parts[2];
+
+                switch (conditionType) {
+                    case "T":  //put trigger
+                        hero.getGlobalStates().put(conditionKey, conditionValue);
+                        break;
+                    case "IR": // item REMOVE
+                        hero.removeItemByID(conditionKey);
+                        break;
+                    case "IA": // item ADD
+                        hero.addItemByID(conditionKey);
+                        break;
+                    case "A": //add ability
+                        hero.addAbilities(new AbilityID[]{AbilityID.valueOf(conditionKey)});
+                        break;
+                    case "AE": //add effect
+                        hero.applyEffect(new Effect(conditionKey));
+                        break;
+                    case "MR": // money REMOVE
+                        hero.removeMoney(conditionKey);
+                        break;
+                    case "MA": // item ADD
+                        hero.addMoney(conditionKey);
+                        break;
+                }
             }
-
         }
     }
 
     public static void conditionProcess(Creature creature, String condition) {
-        String[] parts = condition.split(":");
-
         if (condition != null && !"".equals(condition)) {
+        for(String subcondition : condition.split(";")) {
+            String[] parts = subcondition.split(":");
 
-            String conditionType = condition.split(":")[0];
-            String conditionKey = condition.split(":")[1];
-            String conditionValue = "";
-            if(parts.length>2)
-                conditionValue = condition.split(":")[2];
+                String conditionType = parts[0];
+                String conditionKey = parts[1];
+                String conditionValue = "";
+                if (parts.length > 2)
+                    conditionValue = parts[2];
 
-            switch (conditionType) {
-                case "T" :  //put trigger
-                    creature.screen.hero.getGlobalStates().put(conditionKey,conditionValue);
-                    break;
-                case "IR" : // item REMOVE
-                    creature.addItemByID(conditionKey);
-                    creature.throwFromInventory(conditionKey);
-                    break;
-                case "AE" : //add effect
-                    creature.screen.hero.applyEffect(new Effect(conditionKey));
-                    break;
+                switch (conditionType) {
+                    case "T":  //put trigger
+                        creature.screen.hero.getGlobalStates().put(conditionKey, conditionValue);
+                        break;
+                    case "IR": // item REMOVE
+                        creature.addItemByID(conditionKey);
+                        creature.throwFromInventory(conditionKey);
+                        break;
+                    case "AE": //add effect
+                        creature.applyEffect(new Effect(conditionKey));
+                        break;
 
+                }
             }
         }
     }

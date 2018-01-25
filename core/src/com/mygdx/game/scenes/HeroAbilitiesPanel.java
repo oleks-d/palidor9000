@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.CustomDialog;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.sprites.creatures.Hero;
@@ -40,6 +39,7 @@ public class HeroAbilitiesPanel implements Disposable {
     Label detailsHeader;
     Image background;
 
+    Label expLabel;
 
     Image upButton;
     Image downButton;
@@ -145,11 +145,14 @@ public class HeroAbilitiesPanel implements Disposable {
         skillsTable.setFillParent(true);
         skillsTable.row();
 
-        final Table abilitiestable = new Table();
+        Table abilitiestable = new Table();
         abilitiestable.left().top();
         abilitiestable.setFillParent(true);
         abilitiestable.row();
         abilitiestable.add(abilitiesHeader);
+        abilitiestable.row();
+        expLabel = new Label(String.format("Experience: %d", hero.experience), new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        abilitiestable.add(expLabel);
 
         Table detailstable = new Table();
         detailstable.right().top();

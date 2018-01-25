@@ -6,6 +6,8 @@ import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.CreatureAction;
 import com.mygdx.game.sprites.creatures.Creature;
 
+import java.util.Random;
+
 import static com.mygdx.game.PalidorGame.PPM;
 
 /**
@@ -16,26 +18,42 @@ public class AI {
     private boolean moveRight;
     private boolean standStill;
     boolean hasToJump;
+    boolean enemyIsNear = false;
+    double timeToChangeDirection;
+
 
     public void getNextStep(Creature creature, com.mygdx.game.screens.GameScreen screen) {
 
-        //return CreatureAction.STOP;
+        // TODO redesign - May I punch enemy? if not - do my business
+
+        boolean enemyIsNear = false;
         float targetX = creature.getX(), targetY = creature.getY();
+
         CreatureAction result = CreatureAction.STOP;
+
+        // look for creatures nearby
         for(int i = 0; i<screen.levelmanager.CREATURES.size; i++){
-            if(screen.levelmanager.CREATURES.get(i).isEnemy(creature)
-            && !screen.levelmanager.CREATURES.get(i).isHidden()) {
+            Creature mob = screen.levelmanager.CREATURES.get(i);
+            if(mob.isEnemy(creature) //is enemy
+            && !mob.isHidden() // not hidden
+            && ( mob.getBody().getPosition().x + creature.sight/PPM < creature.getBody().getPosition().x && mob.getBody().getPosition().x - creature.sight/PPM > creature.getBody().getPosition().x)) { // visible
                 targetX = screen.levelmanager.CREATURES.get(i).getX();
                 targetY = screen.levelmanager.CREATURES.get(i).getY();
+                enemyIsNear = true;
                 //result = new Random().nextBoolean() ? CreatureAction.MOVE_LEFT : CreatureAction.MOVE_RIGHT;
             }
         }
 
-        if(screen.hero.isEnemy(creature) && !screen.hero.isHidden() ){ //&& screen.hero.getToughness() < creature.getToughness()) {
+        if(screen.hero.isEnemy(creature)
+                && !screen.hero.isHidden()
+                && ( screen.hero.getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM && screen.hero.getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM ))
+        { //&& screen.hero.getToughness() < creature.getToughness()) {
             targetX = screen.hero.getX();
             targetY = screen.hero.getY();
+            enemyIsNear = true;
             //result = new Random().nextBoolean() ? CreatureAction.MOVE_LEFT : CreatureAction.MOVE_RIGHT;
         }
+
 
 //        if (targetX < creature.getX())    //move/atack left
 //            if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {
@@ -59,30 +77,45 @@ public class AI {
 //        }    else
 //            result = CreatureAction.STOP;
 
+        if(enemyIsNear) {
 
-        if (targetX < creature.getX())    //move/atack left
-             {
+            if (targetX < creature.getX())    //move/atack left
+            {
                 creature.directionRight = false;
-                if(targetX > creature.getX() - PalidorGame.TILE_SIZE/PPM && ((targetY < creature.getY() + PalidorGame.TILE_SIZE/PPM || (targetY > creature.getY() - PalidorGame.TILE_SIZE/PPM))))
+                if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) // is reachable
+                if (targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM             // is close
+                        && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
                     result = CreatureAction.CLOSE_ATACK;
                 else
                     result = CreatureAction.RANGE_ATACK;
+            } else if (targetX > creature.getX()) {        //move/atack right
+                {
+                    creature.directionRight = true;
+                    if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) // is reachable
+                    if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM             // is close
+                            && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
+                        result = CreatureAction.CLOSE_ATACK;
+                    else
+                        result = CreatureAction.RANGE_ATACK;
+
+                }
+            } else
+                result = CreatureAction.STOP;
+
+
+            if (isHasToJump() && targetY - 0.05 > creature.getY()) {
+                result = CreatureAction.JUMP;
             }
-        else if(targetX > creature.getX()){        //move/atack right
-             {
-                creature.directionRight = true;
-                if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM && ((targetY < creature.getY() - PalidorGame.TILE_SIZE/PPM || (targetY > creature.getY() - PalidorGame.TILE_SIZE/PPM))))
-                    result = CreatureAction.CLOSE_ATACK;
-                else
-                    result = CreatureAction.RANGE_ATACK;
+        } else {
+            if(moveLeft)
+                result = CreatureAction.MOVE_LEFT;
+            else if(moveRight)
+                result = CreatureAction.MOVE_RIGHT;
+            else if(standStill)
+                result = CreatureAction.STOP;
+            else
+                result = CreatureAction.WALK;
 
-            }
-        }    else
-            result = CreatureAction.STOP;
-
-
-        if(isHasToJump() && targetY - 0.05 > creature.getY()){
-            result = CreatureAction.JUMP;
         }
 
         //creature.direction.set(-(targetX - creature.getBody().getPosition().x), targetY - creature.getBody().getPosition().y );
@@ -98,19 +131,14 @@ public class AI {
 
         if(creature.abilityToCast == AbilityID.NONE)
         switch (result){
+            case STOP:
+                creature.stop();
+                break;
             case MOVE_LEFT:
-                if(!moveRight)
                     creature.move(false);
-                else{
-                    creature.move(true);
-                }
                 break;
             case MOVE_RIGHT:
-                if(!moveLeft)
                     creature.move(true);
-                else {
-                    creature.move(false);
-                }
                 break;
             case JUMP:
                 creature.jump();
@@ -119,21 +147,25 @@ public class AI {
                 if(creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null)
                     creature.useAbility(creature.findAbility(AbilityType.LONG_RANGE_ATACK));
                     else if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
-                    if (moveRight) {
-                        creature.move(true);
-                    } else if (moveLeft) {
-                        creature.move(false);
-                    } else creature.move(creature.directionRight);
+                    creature.move(creature.directionRight);
                 }
 
                 break;
             case CLOSE_ATACK:
                 if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null)
                     creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
-                    else if(creature.findAbility(AbilityType.BUFF) != null)
-                    creature.useAbility(creature.findAbility(AbilityType.BUFF));
-                        else if (creature.findAbility(AbilityType.DEBUFF)!=null)
-                    creature.useAbility(creature.findAbility(AbilityType.DEBUFF));
+                else
+                    creature.move(creature.directionRight);
+//                    else if(creature.findAbility(AbilityType.BUFF) != null)
+//                    creature.useAbility(creature.findAbility(AbilityType.BUFF));
+//                        else if (creature.findAbility(AbilityType.DEBUFF)!=null)
+//                    creature.useAbility(creature.findAbility(AbilityType.DEBUFF));
+                break;
+            case WALK:
+                if(creature.existingTime > timeToChangeDirection) {
+                    creature.directionRight = (new Random().nextBoolean());
+                    timeToChangeDirection = creature.existingTime + 2f;
+                } creature.move(creature.directionRight);
                 break;
         }
 

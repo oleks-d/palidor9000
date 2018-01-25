@@ -175,7 +175,7 @@ public class WorldContactListener implements ContactListener {
                 ((Creature) fixA.getUserData()).setNeighbor(null);
                 ((Creature) fixB.getUserData()).setNeighbor(null);
                 break;
-        }
+
 //            case PalidorGame.CREATURE_BIT | PalidorGame.NO_RIGHT_POINT: // TODO make sure it is correct way
 //                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
 //                    ((Creature) fixA.getUserData()).setMoveLeft(false);
@@ -188,13 +188,13 @@ public class WorldContactListener implements ContactListener {
 //                else
 //                    ((Creature) fixB.getUserData()).setMoveRight(false);
 //                break;
-//            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_POINT: // TODO make sure it is correct way
-//                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
-//                    ((Creature) fixA.getUserData()).setHasToJump(false);
-//                else
-//                    ((Creature) fixB.getUserData()).setHasToJump(false);
-//                break;
-//        }
+            case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setStandStill(false);
+                else
+                    ((Creature) fixB.getUserData()).setStandStill(false);
+                break;
+        }
 
 
     }

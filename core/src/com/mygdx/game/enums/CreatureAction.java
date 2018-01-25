@@ -13,5 +13,5 @@ public enum CreatureAction {
     CLOSE_ATACK,
     BUFF,
     DEBUFF,
-    RANGE_ATACK;
+    RANGE_ATACK, WALK;
 }

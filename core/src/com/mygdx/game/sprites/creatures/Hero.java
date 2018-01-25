@@ -28,6 +28,7 @@ public class Hero extends Creature {
 
     public Array<Skill> skills;
     public int experience = 0;
+    public int money = 0;
 
 
     public Hero (GameScreen screen,
@@ -39,6 +40,7 @@ public class Hero extends Creature {
                  Array<AbilityID> selectedDefenseAbilities,
                  Array<Skill> skills,
                  int experience,
+                 int money,
                  String items){
         super(screen, heroDescription, items, null, 0, null);
 
@@ -55,6 +57,7 @@ public class Hero extends Creature {
         this.skills = skills;
 
         this.experience= experience;
+        this.money = money;
 
         rivalOrganizations = new HashMap<Integer,String>();  // TODO detect rivals
         rivalOrganizations.put(0,"1,2");
@@ -335,5 +338,13 @@ public class Hero extends Creature {
 
     public HashMap<Integer, String> getRivalOrganizations() {
         return rivalOrganizations;
+    }
+
+
+    public void removeMoney(String amount) {
+        money = money - Integer.valueOf(amount);
+    }
+    public void addMoney(String amount) {
+        money = money + Integer.valueOf(amount);
     }
 }

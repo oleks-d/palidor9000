@@ -52,7 +52,7 @@
     "name" : "Bow",
     "description" : "Sword",
     "value" : "100",
-    "image" : "sword",
+    "image" : "bow",
     "type" : "WEAPON_BOW"
   },
   {
@@ -63,6 +63,15 @@
     "image" : "axe",
     "type" : "WEAPON_AXE",
     "effects": "PLUS_CUT_DAMAGE 0 1 0"
+  },
+  {
+    "id":"axe_2",
+    "name" : "MUHAHA Axe",
+    "description" : "Cool axe",
+    "value" : "100",
+    "image" : "axe_red",
+    "type" : "WEAPON_AXE",
+    "effects": "PLUS_CUT_DAMAGE 0 2 0,PLUS_CRUSH_DAMAGE 0 2 0"
   },
   {
     "id":"fire_1",

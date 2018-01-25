@@ -13,13 +13,15 @@ public class Trigger {
     private String type;
     private String value;
     private String key;
+    private String process;
 
-    public Trigger(String type,  String key, String value, String description, String condition) {
+    public Trigger(String type,  String key, String value, String description, String condition, String process) {
         this.type = type;
         this.value = value;
         this.key = key;
         this.description = description;
         this.condition = condition;
+        this.process = process;
     }
 
     private String description;

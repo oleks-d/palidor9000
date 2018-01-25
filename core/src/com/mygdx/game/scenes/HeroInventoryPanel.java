@@ -14,13 +14,11 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mygdx.game.CustomDialog;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.EquipmentType;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
-import com.mygdx.game.stuctures.Skill;
 import com.mygdx.game.tools.AnimationHelper;
 
 import java.io.File;
@@ -34,7 +32,6 @@ public class HeroInventoryPanel implements Disposable {
     private final AnimationHelper animhelper;
     public Stage stage;
     Viewport viewport;
-    CustomDialog dialog;
 
     //Integer score;
 
@@ -44,6 +41,8 @@ public class HeroInventoryPanel implements Disposable {
     Label equipedArmorLabel;
     Label equipedWeapon1Label;
     Label equipedWeapon2Label;
+
+    Label moneyLabel;
 
     Label detailsHeader;
     Image background;
@@ -169,6 +168,9 @@ public class HeroInventoryPanel implements Disposable {
         inventorytable.setFillParent(true);
         inventorytable.row();
         inventorytable.add(inventoryHeader);
+        inventorytable.row();
+        moneyLabel = new Label(String.format("Money: %d", hero.money), new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        inventorytable.add(moneyLabel);
 
         Table equipmenttable = new Table();
         equipmenttable.right().top();
@@ -263,7 +265,6 @@ public class HeroInventoryPanel implements Disposable {
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         currentItem = hero.getInventory().get(index);
                         currentAbility = null;
-                                System.out.println(currentItem.itemname);
                         return true;
                     }
 

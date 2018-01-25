@@ -38,6 +38,7 @@ public class GameObject extends Sprite {
     double speedInCurrentStep;
     int currentStepNumber;
 Vector2 direction;
+    public Rectangle originalRectangle = null;
 
     public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String items, String program) {
 
@@ -49,8 +50,10 @@ Vector2 direction;
         this.type = objectDescription.type;
         this.program = program;
 
-        if(type != GameObjectType.DOOR && type != GameObjectType.CHEST && program != null && !program.equals(""))
+        if(type != GameObjectType.DOOR && type != GameObjectType.CHEST && program != null && !program.equals("")) {
             steps = program.toCharArray();
+            originalRectangle = rectangle;
+        }
 
         currentStepNumber = 0;
 

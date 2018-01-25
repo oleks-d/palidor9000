@@ -15,6 +15,7 @@ import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.sprites.gameobjects.GameObject;
+import com.mygdx.game.sprites.triggers.Trigger;
 import com.mygdx.game.tools.*;
 import com.mygdx.game.stuctures.Characteristics;
 import com.mygdx.game.stuctures.Effect;
@@ -83,6 +84,7 @@ public class Creature extends Sprite {
 
     float JUMP_BASE = 5;
     float SPEED_BASE = 0.2f;
+    public float sight = 100;
 
     public AI brain;
     private Set<Integer> enemyOrganizations;
@@ -107,6 +109,7 @@ public class Creature extends Sprite {
 
     public Effect shieldEffect = null; // effect that will be applied to enemy who is trying to hit creature
     public String deathProcess = null;
+    public TextureRegion icon;
 
     public CreatureStatus getStatusbar() {
         return statusbar;
@@ -206,6 +209,7 @@ public class Creature extends Sprite {
         // set animations
         spritesheetRegion = description.region;
         stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 0);
+        icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 0); //TODO
         deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region , 10);
         runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.1f, 0,1);
 
@@ -468,10 +472,12 @@ public class Creature extends Sprite {
 
     public void setMoveLeft(boolean b) {
         this.brain.setMoveLeft(b);
+        this.brain.setMoveRight(!b);
     }
 
     public void setMoveRight(boolean b) {
         this.brain.setMoveRight(b);
+        this.brain.setMoveLeft(!b);
     }
 
     public void setHasToJump(boolean hasToJump) {
@@ -585,7 +591,7 @@ public class Creature extends Sprite {
     //results of defense actions
     public void lockAbility(AbilityID ability) {
             resetTimeSpentOnCast();
-            getBody().setLinearVelocity(0, 0); // STOP
+            //getBody().setLinearVelocity(0, 0); // STOP
             cooldowns.put(ability, AbilityHandler.getAbilityCooldownTime(this,ability) + existingTime);
             setIN_BATTLE(true);
             Gdx.app.log("Creature", "Locked " + ability);
@@ -595,6 +601,38 @@ public class Creature extends Sprite {
         return cooldowns.get(ability) <= existingTime;
     }
 
+
+    public Array<AbilityID> getAbilities() {
+        return abilities;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setInvisible(boolean b) {
+        if(!b) {
+            removeEffectByID(EffectID.INVISIBLE);
+            lockAbility(AbilityID.MASK);
+        }
+        hidden = b;
+    }
+
+
+
+    public void setStun(boolean stuned) {
+        this.stuned = stuned;
+        //resetTimeSpentOnCast();
+        if(stuned) lockAbility(abilityToCast);
+    }
+
+
+
+    public double showWhenAbilityWillBeAvailable(AbilityID ability) {
+        if(cooldowns.get(ability) - existingTime <= 0)
+            return 0;
+        return Math.round(cooldowns.get(ability) - existingTime);
+    }
 
     ///// EFFECTS
 
@@ -869,14 +907,10 @@ public class Creature extends Sprite {
         return timeSpentOnCast > abilityToCastExecutionTime;
     }
 
-//    public Integer getID() {
-//        return ID;
-//    }
 
     // DEATH processing
-    public void toDie(){
-        Gdx.app.log("Dead",name + " ");
 
+    public void toDie(){
         ConditionProcessor.conditionProcess(this, deathProcess);
 
         toDestroy = true;
@@ -887,43 +921,9 @@ public class Creature extends Sprite {
     }
 
 
-    public void activateTrigger(com.mygdx.game.sprites.triggers.Trigger trigger) {
+    public void activateTrigger(Trigger trigger) {
         TriggerHandler.runProcess(this, trigger);
     }
-
-    public Array<AbilityID> getAbilities() {
-        return abilities;
-    }
-
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setInvisible(boolean b) {
-        if(!b)
-            removeEffectByID(EffectID.INVISIBLE);
-        hidden = b;
-    }
-
-
-
-    public void setStun(boolean stuned) {
-        this.stuned = stuned;
-        //resetTimeSpentOnCast();
-        if(stuned) lockAbility(abilityToCast);
-    }
-
-//    public void pushIt() {
-//        resetTimeSpentOnCast();
-//    }
-
-
-    public double showWhenAbilityWillBeAvailable(AbilityID ability) {
-        if(cooldowns.get(ability) - existingTime <= 0)
-            return 0;
-        return Math.round(cooldowns.get(ability) - existingTime);
-    }
-
 
 
 

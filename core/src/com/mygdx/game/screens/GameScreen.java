@@ -10,16 +10,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
-import com.mygdx.game.scenes.ControllerPanel;
-import com.mygdx.game.scenes.HeroAbilitiesPanel;
-import com.mygdx.game.scenes.HeroInventoryPanel;
-import com.mygdx.game.scenes.InfoPanel;
+import com.mygdx.game.scenes.*;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.creatures.Hero;
@@ -54,17 +50,17 @@ public class GameScreen implements Screen {
 
     public Box2DDebugRenderer debugRenderer;
 
-    public com.mygdx.game.scenes.MainPanel mainPanel;
-    public com.mygdx.game.scenes.InfoPanel infoPanel;
-    com.mygdx.game.scenes.ControllerPanel controller;
-    public com.mygdx.game.scenes.HeroInventoryPanel heroInventoryPanel;
-    public com.mygdx.game.scenes.HeroAbilitiesPanel heroAbilitiesPanel;
+    public DialogPanel dialogPanel;
+    ControllerPanel controller;
+    HeroInventoryPanel heroInventoryPanel;
+    HeroAbilitiesPanel heroAbilitiesPanel;
 
     public com.mygdx.game.tools.LevelManager levelmanager;
 
     public com.mygdx.game.tools.AnimationHelper animationHelper;
 
     boolean PAUSE;
+    boolean onMainScreen = true;
     boolean onInventoryScreen = false;
     boolean onAbilitiesScreen = false;
     boolean onDialogScreen = false;
@@ -137,13 +133,12 @@ public class GameScreen implements Screen {
 
         levelmanager.loadLevel(hero.currentLevel, hero.name);
 
-        //info
-        infoPanel = new InfoPanel(game.getBatch(), this);
-
-        //info
+        //penels
+        dialogPanel = new DialogPanel(game.getBatch(), this);
         heroInventoryPanel = new HeroInventoryPanel(game.getBatch(), hero, animationHelper);
         heroAbilitiesPanel = new HeroAbilitiesPanel(game.getBatch(), hero, animationHelper);
 
+        //controller
         controller.update(hero);
 
         PAUSE = false;
@@ -175,7 +170,7 @@ public class GameScreen implements Screen {
 
         handleInput(delta);
 
-        // handle camera after hero position update
+        // handle camera after hero position update // TODO check for upper corner
             if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 ) //&& hero.getBody().getPosition().x < 32-viewport.getWorldWidth() / 2)
                 camera.position.x = (hero.getBody().getPosition().x );
             else
@@ -274,26 +269,41 @@ public class GameScreen implements Screen {
         Vector3 coord;
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.I) || controller.inventoryToched || heroInventoryPanel.closeTouched) {
+
             heroInventoryPanel.closeTouched = false;
             controller.inventoryToched = false;
-            onInventoryScreen = !onInventoryScreen;
-            PAUSE = !PAUSE;
-            if(!PAUSE)
-                controller.update(hero);
-            else
+
+            if (onMainScreen) {
                 heroInventoryPanel.update();
+                onInventoryScreen = true;
+                onMainScreen = false;
+                PAUSE = true;
+            } else {
+                controller.update(hero);
+                onInventoryScreen = false;
+                onMainScreen = true;
+                PAUSE = false;
+            }
+
+
         }
 
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.O) || controller.abilitiesToched || heroAbilitiesPanel.closeTouched) {
             heroAbilitiesPanel.closeTouched = false;
             controller.abilitiesToched = false;
-            onAbilitiesScreen = !onAbilitiesScreen;
-            PAUSE = !PAUSE;
-            if(!PAUSE)
-                controller.update(hero);
-            else
+
+            if (onMainScreen) {
                 heroAbilitiesPanel.update();
+                onAbilitiesScreen = true;
+                onMainScreen = false;
+                PAUSE = true;
+            } else {
+                controller.update(hero);
+                onAbilitiesScreen = false;
+                onMainScreen = true;
+                PAUSE = false;
+            }
         }
 
         //TODO temp
@@ -302,13 +312,13 @@ public class GameScreen implements Screen {
         }
 
         if (PAUSE) {
-            if(Gdx.input.justTouched()) {
-                 coord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-                getInfoFromObjectByCoordinates(coord.x,coord.y);
-            }
+//            if(Gdx.input.justTouched()) {
+//                 coord = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+//                getInfoFromObjectByCoordinates(coord.x,coord.y);
+//            }
             if(onDialogScreen)
                 if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || Gdx.input.justTouched())
-                    endDialog();
+                    if(dialogPanel.currentReplic == 0) endDialog();
         } else {
                 ActivityWithEffect activity = null;
 
@@ -485,27 +495,36 @@ public class GameScreen implements Screen {
            // }
     }
 
+
+    // for trigger messages
     public void showDialog(){
         PAUSE = true;
         onDialogScreen = true;
-        //TODO
-        Gdx.app.log("Dialog", "Started'");
+        onMainScreen = false;
 
+        dialogPanel.update();
+        dialogPanel.currentReplic = 0;
     }
 
-    void startDialog(Creature actor){
+    public void startDialog(Creature actor){
         PAUSE = true;
         onDialogScreen = true;
-        //TODO
-        Gdx.app.log("Dialog", "Started'");
+        onMainScreen = false;
+
+        dialogPanel.setDialogs(actor);
+        dialogPanel.update();
+
 
     }
 
-    void endDialog(){
+    public void endDialog(){
+        dialogPanel.reset();
         PAUSE = false;
         onDialogScreen = false;
-        Gdx.app.log("Dialog", "Closed'");
-        infoPanel.reset();
+        onMainScreen = true;
+
+        controller.update();
+
     }
 
 
@@ -548,7 +567,6 @@ public class GameScreen implements Screen {
                     item.draw(game.getBatch());
             }
 
-
             //render all enemies
             for (Creature creature : levelmanager.CREATURES) {
                 creature.draw(game.getBatch());
@@ -561,12 +579,12 @@ public class GameScreen implements Screen {
             //render all activities
             for (ActivityWithEffect activity : levelmanager.ACTIVITIES) {
                 if (!activity.isDestroyed())
-                    try {
+                    //try {
                     //TODO fix
                         //game.getBatch().draw(activity.region, activity.getX(), activity.getY(), activity.region.getRegionWidth() / PPM / 2, activity.region.getRegionHeight() / PPM / 2, activity.region.getRegionWidth() / PPM, activity.region.getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
-                    }catch(Exception e){
+                    //}catch(Exception e){
                         activity.draw(game.getBatch());
-                    }
+                    //}
                 //activity.draw(game.getBatch());
                     //game.getBatch().draw(activity.getFrame(delta), activity.getX(), activity.getY(), activity.getFrame(delta).getRegionWidth() / PPM / 2, activity.getFrame(delta).getRegionHeight() / PPM / 2, activity.getFrame(delta).getRegionWidth() / PPM, activity.getFrame(delta).getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
 
@@ -591,14 +609,14 @@ public class GameScreen implements Screen {
                 game.getBatch().setProjectionMatrix(heroAbilitiesPanel.stage.getCamera().combined);
                 heroAbilitiesPanel.stage.draw();
             } else if (onDialogScreen){
-                infoPanel.stage.draw();
+                dialogPanel.stage.draw();
             }
 
         } else {
 
-            //show info panel
-            game.getBatch().setProjectionMatrix(infoPanel.stage.getCamera().combined);
-            infoPanel.stage.draw();
+//            //show info panel
+//            game.getBatch().setProjectionMatrix(dialogPanel.stage.getCamera().combined);
+//            dialogPanel.stage.draw();
 
             //if (Gdx.app.getType() == Application.ApplicationType.Android){
             controller.stage.draw();
@@ -668,7 +686,7 @@ public class GameScreen implements Screen {
         world.dispose();
         debugRenderer.dispose();
         controller.dispose();
-        infoPanel.dispose();
+        dialogPanel.dispose();
         heroInventoryPanel.dispose();
         heroAbilitiesPanel.dispose();
         levelmanager.dispose();

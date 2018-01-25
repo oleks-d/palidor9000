@@ -30,7 +30,7 @@
     "name" : "Mark",
     "description": "Mark !",
     "health" : "10",
-    "speed" : "0",
+    "speed" : "1",
     "spritesheetregion" : "enemy1",
     "effects" : "CUT_DAMAGE 1 1 0",
     "abilities" : "PUNCH",

@@ -19,14 +19,14 @@ public class TriggerHandler {
                     creature.screen.levelmanager.saveLevel(creature.screen.hero.currentLevel, creature.screen.hero.name);
                     creature.screen.levelmanager.loadNextLevel(trigger.getValue(), creature.screen.hero.name);
                     creature.screen.levelmanager.saveHero(creature.screen.hero);
-                    creature.screen.infoPanel.update();
+                    creature.screen.dialogPanel.update();
                 }
             break;
             case "story": // story points
                 if(creature.equals(creature.screen.hero)) {
                     if ((ConditionProcessor.conditionSatisfied(creature.screen.hero, trigger.getCondition()))){
                         creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
-                        creature.screen.infoPanel.addMessage(trigger.getDescription(), "Story", "book");
+                        creature.screen.dialogPanel.addMessage(trigger.getDescription(), "Story", creature.screen.animationHelper.getTextureRegionByIDAndIndex("book"));
                         creature.screen.showDialog();
                     }
                 }
