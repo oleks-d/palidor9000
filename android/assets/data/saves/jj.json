@@ -1,0 +1,29 @@
+{
+  "hero": {
+    "name": "jj",
+    "description": "Player",
+    "health": "10",
+    "speed": "10",
+    "jump": "10",
+    "spritesheetregion": "enemy3",
+    "abilities": "SUMMON_MARK",
+    "org": "1",
+    "equipeditems": ""
+  },
+
+    "items": "",
+  "globalStates" : [
+{ "key" : "MainStory", "value" : "NotStarted"}  ],
+
+  "currentLevel" : "Willage",
+  "previousLevel" : "Start",
+  "exp" : "1000",
+  "money" : "100",
+
+  "selectedAtackAbilities" : "",
+  "selectedDefenseAbilities": "",
+  "summon": "SUMMON_MARK",
+  "skills": "",
+
+
+}

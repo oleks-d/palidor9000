@@ -567,6 +567,7 @@ public class AbilityHandler {
                 return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 1, 2, 3);
             default:
                 return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 4, 5);
         }
     }
 }

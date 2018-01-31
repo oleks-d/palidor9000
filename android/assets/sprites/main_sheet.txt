@@ -1,39 +1,39 @@
 main_sheet.png
-size: 1008, 304
+size: 1008, 288
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 aim_left
   rotate: false
-  xy: 656, 0
+  xy: 720, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 aim_right
   rotate: false
-  xy: 640, 0
+  xy: 592, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 animal1
   rotate: false
-  xy: 0, 160
-  size: 336, 48
-  orig: 336, 48
+  xy: 96, 32
+  size: 224, 32
+  orig: 224, 32
   offset: 0, 0
   index: -1
 animal2
   rotate: false
-  xy: 336, 160
+  xy: 0, 176
   size: 336, 48
   orig: 336, 48
   offset: 0, 0
   index: -1
 animal3
   rotate: false
-  xy: 672, 160
+  xy: 0, 224
   size: 336, 48
   orig: 336, 48
   offset: 0, 0
@@ -47,70 +47,70 @@ armor
   index: -1
 armor_blue
   rotate: false
-  xy: 32, 32
+  xy: 960, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 armor_green
   rotate: false
-  xy: 896, 0
+  xy: 800, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 armor_red
   rotate: false
-  xy: 0, 32
+  xy: 864, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 arrow
   rotate: false
-  xy: 928, 0
+  xy: 736, 0
   size: 64, 16
   orig: 64, 16
   offset: 0, 0
   index: -1
 axe
   rotate: false
-  xy: 832, 32
+  xy: 128, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 axe2
   rotate: false
-  xy: 832, 0
+  xy: 672, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 axe_blue
   rotate: false
-  xy: 224, 32
+  xy: 736, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 axe_brown
   rotate: false
-  xy: 896, 32
+  xy: 704, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 axe_green
   rotate: false
-  xy: 544, 64
+  xy: 640, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 axe_red
   rotate: false
-  xy: 512, 64
+  xy: 768, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -124,168 +124,168 @@ berry
   index: -1
 blue_book
   rotate: false
-  xy: 608, 64
+  xy: 544, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 blue_buttle
   rotate: false
-  xy: 480, 64
+  xy: 512, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bolt_icon
   rotate: false
-  xy: 608, 0
+  xy: 624, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 book
   rotate: false
-  xy: 416, 64
+  xy: 576, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bow
   rotate: false
-  xy: 448, 64
+  xy: 0, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bow_blue
   rotate: false
-  xy: 768, 64
+  xy: 32, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bow_green
   rotate: false
-  xy: 704, 64
+  xy: 960, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bow_red
   rotate: false
-  xy: 640, 64
+  xy: 896, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 704, 0
+  xy: 640, 0
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 castbar
   rotate: false
-  xy: 672, 0
+  xy: 704, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 castbar2
   rotate: false
-  xy: 688, 0
+  xy: 672, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 check_button
   rotate: false
-  xy: 672, 64
+  xy: 864, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 chest
   rotate: false
-  xy: 624, 0
+  xy: 688, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 close_button
   rotate: false
-  xy: 736, 64
+  xy: 928, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 coin
   rotate: false
-  xy: 592, 0
+  xy: 608, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 dialog1
   rotate: false
-  xy: 96, 64
+  xy: 192, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 dialog2
   rotate: false
-  xy: 224, 64
+  xy: 416, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 door
   rotate: false
-  xy: 0, 96
+  xy: 528, 224
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
 down_button
   rotate: false
-  xy: 160, 64
+  xy: 352, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 empty_bottle
   rotate: false
-  xy: 128, 64
+  xy: 448, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 enemy1
   rotate: false
-  xy: 0, 256
+  xy: 336, 176
   size: 528, 48
   orig: 528, 48
   offset: 0, 0
   index: -1
 enemy2
   rotate: false
-  xy: 384, 208
+  xy: 64, 128
   size: 528, 48
   orig: 528, 48
   offset: 0, 0
   index: -1
 enemy3
   rotate: false
-  xy: 224, 96
+  xy: 480, 64
   size: 352, 32
   orig: 352, 32
   offset: 0, 0
   index: -1
 enemy4
   rotate: false
-  xy: 576, 96
+  xy: 0, 96
   size: 352, 32
   orig: 352, 32
   offset: 0, 0
@@ -299,7 +299,7 @@ fire_icon
   index: -1
 firewall
   rotate: false
-  xy: 0, 208
+  xy: 592, 128
   size: 384, 48
   orig: 384, 48
   offset: 0, 0
@@ -320,35 +320,35 @@ flower
   index: 2
 gem1
   rotate: false
-  xy: 256, 64
+  xy: 448, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 gem2
   rotate: false
-  xy: 320, 64
+  xy: 384, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 gem3
   rotate: false
-  xy: 352, 64
+  xy: 832, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 green_book
   rotate: false
-  xy: 288, 64
+  xy: 416, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 green_buttle
   rotate: false
-  xy: 192, 64
+  xy: 160, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -369,56 +369,56 @@ healthbar
   index: -1
 helmet
   rotate: false
-  xy: 864, 32
+  xy: 256, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 helmet_blue
   rotate: false
-  xy: 384, 64
+  xy: 288, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 helmet_green
   rotate: false
-  xy: 960, 32
+  xy: 352, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 helmet_red
   rotate: false
-  xy: 64, 64
+  xy: 480, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 hummer
   rotate: false
-  xy: 0, 64
+  xy: 384, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 hummer_blue
   rotate: false
-  xy: 32, 64
+  xy: 320, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 hummer_green
   rotate: false
-  xy: 928, 32
+  xy: 224, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 hummer_red
   rotate: false
-  xy: 576, 64
+  xy: 608, 96
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -432,14 +432,14 @@ ice_icon
   index: -1
 icewall
   rotate: false
-  xy: 936, 64
+  xy: 800, 96
   size: 64, 32
   orig: 64, 32
   offset: 0, 0
   index: -1
 icon_arrow_blue
   rotate: false
-  xy: 256, 0
+  xy: 576, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -628,21 +628,21 @@ icon_sword_yellow
   index: -1
 key1
   rotate: false
-  xy: 128, 32
+  xy: 0, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 key2
   rotate: false
-  xy: 160, 32
+  xy: 832, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 left_button
   rotate: false
-  xy: 96, 32
+  xy: 32, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -656,35 +656,35 @@ mashroom
   index: -1
 pick
   rotate: false
-  xy: 800, 0
+  xy: 384, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 purple_buttle
   rotate: false
-  xy: 736, 0
+  xy: 320, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 red_book
   rotate: false
-  xy: 768, 0
+  xy: 352, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 red_bottle
   rotate: false
-  xy: 864, 0
+  xy: 928, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 right_button
   rotate: false
-  xy: 192, 32
+  xy: 896, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -698,168 +698,175 @@ rock
   index: -1
 shield
   rotate: false
-  xy: 608, 32
+  xy: 416, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shield_green
   rotate: false
-  xy: 640, 32
+  xy: 872, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shield_red
   rotate: false
-  xy: 576, 32
+  xy: 904, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shield_yellow
   rotate: false
-  xy: 672, 32
+  xy: 840, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sling
   rotate: false
-  xy: 704, 32
+  xy: 936, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sling_blue
   rotate: false
-  xy: 768, 32
+  xy: 0, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sling_green
   rotate: false
-  xy: 800, 32
+  xy: 64, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sling_red
   rotate: false
-  xy: 736, 32
+  xy: 96, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 soundwall
   rotate: false
-  xy: 32, 96
+  xy: 336, 224
   size: 192, 48
   orig: 192, 48
   offset: 0, 0
   index: -1
 spikes_down
   rotate: false
-  xy: 544, 32
+  xy: 32, 64
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 spikes_left
   rotate: false
-  xy: 512, 32
+  xy: 968, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 spikes_right
   rotate: false
-  xy: 288, 32
+  xy: 808, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 spikes_up
   rotate: false
-  xy: 320, 32
+  xy: 776, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stuff
   rotate: false
-  xy: 256, 32
+  xy: 512, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stuff_blue
   rotate: false
-  xy: 352, 32
+  xy: 544, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stuff_green
   rotate: false
-  xy: 384, 32
+  xy: 480, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 stuff_red
   rotate: false
-  xy: 448, 32
+  xy: 576, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 sword
   rotate: false
-  xy: 868, 64
+  xy: 640, 32
   size: 34, 32
   orig: 34, 32
   offset: 0, 0
   index: -1
 sword_blue
   rotate: false
-  xy: 800, 64
+  xy: 708, 32
   size: 34, 32
   orig: 34, 32
   offset: 0, 0
   index: -1
 sword_green
   rotate: false
-  xy: 834, 64
+  xy: 742, 32
   size: 34, 32
   orig: 34, 32
   offset: 0, 0
   index: -1
 sword_red
   rotate: false
-  xy: 902, 64
+  xy: 674, 32
   size: 34, 32
   orig: 34, 32
   offset: 0, 0
   index: -1
+triangle1
+  rotate: false
+  xy: 560, 224
+  size: 448, 64
+  orig: 448, 64
+  offset: 0, 0
+  index: -1
 up_button
   rotate: false
-  xy: 480, 32
+  xy: 608, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 yellow_bottle
   rotate: false
-  xy: 416, 32
+  xy: 448, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 yellowbar
   rotate: false
-  xy: 576, 0
+  xy: 256, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

@@ -94,6 +94,8 @@ public class Creature extends Sprite {
     public CreatureStatus statusbar;
     //public CreatureAim creatureAim;
 
+    public WeaponSprite weaponSprite;
+
     Creature closeNeighbor;  // close creature - you can talk with
 
     Array<Integer> dialogs; // list of dialog ids assigned to creature
@@ -220,6 +222,12 @@ public class Creature extends Sprite {
             //pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
             jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 6, 1);
         }else {
+//            stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
+//            icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
+//            deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
+//            runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 1, 2);
+//            jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 3);
+
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
             deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 10);
@@ -291,7 +299,8 @@ public class Creature extends Sprite {
 //        shape.setAsBox(getWidth() / 3,getHeight() / 3);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(PalidorGame.TILE_SIZE / 2 / PalidorGame.PPM );
+        //shape.setRadius(PalidorGame.TILE_SIZE * 1/3 / PalidorGame.PPM );
+        shape.setRadius(PalidorGame.TILE_SIZE /2 / PalidorGame.PPM );
         //shape.setRadius(0.2f);
 
         FixtureDef fixtureDef = new FixtureDef();
