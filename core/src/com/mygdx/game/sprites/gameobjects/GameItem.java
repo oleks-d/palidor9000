@@ -26,6 +26,8 @@ public class GameItem extends Sprite {
     private boolean usable;
     private String icon;
     public String id;
+    private String process;
+    private String condition;
 
     public GameItem(GameScreen screen, ItemDescription description){
         super();
@@ -38,6 +40,8 @@ public class GameItem extends Sprite {
         this.itemvalue = description.value;
         this.type = description.type;
         this.usable = description.usable;
+        this.process = description.process;
+        this.condition = description.condition;
 
         //get all effects
         this.effects = new Array<Effect>();
@@ -128,5 +132,13 @@ public class GameItem extends Sprite {
 
     public Body getBody() {
         return body;
+    }
+
+    public String getProcess() {
+        return process;
+    }
+
+    public String getCondition() {
+        return condition;
     }
 }

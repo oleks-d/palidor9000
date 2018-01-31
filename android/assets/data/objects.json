@@ -1,13 +1,13 @@
 {"objects":[
   {
-    "id":"door_1",
-    "image" : "key1",
-    "type" : "DOOR",
+    "id":"door_willage_1",
+    "image" : "door",
+    "type" : "DOOR"
   },
   {
     "id":"chest_1",
     "image" : "castbar",
-    "type" : "CHEST",
+    "type" : "CHEST"
   },
   {
     "id":"box_1",
@@ -18,5 +18,10 @@
     "id":"spike_1",
     "image" : "healthbar",
     "type" : "SPIKE"
+  },
+  {
+  "id":"spike_down",
+  "image" : "spikes_down",
+  "type" : "SPIKE"
   }
 ]}

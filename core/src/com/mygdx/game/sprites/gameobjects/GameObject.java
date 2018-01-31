@@ -11,11 +11,14 @@ import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.GameObjectType;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.stuctures.descriptions.ObjectDescription;
+import com.mygdx.game.tools.ConditionProcessor;
 
 /**
  * Created by odiachuk on 1/23/18.
  */
 public class GameObject extends Sprite {
+
+    private Rectangle startingRectangle;
 
     protected GameScreen screen;
     protected World world;
@@ -29,18 +32,21 @@ public class GameObject extends Sprite {
     private String icon;
     public String id;
 
+    String activationTrigger = "";
+
     public Array<GameItem> items;
 
     public char[] steps = null;
     char currentStep;
     double existingTime;
     double timeForNextStep;
-    double speedInCurrentStep;
+    float speedInCurrentStep = 1;
+    float timeMovementTakes = 1;
     int currentStepNumber;
-Vector2 direction;
+    Vector2 direction;
     public Rectangle originalRectangle = null;
 
-    public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String items, String program) {
+    public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String items, String program, String activationTrigger) {
 
         super();
 
@@ -50,20 +56,22 @@ Vector2 direction;
         this.type = objectDescription.type;
         this.program = program;
 
-        if(type != GameObjectType.DOOR && type != GameObjectType.CHEST && program != null && !program.equals("")) {
+        if (type != GameObjectType.DOOR && type != GameObjectType.CHEST && program != null && !program.equals("")) {
             steps = program.toCharArray();
             originalRectangle = rectangle;
         }
 
+        this.activationTrigger = activationTrigger;
+
         currentStepNumber = 0;
 
-        direction = new Vector2(0,0);
+        direction = new Vector2(0, 0);
 
         this.items = new Array<GameItem>();
 
         // add all items from inventory  -  get items from item descriptions in levelmanager
-        if(items != null && !"".equals(items))
-            for (String itemd : items.split(",")){
+        if (items != null && !"".equals(items))
+            for (String itemd : items.split(",")) {
                 this.items.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
             }
 
@@ -71,11 +79,13 @@ Vector2 direction;
 
         createBody(rectangle);
 
-        if(steps != null)
+        if (steps != null) {
+            this.startingRectangle = rectangle;
             nextStep(0);
+        }
     }
 
-    public void createBody(Rectangle rect){
+    public void createBody(Rectangle rect) {
         this.world = screen.world;
         setPosition(rect.x, rect.y);
         setBounds(rect.x, rect.y, rect.getWidth() / PalidorGame.PPM, rect.getHeight() / PalidorGame.PPM);
@@ -92,7 +102,7 @@ Vector2 direction;
         shape.setAsBox(rect.getWidth() / 2 / PalidorGame.PPM, rect.getHeight() / 2 / PalidorGame.PPM);
 
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.friction = 2;
+        fixtureDef.friction = 0.5f;
         fixtureDef.shape = shape;
 
         fixtureDef.isSensor = false;
@@ -102,16 +112,16 @@ Vector2 direction;
 
         body.createFixture(fixtureDef).setUserData(this);
 
-        setPosition(body.getPosition().x - getWidth()/2 , body.getPosition().y - getHeight() /2);
+        setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
     }
 
-    public void update(float dt){
-        if(toDestroy && !destroyed){
+    public void update(float dt) {
+        if (toDestroy && !destroyed) {
             world.destroyBody(body);
             destroyed = true;
         }
 
-        if(steps != null) {
+        if (steps != null) {
             existingTime = existingTime + dt;
 
             if (existingTime >= timeForNextStep) {
@@ -125,20 +135,53 @@ Vector2 direction;
     }
 
     private void nextStep(float dt) {
-        if(currentStepNumber>=steps.length)
+        if (currentStepNumber >= steps.length)
             currentStepNumber = 0;
+
         currentStep = steps[currentStepNumber];
-        if(currentStep == 'u')
-            direction.set(0,1);
-        if(currentStep == 'd')
-            direction.set(0,-1);
-        if(currentStep == 'r')
-            direction.set(1,0);
-        if(currentStep == 'l')
-            direction.set(-1,0);
 
-        timeForNextStep = existingTime + 1f;
+        if (currentStep == 'u') {
+            direction.set(0, speedInCurrentStep);
+            timeForNextStep = existingTime + timeMovementTakes;
+        }
+        if (currentStep == 'd') {
+            direction.set(0, -speedInCurrentStep);
+            timeForNextStep = existingTime + timeMovementTakes;
+        }
+        if (currentStep == 'r') {
+            direction.set(speedInCurrentStep, 0);
+            timeForNextStep = existingTime + timeMovementTakes;
+        }
+        if (currentStep == 'l') {
+            direction.set(-speedInCurrentStep, 0);
+            timeForNextStep = existingTime + timeMovementTakes;
+        }
 
+        // chnge spped and timeslot
+        if (currentStep == 'f') {//faster
+            speedInCurrentStep = speedInCurrentStep + 1;
+            timeForNextStep = existingTime;
+        }
+        if(currentStep =='s') {//slower
+            speedInCurrentStep = speedInCurrentStep -1;
+            timeForNextStep = existingTime;
+        }
+        if(currentStep =='o') {//reset
+            world.destroyBody(body); //TODO check
+            createBody(originalRectangle);
+            timeForNextStep = existingTime;
+        }
+        if(currentStep =='n') {//reset
+            timeForNextStep = existingTime + 1;
+            direction.set(0, 0.01f);
+        }
+        if(currentStep =='t') {//reset
+            if(!ConditionProcessor.conditionSatisfied(screen.hero, activationTrigger)) {
+                timeForNextStep = existingTime + 0.5;
+                direction.set(0, 0.01f);
+                currentStepNumber--;
+            }
+        }
     }
 
     public void draw(Batch batch){
@@ -185,5 +228,9 @@ Vector2 direction;
 
     public Array<GameItem> getItems() {
         return items;
+    }
+
+    public String getTrigger() {
+        return activationTrigger;
     }
 }

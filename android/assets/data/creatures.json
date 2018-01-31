@@ -2,15 +2,14 @@
 
 
   {
-    "id" : "animal_1",
+    "id" : "rolf",
     "name" : "Rolf",
     "description": "Regular rolf",
     "health" : "10",
-    "speed" : "1",
-    "spritesheetregion" : "enemy2",
-    "effects" : "CRUSH_DAMAGE 1 1 0",
-    "abilities" : "LONGBOW_SHOT",
-    "equipeditems" : "",
+    "speed" : "5",
+    "jump": "5",
+    "spritesheetregion" : "animal1",
+    "abilities" : "ANIMAL_PUNCH"
   },
 
   {
@@ -18,22 +17,138 @@
     "name" : "Fast Rolf",
     "description": "Fast rolf",
     "health" : "10",
-    "speed" : "1",
+    "speed" : "10",
+    "jump": "10",
     "spritesheetregion" : "enemy2",
     "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH",
+    "abilities" : "PUNCH"
   },
 
+
+
+  {
+    "id" : "father",
+    "name" : "Rogan, the Fair",
+    "description": "Your father. \n Hunter.",
+    "health" : "10",
+    "speed" : "10",
+    "jump" : "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "SWORD_SWING,LONGBOW_SHOT"
+  },
+  {
+    "id" : "mather",
+    "name" : "Nila, the Kind",
+    "description": "Your mather. \n Witch and healer assistant.",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "FIREWALL"
+  },
 
   {
     "id" : "mark",
     "name" : "Mark",
-    "description": "Mark !",
+    "description": "Son of a balcksmith. \n Your friend",
     "health" : "10",
-    "speed" : "1",
+    "speed" : "10",
+    "jump": "10",
     "spritesheetregion" : "enemy1",
     "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH",
+    "abilities" : "HUMMER_SWING"
+  },
+
+  {
+    "id" : "mark",
+    "name" : "Mark",
+    "description": "Son of a blacksmith. \n Your friend",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "HUMMER_SWING"
+  },
+
+  {
+    "id" : "erlok",
+    "name" : "Erlok the Brave",
+    "description": "Head of a willage. \n Old veteran",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "SWORD_SWING"
+  },
+
+
+  {
+    "id" : "lina",
+    "name" : "Lina",
+    "description": "Doughter of Erlok. \n Beautiful blond girl of your age with shining blue eyes.",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "SWORD_SWING"
+  },
+
+
+  {
+    "id" : "leok",
+    "name" : "Leok",
+    "description": "Son of Erlok. \n Small boy.",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "SWORD_SWING"
+  },
+
+  {
+    "id" : "logus",
+    "name" : "Logus the Strong",
+    "description": "Balcksmith. \n Strong and silent.",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "HUMMER_SWING"
+  },
+
+  {
+    "id" : "arora",
+    "name" : "Arora the Wise",
+    "description": "Which. \n Black hair and deep black eyes",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "FIREWALL"
+  },
+
+  {
+    "id" : "enika",
+    "name" : "Enika",
+    "description": "Doughter of Arora. \n Charming girl of your age with black hair and brown eyes.",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "FIREWALL"
+  },
+
+
+
+  {
+    "id" : "inna",
+    "name" : "Princess Inna",
+    "description": "Doughter of King Arelius.",
+    "health" : "10",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "enemy1",
+    "abilities" : "FIREWALL"
   }
 
 ]}

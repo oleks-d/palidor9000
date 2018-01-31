@@ -1,8 +1,8 @@
 {"items":[
   {
     "id":"key_1",
-    "name" : "Key from next level",
-    "description" : "Key from some door",
+    "name" : "Ancient key",
+    "description" : "Key required for some Ancient door",
     "value" : "0",
     "image" : "key1"
   },
@@ -19,29 +19,38 @@
     "id":"coin",
     "name" : "Treasure",
     "description" : "Money,money,money...",
-    "value" : "1",
+    "value" : "10",
     "image" : "gem2"
   },
   {
     "id":"gem",
     "name" : "Ruby",
     "description" : "Red gem",
-    "value" : "10",
+    "value" : "1000",
     "image" : "gem1"
   },
   {
     "id":"helmet_1",
-    "name" : "Helmet for novice",
-    "description" : "Helmet?",
+    "name" : "Rusty helmet",
+    "description" : "Some protection against crush damage \n +1 Armor against crush",
     "value" : "100",
     "image" : "helmet",
     "type" : "HEAD",
     "effects": "MINUS_CRUSH_DAMAGE 0 1 0"
   },
   {
-    "id":"sword_1",
+    "id":"armor_1",
+    "name" : "Rusty armor",
+    "description" : "Some protection against cut damage \n +1 Armor against cut",
+    "value" : "100",
+    "image" : "armor_green",
+    "type" : "ARMOR",
+    "effects": "MINUS_CUT_DAMAGE 0 1 0"
+  },
+  {
+    "id":"sword_of_ice",
     "name" : "Sword of Ice",
-    "description" : "Sword",
+    "description" : "Ancient enchanted sword \n +1 Cut Damage \n +1 Ice Damage",
     "value" : "100",
     "image" : "sword",
     "type" : "WEAPON_SWORD",
@@ -50,54 +59,91 @@
   {
     "id":"bow_1",
     "name" : "Bow",
-    "description" : "Sword",
+    "description" : "Regular bow \n (Accuracy skill required)",
     "value" : "100",
     "image" : "bow",
     "type" : "WEAPON_BOW"
   },
   {
-    "id":"axe_1",
-    "name" : "Axe",
-    "description" : "Rusty axe",
+    "id":"hummer_1",
+    "name" : "Club",
+    "description" : "Simple crushing weapon \n (Strenth skill required)",
     "value" : "100",
-    "image" : "axe",
-    "type" : "WEAPON_AXE",
-    "effects": "PLUS_CUT_DAMAGE 0 1 0"
+    "image" : "hummer",
+    "type" : "WEAPON_HUMMER"
   },
   {
-    "id":"axe_2",
-    "name" : "MUHAHA Axe",
-    "description" : "Cool axe",
+    "id":"shield_1",
+    "name" : "Rusty shield",
+    "description" : "Simple shield \n (Endurance skill required)",
     "value" : "100",
-    "image" : "axe_red",
-    "type" : "WEAPON_AXE",
-    "effects": "PLUS_CUT_DAMAGE 0 2 0,PLUS_CRUSH_DAMAGE 0 2 0"
+    "image" : "shield",
+    "type" : "WEAPON_SHIELD"
+  },
+  {
+    "id":"axe_1",
+    "name" : "Axe",
+    "description" : "Rusty axe \n (Strenth skill required)",
+    "value" : "100",
+    "image" : "axe",
+    "type" : "WEAPON_AXE"
   },
   {
     "id":"fire_1",
     "name" : "Fire stuff",
-    "description" : "Stuff",
+    "description" : "Stuff of fire. Simple magic weapon. \n (Will skill required)",
     "value" : "100",
     "image" : "stuff_red",
     "type" : "WEAPON_MAGIC_FIRE",
     "effects": ""
   },
-  {
-    "id":"armor_1",
-    "name" : "Rusty armor",
-    "description" : "Rusty armor for fatman",
-    "value" : "100",
-    "image" : "armor",
-    "type" : "ARMOR",
-    "effects": "MINUS_CUT_DAMAGE 0 1 0,MINUS_CRUSH_DAMAGE 0 1 0"
-  },
+
   {
     "id":"potion_speed",
     "name" : "Potion of speed",
-    "description" : "Potion of speed",
+    "description" : "Allows to run two times faster\n Duration: 10 seconds",
     "value" : "100",
     "image" : "red_bottle",
     "usable" : "TRUE",
     "effects" : "FAST 10 1 0"
-  }
+  },
+  {
+    "id":"book_ancient_1",
+    "name" : "Ancient Book",
+    "description" : "Book about Ancient civilization. \n Important: Ancient ruins may be found under some areas",
+    "value" : "100",
+    "image" : "red_book",
+    "usable" : "TRUE",
+    "process" : "T:ANCIENT_STORY:Know",
+    "condition" : "A:READ_BASIC"
+  },
+
+  {
+    "id":"berry",
+    "name" : "Berry",
+    "description" : "Berries",
+    "value" : "0",
+    "image" : "berry"
+  },
+
+  {
+    "id":"book_about_rolfs",
+    "name" : "Book about Rolfs",
+    "description" : "Book about Rolfs \n Important: Rolf will not atack if you stand still",
+    "value" : "100",
+    "image" : "blue_book",
+    "usable" : "TRUE",
+    "condition" : "A:READ_BASIC"
+  },
+
+  {
+    "id":"Grimuar",
+    "name" : "Grimuar",
+    "description" : "Ancient book \n Important: This book related with dying of Ancients",
+    "value" : "100",
+    "image" : "red_book",
+    "usable" : "TRUE",
+    "condition" : "A:READ_ANCIENT"
+  },
+
 ]}

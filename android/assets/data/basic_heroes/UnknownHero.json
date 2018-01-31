@@ -3,10 +3,11 @@
     "name": "",
     "description": "Player",
     "health": "10",
-    "speed": "1",
-    "spritesheetregion": "enemy1",
-    "abilities": "",
-    "org": "1",
+    "speed": "10",
+    "jump": "10",
+    "spritesheetregion": "enemy3",
+    "abilities": "SUMMON_MARK",
+    "org": "0",
     "items": "",
     "equipeditems": ""
   },
@@ -18,12 +19,12 @@
   ],
 
   "previousLevel" : "Start",
-  "currentLevel" : "HuntersWillage",
+  "currentLevel" : "Willage",
 
 
   "selectedAtackAbilities" : "",
   "selectedDefenseAbilities": "",
-  "selectedHelpAbilities": "",
+  "summon": "SUMMON_MARK",
 
   "skills": ""
 

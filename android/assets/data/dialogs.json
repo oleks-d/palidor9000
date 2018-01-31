@@ -20,7 +20,47 @@
           {"condition" : "I:axe_1","text":"I want to sell it","process":"IR:axe_1;MA:100", "next":0} ]
       }
     ]
+  },
 
-  }
+  {"id":101,
+    "title":"Greetings",
+    "replics": [
+      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
+      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+    ]
+  },
+  {"id":102,
+    "title":"Greetings",
+    "replics": [
+      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
+      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+    ]
+  },
+  {"id":103,
+    "title":"Greetings",
+    "replics": [
+      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
+      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+    ]
+  },
+  {"id":104,
+    "title":"Greetings",
+    "replics": [
+      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
+      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+    ]
+  },
+  {"id":105,
+    "title":"Greetings",
+    "replics": [
+      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
+      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+    ]
+  },
       ]
 }

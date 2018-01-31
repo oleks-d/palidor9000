@@ -53,6 +53,7 @@ public class ControllerPanel implements Disposable{
     Table tableController;
     Table tableButtons;
     Table tableAbilities;
+    Table tableSummon;
     Table tableMenu;
 
     Image menuImage;
@@ -84,6 +85,10 @@ public class ControllerPanel implements Disposable{
     public boolean inventoryToched;
     public boolean abilitiesToched;
     private Hero hero;
+    public boolean touchedSummon0;
+    public boolean touchedSummon1;
+    public boolean touchedSummon2;
+    public boolean touchedSummon3;
 
     public ControllerPanel(SpriteBatch sb, AnimationHelper animhelper){
 
@@ -325,7 +330,7 @@ public class ControllerPanel implements Disposable{
         update(hero);
     }
 
-    public void update(Hero hero){
+    public void update(Hero hero) {
 
         this.hero = hero;
         stage.dispose();
@@ -334,6 +339,37 @@ public class ControllerPanel implements Disposable{
         updateMenuTabel();
 
         Gdx.input.setInputProcessor(stage);
+
+        tableSummon = new Table();
+        tableSummon.left();
+        tableSummon.setFillParent(true);
+
+        for (int i = 0; i < hero.summonAbilities.size; i++){
+            final int index = i;
+            Image imageOfCreature = new Image(animhelper.getTextureRegionByIDAndIndex(hero.summonAbilities.get(i).getIcon()));
+            imageOfCreature.addListener(new ClickListener() {
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    touchedSummon0= true;
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    touchedSummon0 = false;
+                }
+            });
+            tableSummon.row().pad(10,10,10,10);
+            tableSummon.add(imageOfCreature);
+            tableSummon.row().pad(10,10,10,10);
+            tableSummon.add(imageOfCreature);
+            tableSummon.row().pad(10,10,10,10);
+            tableSummon.add(imageOfCreature);
+            tableSummon.row().pad(10,10,10,10);
+            tableSummon.add(imageOfCreature);
+        }
+
 
         tableAbilities = new Table();
         tableAbilities.right().bottom();
@@ -406,6 +442,8 @@ public class ControllerPanel implements Disposable{
         stage.addActor(tableButtons);
         stage.addActor(tableAbilities);
         stage.addActor(tableController);
+
+        stage.addActor(tableSummon);
 
 //        atackabilities = new LinkedList<Image>();
 //        defenseabilities = new LinkedList<Image>();

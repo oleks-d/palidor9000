@@ -60,6 +60,7 @@ public class LevelManager implements Disposable{
 
     public Array<GameItem> ITEMS;
     public Array<Creature> CREATURES;
+    public Array<Creature> SUMMONED_CREATURES;
     public Array<GameObject> OBJECTS;
     public Array<ActivityWithEffect> ACTIVITIES;
     public Array<UnavailableCreatures> UNAVAILABLE_CREATURES; // creatures that does not correspond to condition
@@ -113,6 +114,7 @@ public class LevelManager implements Disposable{
 
         ITEMS = new Array<GameItem>();
         CREATURES = new Array<Creature> ();
+        SUMMONED_CREATURES = new Array<Creature> ();
         OBJECTS = new Array<GameObject> ();
         ACTIVITIES = new Array<ActivityWithEffect>();
         UNAVAILABLE_CREATURES = new Array<UnavailableCreatures>();
@@ -177,8 +179,12 @@ public class LevelManager implements Disposable{
 
     }
 
-    public void createCreature(GameScreen screen, int x, int y, String object) {
-            CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null ,-1 , null));
+    public void createSummonedCreature(GameScreen screen, float x, float y, String object) {
+            SUMMONED_CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , 0 , null));
+    }
+
+    public void createCreature(GameScreen screen, float x, float y, String object, int org) {
+        CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null));
     }
 
     public void createInteractiveObject(GameScreen screen, MapObject object) {
@@ -187,12 +193,13 @@ public class LevelManager implements Disposable{
         String items = (String)object.getProperties().get("items");
         String condition = (String)object.getProperties().get("condition");
         String program = (String)object.getProperties().get("program");
+        String activationTrigger = (String)object.getProperties().get("trigger");
         if(!(ConditionProcessor.conditionSatisfied(hero, condition))) {
-                UNAVAILABLE_OBJECTS.add(new UnavailableObject(object.getName(), rect,  condition, items, program));
+                UNAVAILABLE_OBJECTS.add(new UnavailableObject(object.getName(), rect,  condition, items, program, activationTrigger));
                 return; //do not create if condition did not pass
         }
 
-        OBJECTS.add(new GameObject(screen, rect, OBJECT_DESCRIPTIONS.get(object.getName()), items, program));
+        OBJECTS.add(new GameObject(screen, rect, OBJECT_DESCRIPTIONS.get(object.getName()), items, program, activationTrigger));
 
     }
 
@@ -428,27 +435,29 @@ public class LevelManager implements Disposable{
             writer.write("\n");
             // write objects
             for (int i = 0; i < OBJECTS.size; i++) {
-                if(OBJECTS.get(i).originalRectangle == null)
-                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + (OBJECTS.get(i).getBody().getPosition().x - OBJECTS.get(i).getWidth()/2) * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - (OBJECTS.get(i).getBody().getPosition().y + OBJECTS.get(i).getHeight()/2) * PalidorGame.PPM) + "\" width=\""+ OBJECTS.get(i).getWidth()* PalidorGame.PPM +"\" height=\""+ OBJECTS.get(i).getHeight()* PalidorGame.PPM  +"\" >\n");
+                if (OBJECTS.get(i).originalRectangle == null)
+                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + (OBJECTS.get(i).getBody().getPosition().x - OBJECTS.get(i).getWidth() / 2) * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - (OBJECTS.get(i).getBody().getPosition().y + OBJECTS.get(i).getHeight() / 2) * PalidorGame.PPM) + "\" width=\"" + OBJECTS.get(i).getWidth() * PalidorGame.PPM + "\" height=\"" + OBJECTS.get(i).getHeight() * PalidorGame.PPM + "\" >\n");
                 else
-                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).originalRectangle.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).originalRectangle.y - OBJECTS.get(i).originalRectangle.height)  + "\" width=\""+ OBJECTS.get(i).originalRectangle.width +"\" height=\"" + OBJECTS.get(i).originalRectangle.height  +"\" >\n");
+                    writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).originalRectangle.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).originalRectangle.y - OBJECTS.get(i).originalRectangle.height) + "\" width=\"" + OBJECTS.get(i).originalRectangle.width + "\" height=\"" + OBJECTS.get(i).originalRectangle.height + "\" >\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"\"/>\n" +
                         "    <property name=\"items\" value=\"" + OBJECTS.get(i).getItems().toString().replaceAll("[\\[\\]]", "") + "\"/>\n" +
                         "    <property name=\"program\" value=\"" + OBJECTS.get(i).getProgram() + "\"/>\n" +
+                        "    <property name=\"trigger\" value=\"" + OBJECTS.get(i).getTrigger() + "\"/>\n" +
                         "   </properties>\n");
                 writer.write("\n");
                 writer.write("</object>");
             }
 
             for (int i = 0; i < UNAVAILABLE_OBJECTS.size; i++) {
-                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + UNAVAILABLE_OBJECTS.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y) + "\" width=\""+ UNAVAILABLE_OBJECTS.get(i).rect.getWidth() * PalidorGame.PPM +"\" height=\""+ UNAVAILABLE_OBJECTS.get(i).rect.getHeight()* PalidorGame.PPM  +"\" >\n");
+                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + UNAVAILABLE_OBJECTS.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y) + "\" width=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getWidth() * PalidorGame.PPM + "\" height=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getHeight() * PalidorGame.PPM + "\" >\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getCondition() + "\"/>\n" +
                         "    <property name=\"items\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getItems() + "\"/>\n" +
                         "    <property name=\"program\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getProgram() + "\"/>\n" +
+                        "    <property name=\"trigger\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getTrigger() + "\"/>\n" +
                         "   </properties>\n");
                 writer.write("\n");
                 writer.write("</object>");
@@ -479,14 +488,16 @@ public class LevelManager implements Disposable{
         String condition;
         String items;
         String program;
+        String activationTrigger;
 
 
-        public UnavailableObject(String id, Rectangle rect, String condition, String items, String program) {
+        public UnavailableObject(String id, Rectangle rect, String condition, String items, String program, String activationTrigger) {
             this.id = id;
             this.rect = rect;
             this.condition = condition;
             this.items = items;
             this.program = program;
+            this.activationTrigger = activationTrigger;
         }
 
         public String getID() {
@@ -503,6 +514,10 @@ public class LevelManager implements Disposable{
 
         public String getProgram() {
             return program==null?"":program;
+        }
+
+        public String getTrigger() {
+            return activationTrigger;
         }
     }
 

@@ -8,6 +8,7 @@ import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.stuctures.Effect;
 import com.mygdx.game.stuctures.Skill;
 import com.mygdx.game.stuctures.descriptions.CreatureDescription;
+import com.mygdx.game.tools.ConditionProcessor;
 import com.mygdx.game.tools.Fonts;
 
 import java.util.HashMap;
@@ -19,6 +20,8 @@ public class Hero extends Creature {
 
     public Array<AbilityID> selectedAtackAbilities = new Array<AbilityID> ();
     public Array<AbilityID> selectedDefenseAbilities = new Array<AbilityID> ();
+
+    public Array<AbilityID> summonAbilities = new Array<AbilityID> ();
 
     HashMap<String,String> GLOBAL_STATES;
     HashMap<Integer, String> rivalOrganizations;
@@ -38,6 +41,7 @@ public class Hero extends Creature {
                  HashMap<String,String> globalStates,
                  Array<AbilityID> selectedAtackAbilities,
                  Array<AbilityID> selectedDefenseAbilities,
+                 Array<AbilityID> summonAbilities,
                  Array<Skill> skills,
                  int experience,
                  int money,
@@ -48,6 +52,8 @@ public class Hero extends Creature {
 
         this.selectedAtackAbilities = selectedAtackAbilities;
         this.selectedDefenseAbilities =selectedDefenseAbilities;
+
+        this.summonAbilities = summonAbilities;
 
         this.GLOBAL_STATES = globalStates;
 
@@ -107,11 +113,18 @@ public class Hero extends Creature {
             statusbar.addMessage("You can not shout", existingTime + 1f, Fonts.INFO);
     }
 
+    public void poweshout() {
+        if(abilities.contains(AbilityID.POWER_SHOUT, false))
+            useAbility(AbilityID.POWER_SHOUT);
+        else
+            statusbar.addMessage("You can not Power shout", existingTime + 1f, Fonts.INFO);
+    }
+
     public void hide() {
         if(abilities.contains(AbilityID.MASK, false))
             useAbility(AbilityID.MASK);
-        else
-            statusbar.addMessage("You can not hide", existingTime + 1f, Fonts.INFO);
+//        else
+//            statusbar.addMessage("You can not hide", existingTime + 1f, Fonts.INFO);
         //useAbility(AbilityID.MASK);
     }
 
@@ -125,11 +138,22 @@ public class Hero extends Creature {
             useAbility(AbilityID.JUMP_BACK);
     }
 
+    public void powerjump() {
+        if(abilities.contains(AbilityID.POWERJUMP, false))
+            useAbility(AbilityID.POWERJUMP);
+        else
+            jump();
+    }
+
     public void dash() {
         if(abilities.contains(AbilityID.DASH, false))
             useAbility(AbilityID.DASH);
     }
 
+    public void pickpocket() {
+        if(abilities.contains(AbilityID.PICKPOCKET, false))
+            useAbility(AbilityID.PICKPOCKET);
+    }
 
     public void attack(boolean isAbility1, boolean isPower) {
         if(isAbility1)
@@ -153,8 +177,8 @@ public class Hero extends Creature {
 
     // put item on and apply effect
     @Override
-    public void equipItem(GameItem item){
-
+    public String equipItem(GameItem item){
+        String result = item.itemdescription;
         for(Effect curEffect : item.getEffects()){
             applyEffect(curEffect);
         }
@@ -165,19 +189,18 @@ public class Hero extends Creature {
             case ARMOR:
                 armor = item;
                 break;
-            // TODO add all
-            case WEAPON_MAGIC_ICE:
+            //case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:
                 if(abilities.contains(AbilityID.FIREWALL, true)) {
 
-                if(weapon1 == null) {
-                    weapon1 = item;
+                    if(weapon1 == null) {
+                        weapon1 = item;
                         selectedAtackAbilities.clear();
                         selectedAtackAbilities.add(AbilityID.FIREWALL);
                         if (abilities.contains(AbilityID.FIREBALL, true))
                             selectedAtackAbilities.add(AbilityID.FIREBALL);
 
-                } else if (weapon2 == null) {
+                    } else if (weapon2 == null) {
                         weapon2 = item;
                         selectedDefenseAbilities.clear();
                         if (abilities.contains(AbilityID.FIRESHIELD, true))
@@ -189,29 +212,31 @@ public class Hero extends Creature {
                         }
 
                     }
-                } else return;
+                } else return "NO REQUIRED SKILL (WILL)";;
                 break;
 //            case WEAPON_MAGIC_NATURE:
 //            case WEAPON_MAGIC_DEATH:
-            case    WEAPON_AXE:
-                if(abilities.contains(AbilityID.AXE_SWING, true)) {
+//            case    WEAPON_AXE:
+//                if(abilities.contains(AbilityID.AXE_SWING, true)) {
+//
+//                    if(weapon1 == null) {
+//                        weapon1 = item;
+//                        selectedAtackAbilities.clear();
+//                        selectedAtackAbilities.add(AbilityID.AXE_SWING);
+//                        if (abilities.contains(AbilityID.AXE_SMASH, true))
+//                            selectedAtackAbilities.add(AbilityID.AXE_SMASH);
+//
+//                    } else if (weapon2 == null) {
+//                        weapon2 = item;
+//                        selectedDefenseAbilities.clear();
+//                        selectedDefenseAbilities.add(AbilityID.AXE_SWING);
+//                        if (abilities.contains(AbilityID.AXE_SMASH, true))
+//                            selectedDefenseAbilities.add(AbilityID.AXE_SMASH);
+//                    }
+//                } else return "NO REQUIRED SKILL (STRENTH)";;
+//                break;
 
-                    if(weapon1 == null) {
-                        weapon1 = item;
-                        selectedAtackAbilities.clear();
-                        selectedAtackAbilities.add(AbilityID.AXE_SWING);
-                        if (abilities.contains(AbilityID.AXE_SMASH, true))
-                            selectedAtackAbilities.add(AbilityID.AXE_SMASH);
-
-                    } else if (weapon2 == null) {
-                        weapon2 = item;
-                        selectedDefenseAbilities.clear();
-                        selectedDefenseAbilities.add(AbilityID.AXE_SWING);
-                        if (abilities.contains(AbilityID.AXE_SMASH, true))
-                            selectedDefenseAbilities.add(AbilityID.AXE_SMASH);
-                    }
-                } else return;
-                break;
+            case    WEAPON_AXE:  // AXE and SWORD are same so far
             case    WEAPON_SWORD:
                 if(abilities.contains(AbilityID.SWORD_SWING, true)) {
 
@@ -229,9 +254,27 @@ public class Hero extends Creature {
                         if (abilities.contains(AbilityID.SWORD_SMASH, true))
                             selectedDefenseAbilities.add(AbilityID.SWORD_SMASH);
                     }
-                } else return;
+                } else return "NO REQUIRED SKILL (STRENTH)";
                 break;
-//            case    WEAPON_HUMMER:
+            case    WEAPON_HUMMER:
+                if(abilities.contains(AbilityID.HUMMER_SWING, true)) {
+
+                    if(weapon1 == null) {
+                        weapon1 = item;
+                        selectedAtackAbilities.clear();
+                        selectedAtackAbilities.add(AbilityID.HUMMER_SWING);
+                        if (abilities.contains(AbilityID.HUMMER_SMASH, true))
+                            selectedAtackAbilities.add(AbilityID.HUMMER_SMASH);
+
+                    } else if (weapon2 == null) {
+                        weapon2 = item;
+                        selectedDefenseAbilities.clear();
+                        selectedDefenseAbilities.add(AbilityID.HUMMER_SWING);
+                        if (abilities.contains(AbilityID.HUMMER_SMASH, true))
+                            selectedDefenseAbilities.add(AbilityID.HUMMER_SMASH);
+                    }
+                } else return "NO REQUIRED SKILL (STRENTH)";
+                break;
             case    WEAPON_BOW:
                 if(abilities.contains(AbilityID.LONGBOW_SHOT, true)) {
 
@@ -249,7 +292,7 @@ public class Hero extends Creature {
                         if (abilities.contains(AbilityID.TRIPLE_SHOT, true))
                             selectedDefenseAbilities.add(AbilityID.TRIPLE_SHOT);
                     }
-                } else return;
+                } else return "NO REQUIRED SKILL (ACCURACY)";;
                 break;
 //            case    WEAPON_SLING:
 //            case    WEAPON_XBOW:
@@ -270,12 +313,16 @@ public class Hero extends Creature {
                         if (abilities.contains(AbilityID.BARSKIN, true))
                             selectedDefenseAbilities.add(AbilityID.BARSKIN);
                     }
-                } else return;
+                } else {
+                    return "NO REQUIRED SKILL (ENDURANCE)";
+                };
                 break;
         }
         inventory.removeValue(item,true);
         if(statusbar != null)
             statusbar.update();
+
+        return result;
     }
 
     //take off item - undo effect
@@ -325,10 +372,34 @@ public class Hero extends Creature {
         statusbar.update();
     }
 
+    @Override
+    public String useItem(GameItem item) {
+        if(item.getCondition()!=null && !"".equals(item.getCondition())){
+            if(ConditionProcessor.conditionSatisfied(this, item.getCondition())){
+                return super.useItem(item);
+            } else {
+                return "You can not use this so far";
+            }
+
+        }
+        return super.useItem(item);
+    }
+
     public void addAbilities(AbilityID[] abilities) {
         for(AbilityID ability : abilities){
             this.abilities.add(ability);
-            this.cooldowns.put(ability,0d);;
+            this.cooldowns.put(ability,0d);
+
+            // special processing of skills
+            if(this.abilities.contains(AbilityID.DODGE, true)) {//TODO Add dodge
+                selectAbility(AbilityID.DODGE);
+                stats.jumphight.base = stats.jumphight.base + 1;
+                stats.jumphight.current = stats.jumphight.current + 1;
+            }
+            if(this.abilities.contains(AbilityID.BARSKIN, true)) { //TODO Add health
+                stats.health.base = stats.health.base + 1;
+                stats.health.current = stats.health.current + 1;
+            }
         }
     }
 
@@ -346,5 +417,26 @@ public class Hero extends Creature {
     }
     public void addMoney(String amount) {
         money = money + Integer.valueOf(amount);
+    }
+
+    public void addExperience(String amount) {
+        experience = experience + Integer.valueOf(amount);
+    }
+
+    public boolean hasSkillByID(int id) {
+        if(id == 0) return true;
+
+        for(Skill skill : skills){
+            if (skill.getID() == id){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void summonCreature(int i) {
+        if(i<summonAbilities.size)
+            useAbility(summonAbilities.get(i));
     }
 }

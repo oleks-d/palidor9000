@@ -18,6 +18,7 @@ import com.mygdx.game.PalidorGame;
 import com.mygdx.game.tools.LevelManager;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by odiachuk on 12/18/17.
@@ -108,10 +109,17 @@ public class MainPanel implements Disposable {
             }
         });
 
-        savedHeroes.add(selectHero);
+
         Label labelForHeroName;
         Button removeSaveButton;
-        for (String savedHero : LevelManager.getListOfSaveHeros()) {
+
+        ArrayList<String> listOfHeroes = LevelManager.getListOfSaveHeros();
+        if(listOfHeroes.size()>0) {
+            savedHeroes.row().pad(10, 10, 10, 100);
+            savedHeroes.add(selectHero);
+        }
+
+        for (String savedHero : listOfHeroes) {
 
             final String savedHeroLabel = savedHero;
 
@@ -137,16 +145,16 @@ public class MainPanel implements Disposable {
                 }
             });
 
-            savedHeroes.row().pad(10,10,10,10);
+            savedHeroes.row().pad(10,10,10,20);
             savedHeroes.add(labelForHeroName);
             savedHeroes.add(removeSaveButton);
             savedHeroes.add();
         }
 
-        heroTypes.row().pad(10,10,10,10);
+        heroTypes.row().pad(10,100,10,10);
         heroTypes.add(newHero);
         heroTypes.row();
-        heroTypes.row().pad(10,10,10,10);
+        heroTypes.row().pad(10,100,10,10);
         heroTypes.add(usernameTextField);
         heroTypes.row();
         heroTypes.row();
@@ -169,12 +177,12 @@ public class MainPanel implements Disposable {
                 }
             });
 
-            heroTypes.row().pad(10,10,10,10);
+            heroTypes.row().pad(10,100,10,10);
             heroTypes.add(labelForHeroName);
         }
 
         table.bottom();
-        table.row().pad(10,10,10,10);
+        table.row().pad(10,10,100,10);
         table.add(exit);
         table.row();
 

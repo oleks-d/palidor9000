@@ -40,7 +40,7 @@ public class JSONLoader {
                             new Characteristics(
                                     Integer.valueOf(component.getString("health")),
                                     Integer.valueOf(component.getString("speed")),
-                                    Integer.valueOf(1)),
+                                    Integer.valueOf(component.getString("jump"))),
                             //Integer.valueOf(component.getString("org")),
                             tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                             tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
@@ -70,7 +70,9 @@ public class JSONLoader {
                             Integer.valueOf(component.getString("value")),
                             tryToGetValue(component, "type") != null ? com.mygdx.game.enums.EquipmentType.valueOf(component.getString("type")) : com.mygdx.game.enums.EquipmentType.NONE,
                             tryToGetValue(component, "usable") != null ? Boolean.valueOf(component.getString("usable")) : false,
-                            tryToGetValue(component, "effects") != null ? component.getString("effects") : ""
+                            tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
+                            tryToGetValue(component, "process") != null ? component.getString("process") : "",
+                            tryToGetValue(component, "condition") != null ? component.getString("condition") : ""
                     )
             );
         }
@@ -141,6 +143,7 @@ public class JSONLoader {
         Array<AbilityID> selectedAtackAbilities = new Array<AbilityID>();
         Array<AbilityID> selectedDefenseAbilities = new Array<AbilityID>();
 //        Array<AbilityID> selectedHelpAbilities = new Array<AbilityID>();
+        Array<AbilityID> summonAbilities = new Array<AbilityID>();
 
         Array<Skill> skills = new Array<Skill>();
         String items = null;
@@ -163,7 +166,7 @@ public class JSONLoader {
                     new Characteristics(
                             Integer.valueOf(component.getString("health")),
                             Integer.valueOf(component.getString("speed")),
-                            Integer.valueOf(1)),
+                            Integer.valueOf(component.getString("jump"))),
                     //Integer.valueOf(component.getString("org")),
                     tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                     tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
@@ -187,8 +190,9 @@ public class JSONLoader {
             if(base.getString("selectedDefenseAbilities") != null && !"".equals(base.getString("selectedDefenseAbilities").trim()))
             for (String item : base.getString("selectedDefenseAbilities").split(","))
                 selectedDefenseAbilities.add(AbilityID.valueOf(item.trim()));
-//            for (String item : base.getString("selectedHelpAbilities").split(","))
-//                selectedHelpAbilities.add(AbilityID.valueOf(item.trim()));
+            if(base.getString("summon") != null && !"".equals(base.getString("summon").trim()))
+                for (String item : base.getString("summon").split(","))
+                    summonAbilities.add(AbilityID.valueOf(item.trim()));
 
             if(base.getString("skills") != null && !"".equals(base.getString("skills").trim()))
             for (String item : base.getString("skills").split(","))
@@ -197,7 +201,7 @@ public class JSONLoader {
             currentLevel = base.getString("currentLevel");
             previousLevel = base.getString("previousLevel");
 
-            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, skills, experience, money, items);
+            return new Hero(screen, heroDescription, currentLevel, previousLevel, globalStates, selectedAtackAbilities, selectedDefenseAbilities, summonAbilities, skills, experience, money, items);
         }catch (Exception e) {
             //no hero found
 
@@ -236,6 +240,7 @@ public class JSONLoader {
                 "    \"description\": \"" + hero.description + "\",\n" +
                 "    \"health\": \""  + hero.stats.health.base + "\",\n" +
                 "    \"speed\": \""  + hero.stats.speed.base + "\",\n" +
+                "    \"jump\": \""  + hero.stats.jumphight.base + "\",\n" +
                 "    \"spritesheetregion\": \"" + hero.spritesheetRegion + "\",\n" +
                 "    \"abilities\": \"" + hero.getAbilities().toString(",") + "\",\n" +
                 "    \"org\": \"1\",\n" +
@@ -254,6 +259,7 @@ public class JSONLoader {
                 "\n" +
                 "  \"selectedAtackAbilities\" : \"" + hero.selectedAtackAbilities.toString().replaceAll("[\\[\\]]", "") + "\",\n" +
                 "  \"selectedDefenseAbilities\": \"" + hero.selectedDefenseAbilities.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
+                "  \"summon\": \"" + hero.summonAbilities.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
                 "  \"skills\": \"" + hero.skills.toString().replaceAll("[\\[\\]]", "")+ "\",\n" +
 //                "  \"selectedHelpAbilities\": \"" + hero.selectedHelpAbilities.toString().replaceAll("[\\[\\]]", "") + "\"\n" +
                 "\n" +

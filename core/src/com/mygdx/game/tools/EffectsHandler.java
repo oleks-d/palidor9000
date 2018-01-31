@@ -96,11 +96,11 @@ public class EffectsHandler {
 
             case SLOW:
                 creature.addStatusMessage("Slow", Fonts.BAD);
-                creature.stats.speed.current--;
+                creature.stats.speed.current= creature.stats.speed.current - (int) Math.abs(magnitude);
                 break;
             case FAST:
                 creature.addStatusMessage("Fast", Fonts.GOOD);
-                creature.stats.speed.current  = (int) Math.abs(magnitude); //TODO fix
+                creature.stats.speed.current  = creature.stats.speed.current + (int) Math.abs(magnitude); //TODO fix
                 break;
 
             case STUNED:
@@ -126,11 +126,11 @@ public class EffectsHandler {
         switch (id){
             case SLOW:
                 creature.addStatusMessage("Fast againg", Fonts.IMPORTANT);
-                creature.stats.speed.current++;
+                creature.stats.speed.current = creature.stats.speed.base;
                 break;
             case FAST:
                 creature.addStatusMessage("Slow againg", Fonts.IMPORTANT);
-                creature.stats.speed.current--;
+                creature.stats.speed.current = creature.stats.speed.base;
                 break;
 
             case STUNED:

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="39">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="38">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="back" width="100" height="20">
   <data encoding="base64">
@@ -45,7 +45,6 @@
   <object id="4" name="move_right" x="764" y="600"/>
   <object id="36" name="hero_Willage" x="56" y="592"/>
   <object id="37" name="hero_Seashore" x="3129" y="591"/>
-  <object id="38" name="jump_point" x="912" y="593"/>
  </objectgroup>
  <objectgroup name="triggers">
   <object id="34" name="route" x="3180" y="7" width="12" height="599">
@@ -61,14 +60,10 @@
  </objectgroup>
  <objectgroup name="entities">
   <object id="30" name="berry" x="1069" y="589"/>
-  <object id="33" name="berry" x="1002" y="274"/>
+  <object id="33" name="berry" x="1424" y="148"/>
  </objectgroup>
  <objectgroup name="creatures">
-  <object id="1" name="rolf" x="974" y="591">
-   <properties>
-    <property name="organization" value="2"/>
-   </properties>
-  </object>
+  <object id="1" name="rolf" x="974" y="591"/>
  </objectgroup>
  <objectgroup name="objects"/>
 </map>

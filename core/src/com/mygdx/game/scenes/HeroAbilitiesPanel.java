@@ -52,8 +52,7 @@ public class HeroAbilitiesPanel implements Disposable {
     Image closeWindow;
     public boolean closeTouched;
 
-    public AbilityID currentAbility = null;
-    public Skill currentSkill = null;
+    public String currentDetails = "";
 
 
     int MAX_NUMBER_OF_ROWS = 18;
@@ -75,7 +74,7 @@ public class HeroAbilitiesPanel implements Disposable {
         abilitiesHeader= new Label(String.format("<< -  %s - >>", "ABILITIES:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
 
         windowHeader = new Label(String.format("  %s ",   "Skills/Abilities"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;;
-        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));;
+        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("close_button"));;
         closeWindow.addListener(new InputListener(){
 
             @Override
@@ -85,7 +84,7 @@ public class HeroAbilitiesPanel implements Disposable {
             }
         });
 
-        upButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));
+        upButton = new Image(animhelper.getTextureRegionByIDAndIndex("up_button"));
         upButton.addListener(new InputListener(){
 
             @Override
@@ -103,7 +102,7 @@ public class HeroAbilitiesPanel implements Disposable {
             }
         });
 
-        downButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));
+        downButton = new Image(animhelper.getTextureRegionByIDAndIndex("down_button"));
         downButton.addListener(new InputListener(){
 
             @Override
@@ -183,8 +182,7 @@ public class HeroAbilitiesPanel implements Disposable {
             skillImage.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentSkill = skill;
-                    currentAbility = null;
+                    currentDetails = skill.getDescription();
                     return true;
                 }
 
@@ -202,13 +200,17 @@ public class HeroAbilitiesPanel implements Disposable {
                 takeButton.addListener(new InputListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        currentSkill = skill;
-                        if (hero.experience >= skill.getPrice()) {
-                            hero.skills.add(skill);
-                            hero.addAbilities(skill.getAbilities());
-                            hero.experience = hero.experience - skill.getPrice();
-                            //update();
-                        }
+                        currentDetails = skill.getDescription();
+                        if(hero.hasSkillByID(skill.getIdOfRequiredSkill())){
+                            if (hero.experience >= skill.getPrice() ){
+                                hero.skills.add(skill);
+                                hero.addAbilities(skill.getAbilities());
+                                hero.experience = hero.experience - skill.getPrice();
+                                //update();
+                            } else
+                                currentDetails = "NOT ENOUGH EXPERIENCE";
+                        } else
+                            currentDetails = "REQUIRED SKILL WAS NOT LEARNED";
                         return true;
                     }
 
@@ -268,8 +270,7 @@ public class HeroAbilitiesPanel implements Disposable {
 
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.getAbilities().get(index);
-                    currentSkill = null;
+                    currentDetails = hero.getAbilities().get(index).getDescription();
                     return true;
                 }
 
@@ -291,11 +292,8 @@ public class HeroAbilitiesPanel implements Disposable {
 
         //details tableController update
         detailstable.row();
-        detailstable.row();
-        if (currentAbility != null)
-            detailstable.add(new Label(String.format("%s", currentAbility.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
-        else if (currentSkill != null)
-            detailstable.add(new Label(String.format("%s", currentSkill.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
+        detailstable.row().pad(15,15,15,15);
+        detailstable.add(new Label(String.format("%s", currentDetails), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
 
 
         stage.addActor(abilitiestable);

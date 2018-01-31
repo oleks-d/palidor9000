@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -25,6 +27,7 @@ import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.LevelManager;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import static com.mygdx.game.PalidorGame.PPM;
 
@@ -75,11 +78,15 @@ public class GameScreen implements Screen {
     float holdingTimeUSE = 0;
 
     boolean jumpWasJustPressed;
+    double whenJumpWasJustPressed;
     boolean useWasJustPressed;
+    double whenUseWasJustPressed;
     boolean a1WasJustPressed;
+    double whenA1WasJustPressed;
     boolean a2WasJustPressed;
+    double whenA2WasJustPressed;
 
-    com.mygdx.game.enums.AbilityID abilityToExecuteNext = null;
+    AbilityID abilityToExecuteNext = null;
     int abilityIndex = 0;
 
     boolean toZoomIn = false;
@@ -95,6 +102,11 @@ public class GameScreen implements Screen {
     boolean isDay;
 
     FPSLogger fpslogger;
+
+    double shakeTime = -4;
+    boolean shakeRight = true;
+
+    boolean TO_RENDER = true;
 
     public GameScreen(PalidorGame game, String heroName){
         this(game,heroName,null);
@@ -171,6 +183,7 @@ public class GameScreen implements Screen {
         handleInput(delta);
 
         // handle camera after hero position update // TODO check for upper corner
+
             if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 ) //&& hero.getBody().getPosition().x < 32-viewport.getWorldWidth() / 2)
                 camera.position.x = (hero.getBody().getPosition().x );
             else
@@ -179,6 +192,16 @@ public class GameScreen implements Screen {
                 camera.position.y = (hero.getBody().getPosition().y );
             else
                 camera.position.y = viewport.getWorldHeight() / 2;
+
+        if(shakeTime + 2d > hero.existingTime)
+            if(shakeRight) {
+                camera.position.y = camera.position.y + 0.05f;
+                shakeRight = false;
+            }else {
+                camera.position.y = camera.position.y - 0.05f;
+                shakeRight = true;
+            }
+
 
             if(toZoomIn) {
                 ZOOM_LEVEL = 2f ;
@@ -227,6 +250,19 @@ public class GameScreen implements Screen {
                     };
                 }
             }
+
+
+            //update all summoned
+            for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+                    creature.update(delta);
+                    creature.attackIfEnemyIsNear();
+
+                    if (creature.getAbilityToCast() != AbilityID.NONE && creature.finishedCasting()) {
+                        activity = creature.activateAbility(creature.getAbilityToCast());
+                        if (activity != null)
+                            levelmanager.ACTIVITIES.addAll(activity);
+                    };
+                }
 
             //update all objects
             for (int i = 0; i < levelmanager.OBJECTS.size; i++){
@@ -406,22 +442,41 @@ public class GameScreen implements Screen {
 
                 if (controller.touchedLeft || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                     hero.direction.set(1, hero.direction.y);
+                    for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+                        creature.move(false);
+                        if(hero.directionRight) creature.jump(); // change position
+                        creature.move(false);
+
+                    }
                     hero.move(false);
+                    //Gdx.app.log(hero.getBody().getLinearVelocity().x+"", hero.getBody().getLinearVelocity().y + "");
+
                 } else if (controller.touchedRight || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     hero.direction.set(-1, hero.direction.y);
+                    for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+                        creature.move(true);
+                        if(!hero.directionRight) creature.jump(); // change position
+                        creature.move(true);
+                    }
                     hero.move(true);
+                    //Gdx.app.log(hero.getBody().getLinearVelocity().x+"", hero.getBody().getLinearVelocity().y + "");
                 } //else hero.direction.set(0, hero.direction.y);
 
 
                 if (controller.touchedJump || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                     //holdingTimeJUMP = holdingTimeJUMP + delta;
 
-                    if(jumpWasJustPressed) {
+                    if (whenJumpWasJustPressed + 0.5 > hero.existingTime) {
                         hero.powerjump();
-                        jumpWasJustPressed = false;
-                    } else {
+                    } else
+                    if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
+                        hero.dash();
+                    }else {
                         hero.jump();
-                        jumpWasJustPressed = true;
+                        for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+                            creature.jump();
+                        }
+                        whenJumpWasJustPressed = hero.existingTime;
                     }
                     controller.touchedJump = false;
                 }
@@ -431,40 +486,52 @@ public class GameScreen implements Screen {
                     if(hero.getNeighbor() != null)
                         startDialog(hero.getNeighbor());
                     else {
-                        if (useWasJustPressed) {
-                            if (hero.isHidden())
-                                hero.useAbility(AbilityID.PICKPOCKET);
-                            else
-                                hero.hide();
-                            useWasJustPressed = false;
+                        if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
+                                if (hero.isHidden())
+                                    hero.pickpocket();
+                                else
+                                    hero.hide();
+
                         } else {
                             hero.stop();
-                            useWasJustPressed = true;
+                            whenUseWasJustPressed = hero.existingTime;
                         }
                     }
 
                 }
                 if (controller.touchedAbility1 || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-                    if(!a1WasJustPressed){
-                        hero.attack(true, false);
-                        a1WasJustPressed = true;
-                    }else{
-                        hero.attack(true, true);
-                        a1WasJustPressed = false;
-                    }
+
+                        if(whenA1WasJustPressed + 0.5 > hero.existingTime) {
+                            hero.attack(true, true);
+                        }else {
+                            hero.attack(true, false);
+                            whenA1WasJustPressed = hero.existingTime;
+                        }
+
                     //holdingTimeABILITY1 = holdingTimeABILITY1 + delta;
                 }
                 if (controller.touchedAbility2 || Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-                    if(!a2WasJustPressed){
-                        hero.attack(false, false);
-                        a2WasJustPressed = true;
-                    }else{
+                    if(whenA2WasJustPressed + 0.5 > hero.existingTime) {
                         hero.attack(false, true);
-                        a2WasJustPressed = false;
+                    }else {
+                        hero.attack(false, false);
+                        whenA2WasJustPressed = hero.existingTime;
                     }
                     //holdingTimeABILITY2 = holdingTimeABILITY2 + delta;
                 }
 
+        if (controller.touchedSummon0 || Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            hero.summonCreature(0);
+        }
+        if (controller.touchedSummon1 || Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            hero.summonCreature(1);
+        }
+        if (controller.touchedSummon2 || Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+            hero.summonCreature(2);
+        }
+        if (controller.touchedSummon3 || Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
+            hero.summonCreature(3);
+        }
 
             //hero.direction.clamp(1, 1); // TODO make sure it works correctly
 
@@ -487,6 +554,10 @@ public class GameScreen implements Screen {
                         toZoomOut = true;
                     }
 
+                    if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                        TO_RENDER = !TO_RENDER;
+                    }
+
                     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)  || controller.escapeTouched) {
                         STOP_GAME = true;
                     }
@@ -507,14 +578,15 @@ public class GameScreen implements Screen {
     }
 
     public void startDialog(Creature actor){
-        PAUSE = true;
-        onDialogScreen = true;
-        onMainScreen = false;
+        if(actor.getDialogs() != null && actor.getDialogs().size > 0) {
+            PAUSE = true;
 
-        dialogPanel.setDialogs(actor);
-        dialogPanel.update();
+            onDialogScreen = true;
+            onMainScreen = false;
 
-
+            dialogPanel.setDialogs(actor);
+            dialogPanel.update();
+        }
     }
 
     public void endDialog(){
@@ -528,18 +600,18 @@ public class GameScreen implements Screen {
     }
 
 
-    private void getInfoFromObjectByCoordinates(float x, float y) {
-        for(GameItem item : levelmanager.ITEMS){
-            if(item.getX() < x && item.getX() + item.getWidth() > x && item.getY() < y && item.getY() + item.getHeight() > y){
-                Gdx.app.log("Details", item.itemdescription);
-            } //else Gdx.app.log("Details", item.getX() + " - " + x + "-" + (item.getX() + item.getWidth()) + " | " + item.getY() + " - " + y + "-" + (item.getY() + item.getHeight()) + y);
-        }
-        for(Creature item : levelmanager.CREATURES){
-            if(item.getX() < x && item.getX() + item.getWidth() > x && item.getY() < y && item.getY() + item.getHeight() > y){
-                Gdx.app.log("Details", item.description);
-            } //else Gdx.app.log("Details", item.getX() + " - " + x + "-" + (item.getX() + item.getWidth()) + " | " + item.getY() + " - " + y + "-" + (item.getY() + item.getHeight()) + y);
-        }
-    }
+//    private void getInfoFromObjectByCoordinates(float x, float y) {
+//        for(GameItem item : levelmanager.ITEMS){
+//            if(item.getX() < x && item.getX() + item.getWidth() > x && item.getY() < y && item.getY() + item.getHeight() > y){
+//                Gdx.app.log("Details", item.itemdescription);
+//            } //else Gdx.app.log("Details", item.getX() + " - " + x + "-" + (item.getX() + item.getWidth()) + " | " + item.getY() + " - " + y + "-" + (item.getY() + item.getHeight()) + y);
+//        }
+//        for(Creature item : levelmanager.CREATURES){
+//            if(item.getX() < x && item.getX() + item.getWidth() > x && item.getY() < y && item.getY() + item.getHeight() > y){
+//                Gdx.app.log("Details", item.description);
+//            } //else Gdx.app.log("Details", item.getX() + " - " + x + "-" + (item.getX() + item.getWidth()) + " | " + item.getY() + " - " + y + "-" + (item.getY() + item.getHeight()) + y);
+//        }
+//    }
 
 
     @Override
@@ -572,6 +644,11 @@ public class GameScreen implements Screen {
                 creature.draw(game.getBatch());
             }
 
+        //render all summoned
+        for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+            creature.draw(game.getBatch());
+        }
+
         //render all objects
         for (GameObject object : levelmanager.OBJECTS) {
             object.draw(game.getBatch());
@@ -596,6 +673,7 @@ public class GameScreen implements Screen {
             game.getBatch().end();
 
             //render boxes
+        if(TO_RENDER)
             debugRenderer.render(world, camera.combined); // render boxes from World
 
         if(PAUSE) {
@@ -711,5 +789,9 @@ public class GameScreen implements Screen {
 
     public HashMap<Integer,String> getRivalOrganizations() {
         return hero.getRivalOrganizations();
+    }
+
+    public void shake() {
+        shakeTime = hero.existingTime;
     }
 }

@@ -41,4 +41,8 @@ public class Trigger {
     public String getDescription() {
         return description;
     }
+
+    public String getProcess() {
+        return process;
+    }
 }

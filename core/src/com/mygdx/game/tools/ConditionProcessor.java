@@ -116,6 +116,9 @@ public class ConditionProcessor {
                     case "MA": // item ADD
                         hero.addMoney(conditionKey);
                         break;
+                    case "EX": // item ADD
+                        hero.addExperience(conditionKey);
+                        break;
                 }
             }
         }

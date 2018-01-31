@@ -9,7 +9,7 @@ import com.mygdx.game.enums.AbilityID;
 public enum Skill {
     STRENGTH1(1, "Close combat", "Using close combat weapon",
             new AbilityID[]{
-                    AbilityID.AXE_SWING,
+//                    AbilityID.AXE_SWING,
                     AbilityID.SWORD_SWING,
                     AbilityID.HUMMER_SWING
             } , 100,0),
@@ -19,14 +19,14 @@ public enum Skill {
             } , 100,1),
     STRENGTH3(21, "Master Close combat", "Mastering in close combat weapon",
             new AbilityID[]{
-                    AbilityID.AXE_SMASH,
+                    //AbilityID.AXE_SMASH,
                     AbilityID.SWORD_SMASH,
                     AbilityID.HUMMER_SMASH,
             } , 100,11),
 
     ACCURACY1(2, "Range combat", "Using range combat weapon",
             new AbilityID[]{
-                    AbilityID.CROSSBOW_SHOT,
+                    //AbilityID.CROSSBOW_SHOT,
                     AbilityID.SLING_SHOT,
                     AbilityID.LONGBOW_SHOT,
             } , 100,0),
@@ -36,7 +36,7 @@ public enum Skill {
             }, 100 ,2),
     ACCURACY3(22, "Master Range combat", "Mastering in range combat weapon",
             new AbilityID[]{
-                    AbilityID.POWER_SHOT,
+                    //AbilityID.POWER_SHOT,
                     AbilityID.DITRUCTING_SHOT,
                     AbilityID.TRIPLE_SHOT
             } , 100,12),
@@ -55,15 +55,15 @@ public enum Skill {
             } , 100,13),
 
 
-    ENDURANCE1(5, "Shield", "Using shield in combat",
+    ENDURANCE1(5, "Shield", "Using shield in combat. Cover: " + AbilityID.COVER.getDescription(),
             new AbilityID[]{
                     AbilityID.COVER
             } , 100,0),
-    ENDURANCE2(15, "Advanced Shield", "Using shield cover in combat",
+    ENDURANCE2(15, "Advanced Shield", "Barskin : " + AbilityID.BARSKIN.getDescription(),
             new AbilityID[]{
                     AbilityID.BARSKIN
             }, 100 ,5),
-    ENDURANCE3(25, "Master Shield", "Using Fullprotection in combat",
+    ENDURANCE3(25, "Master Shield", "Fullprotection ability: " + AbilityID.FULLPROTECTION.getDescription(),
             new AbilityID[]{
                     AbilityID.FULLPROTECTION
             }, 100 ,15),
@@ -85,18 +85,18 @@ public enum Skill {
                     AbilityID.SILENT_STRIKE
             }, 100 ,17),
 
-    MAGIC1(8, "Magic", "Using magic powers",
-            new AbilityID[]{
-                    AbilityID.FLY
-            } , 100,0),
-    MAGIC2(18, "Advanced Magic", "Using magic powers",
-            new AbilityID[]{
-                    AbilityID.INVISIBILITY,
-            } , 100,8),
-    MAGIC3(28, "Master Magic", "Using magic powers to teleport",
-            new AbilityID[]{
-                    AbilityID.TELEPORT
-            } , 100,18),
+//    MAGIC1(8, "Magic", "Using magic powers",
+//            new AbilityID[]{
+//                    AbilityID.FLY
+//            } , 100,0),
+//    MAGIC2(18, "Advanced Magic", "Using magic powers",
+//            new AbilityID[]{
+//                    AbilityID.INVISIBILITY,
+//            } , 100,8),
+//    MAGIC3(28, "Master Magic", "Using magic powers to teleport",
+//            new AbilityID[]{
+//                    AbilityID.TELEPORT
+//            } , 100,18),
 
 
     CHARISMA1(9, "Shouts", "Using charisma to make you stronger",
@@ -130,9 +130,9 @@ public enum Skill {
 
 
 
-    INTELLIGENCE1(31, "Intelligance" , "Reading of text", new AbilityID[]{}, 100, 0),
-    INTELLIGENCE2(32, "Advanced Intelligance", "Reading of foreign text" , new AbilityID[]{}, 100,31 ),
-    INTELLIGENCE3(33, "Expert Intelligance", "Reading of Acient text" , new AbilityID[]{}, 100,32 );
+    INTELLIGENCE1(31, "Intelligance" , "Reading of text", new AbilityID[]{AbilityID.READ_BASIC}, 100, 0),
+    INTELLIGENCE2(32, "Advanced Intelligance", "Reading of foreign text" , new AbilityID[]{AbilityID.READ_FOREIGN}, 100,31 ),
+    INTELLIGENCE3(33, "Expert Intelligance", "Reading of Ancient text" , new AbilityID[]{AbilityID.READ_ANCIENT}, 100,32 );
 
     int id;
     String name;
@@ -170,5 +170,9 @@ public enum Skill {
 
     public String getDescription() {
         return description;
+    }
+
+    public int getID() {
+        return id;
     }
 }

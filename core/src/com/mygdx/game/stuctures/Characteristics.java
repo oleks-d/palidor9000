@@ -4,10 +4,6 @@ package com.mygdx.game.stuctures;
  * Created by odiachuk on 12/22/17.
  */
 public class Characteristics {
-    public Stat STR;
-    public Stat AGI;
-    public Stat CHAR;
-    public Stat INT;
 
     public Characteristics(Integer health, Integer speed, Integer jumphight) {
         this.health = new Stat(health,health);
@@ -15,37 +11,6 @@ public class Characteristics {
         this.jumphight = new Stat(jumphight,jumphight);
     }
 
-    public Stat getSTR() {
-        return STR;
-    }
-
-    public void setSTR(Stat STR) {
-        this.STR = STR;
-    }
-
-    public Stat getAGI() {
-        return AGI;
-    }
-
-    public void setAGI(Stat AGI) {
-        this.AGI = AGI;
-    }
-
-    public Stat getCHAR() {
-        return CHAR;
-    }
-
-    public void setCHAR(Stat CHAR) {
-        this.CHAR = CHAR;
-    }
-
-    public Stat getINT() {
-        return INT;
-    }
-
-    public void setINT(Stat INT) {
-        this.INT = INT;
-    }
 
     public void setHealth(Stat health) {
         this.health = health;
@@ -73,10 +38,6 @@ public class Characteristics {
 
 
     public Characteristics(Stat STR, Stat AGI, Stat CHAR, Stat INT, Stat health, Stat speed, Stat jumphight) {
-        this.STR = STR;
-        this.AGI = AGI;
-        this.CHAR = CHAR;
-        this.INT = INT;
         this.health = health;
         this.speed = speed;
         this.jumphight = jumphight;

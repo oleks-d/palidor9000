@@ -20,6 +20,7 @@ import com.mygdx.game.enums.EquipmentType;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.tools.AnimationHelper;
+import com.mygdx.game.tools.ConditionProcessor;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.HashMap;
 public class HeroInventoryPanel implements Disposable {
 
     private final AnimationHelper animhelper;
+    private final Skin skin;
     public Stage stage;
     Viewport viewport;
 
@@ -63,6 +65,7 @@ public class HeroInventoryPanel implements Disposable {
 
     public GameItem currentItem = null;
     public AbilityID currentAbility = null;
+    String currentDetails = "";
 
     int MAX_NUMBER_OF_ROWS = 8;
     int LAST_DISPLAYED_ROW;
@@ -78,6 +81,7 @@ public class HeroInventoryPanel implements Disposable {
         // locatin of all widgets
         stage = new Stage(viewport,sb);
 
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
 
         inventoryHeader = new Label(String.format("<< -  %s - >>", "ITEMS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));
         equipedHeader= new Label(String.format("<< -  %s - >>", "EQUIPMENT:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
@@ -98,7 +102,7 @@ public class HeroInventoryPanel implements Disposable {
         LAST_DISPLAYED_ROW = 0;
         INITIAL_DISPLAYED_ROW = 0;
 
-        upButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));
+        upButton = new Image(animhelper.getTextureRegionByIDAndIndex("up_button"));
         upButton.addListener(new InputListener(){
 
             @Override
@@ -116,7 +120,7 @@ public class HeroInventoryPanel implements Disposable {
             }
         });
 
-        downButton = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));
+        downButton = new Image(animhelper.getTextureRegionByIDAndIndex("down_button"));
         downButton.addListener(new InputListener(){
 
             @Override
@@ -134,7 +138,7 @@ public class HeroInventoryPanel implements Disposable {
 
 
         windowHeader = new Label(String.format("  %s ",   "Inventory"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;;
-        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("icon_blank"));;
+        closeWindow = new Image(animhelper.getTextureRegionByIDAndIndex("close_button"));;
         closeWindow.addListener(new InputListener(){
 
             @Override
@@ -254,17 +258,59 @@ public class HeroInventoryPanel implements Disposable {
 
             for (int i = INITIAL_DISPLAYED_ROW; i< LAST_DISPLAYED_ROW; i++) {
                 Label item  = inventoryItems.get(i);
-                Image equip = inventoryItemsImage.get(i);
-                final int index = inventoryIndex.get(i);
+                Image itemImage = inventoryItemsImage.get(i);
+
                 inventorytable.add(item);
-                inventorytable.add(equip);
+                inventorytable.add(itemImage);
+
+                final int index = inventoryIndex.get(i);
+
+                if(hero.getInventory().get(index).getType()!=EquipmentType.NONE) {
+                    TextButton equip = new TextButton("Equip", skin);
+                    inventorytable.add(equip);
+
+                    equip.addListener(new InputListener(){
+                        @Override
+                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                            currentItem = hero.getInventory().get(index);
+                            currentDetails = hero.equipItem(hero.getInventory().get(index));
+                            return true;
+                        }
+
+                        @Override
+                        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                            update();
+                        }
+                    });
+                };
+                // usable
+                if(hero.getInventory().get(index).isUsable()) {
+                    TextButton equip1 = new TextButton("Use", skin);
+                    inventorytable.add(equip1);
+                    equip1.addListener(new InputListener() {
+                        @Override
+                        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                            currentItem = hero.getInventory().get(index);
+                            currentDetails = hero.useItem(hero.getInventory().get(index));
+                            return true;
+                        }
+
+                        @Override
+                        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                            update();
+                        }
+                    });
+                }
+
                 inventorytable.row();
                 item.addListener(new InputListener(){
 
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        currentItem = hero.getInventory().get(index);
-                        currentAbility = null;
+                        if(ConditionProcessor.conditionSatisfied(hero,hero.getInventory().get(index).getCondition()))
+                            currentDetails = hero.getInventory().get(index).itemdescription;
+                        else
+                            currentDetails = "You don't know what is it";
                         return true;
                     }
 
@@ -274,26 +320,7 @@ public class HeroInventoryPanel implements Disposable {
                     }
                 });
 
-                equip.addListener(new InputListener(){
-                    @Override
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        currentItem = hero.getInventory().get(index);
-                        currentAbility = null;
-                        if(currentItem.getType() != EquipmentType.NONE) {
-                            hero.equipItem(hero.getInventory().get(index));
-                            System.out.println("Equip:" + currentItem.itemname);
 
-                        } else
-                        if (currentItem.isUsable())
-                            hero.useItem(currentItem);
-                        return true;
-                    }
-
-                    @Override
-                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                        update();
-                    }
-                });
             }
 
             inventorytable.row();
@@ -314,6 +341,7 @@ public class HeroInventoryPanel implements Disposable {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     currentItem = hero.head;
+                    currentDetails = currentItem.itemdescription;
                     hero.unEquipItem(hero.head);
                     System.out.println("UnEquip:" + currentItem.itemname);
                     return true;
@@ -336,6 +364,7 @@ public class HeroInventoryPanel implements Disposable {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     currentItem = hero.armor;
+                    currentDetails = currentItem.itemdescription;
                     hero.unEquipItem(hero.armor);
                     System.out.println("UnEquip:" + currentItem.itemname);
                     return true;
@@ -356,6 +385,7 @@ public class HeroInventoryPanel implements Disposable {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     currentItem = hero.weapon1;
+                    currentDetails = currentItem.itemdescription;
                     hero.unEquipItem(hero.weapon1);
                     System.out.println("UnEquip:" + currentItem.itemname);
                     return true;
@@ -373,11 +403,13 @@ public class HeroInventoryPanel implements Disposable {
         if(hero.weapon2 != null) {
             equipmenttable.row();
             equipmenttable.add(equipedWeapon2Label);
+
             Image weaponImage = new Image(animhelper.getTextureRegionByIDAndIndex(hero.weapon2.getIcon()));
             weaponImage.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     currentItem = hero.weapon2;
+                    currentDetails = currentItem.itemdescription;
                     hero.unEquipItem(hero.weapon2);
                     System.out.println("UnEquip:" + currentItem.itemname);
                     return true;
@@ -402,8 +434,7 @@ public class HeroInventoryPanel implements Disposable {
 
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.selectedAtackAbilities.get(index);
-                    currentItem = null;
+                    currentDetails = hero.selectedAtackAbilities.get(index).getDescription();
                     return true;
                 }
 
@@ -426,8 +457,7 @@ public class HeroInventoryPanel implements Disposable {
 
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    currentAbility = hero.selectedDefenseAbilities.get(index);
-                    currentItem = null;
+                    currentDetails = hero.selectedDefenseAbilities.get(index).getDescription();
                     return true;
                 }
 
@@ -441,11 +471,9 @@ public class HeroInventoryPanel implements Disposable {
 
         //details tableController update
         detailstable.row();
-        detailstable.row();
-        if(currentItem != null)
-            detailstable.add(new Label(String.format("%s", currentItem.itemdescription), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
-        else if (currentAbility != null)
-            detailstable.add(new Label(String.format("%s", currentAbility.getDescription()), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
+        detailstable.row().pad(15,15,15,15);
+
+        detailstable.add(new Label(String.format("%s", currentDetails), new Label.LabelStyle(new BitmapFont(), Color.BROWN)));
 
         stage.addActor(titleTable);
         stage.addActor(inventorytable);
