@@ -28,6 +28,7 @@ public class GameItem extends Sprite {
     public String id;
     private String process;
     private String condition;
+    private String picture;
 
     public GameItem(GameScreen screen, ItemDescription description){
         super();
@@ -35,6 +36,7 @@ public class GameItem extends Sprite {
         this.screen = screen;
         this.id = description.id;
         this.icon = description.image;
+        this.picture = description.picture;
         this.itemname = description.name;
         this.itemdescription = description.description;
         this.itemvalue = description.value;
@@ -140,5 +142,9 @@ public class GameItem extends Sprite {
 
     public String getCondition() {
         return condition;
+    }
+
+    public String getPicture() {
+        return picture;
     }
 }

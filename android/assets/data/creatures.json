@@ -2,29 +2,51 @@
 
 
   {
-    "id" : "rolf",
+    "id" : "animal_rolf",
     "name" : "Rolf",
     "description": "Regular rolf",
     "health" : "10",
     "speed" : "5",
     "jump": "5",
-    "spritesheetregion" : "animal1",
-    "abilities" : "ANIMAL_PUNCH"
+    "spritesheetregion" : "rolf2",
+    "abilities" : "SWORD_SWING"
   },
 
   {
-    "id" : "animal_2",
-    "name" : "Fast Rolf",
-    "description": "Fast rolf",
+    "id" : "animal_bolfir",
+    "name" : "Bolfir",
+    "description": "Fast bolfir",
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy2",
+    "spritesheetregion" : "rolf3",
     "effects" : "CUT_DAMAGE 1 1 0",
     "abilities" : "PUNCH"
   },
 
+  {
+    "id" : "animal_tordur",
+    "name" : "Tordur",
+    "description": "Strong tordur",
+    "health" : "20",
+    "speed" : "5",
+    "jump": "8",
+    "spritesheetregion" : "rolf4",
+    "effects" : "CUT_DAMAGE 1 1 0",
+    "abilities" : "PUNCH"
+  },
 
+  {
+    "id" : "animal_rager",
+    "name" : "Rager",
+    "description": "Terrible rager",
+    "health" : "20",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "rolf",
+    "effects" : "CUT_DAMAGE 1 1 0",
+    "abilities" : "PUNCH"
+  },
 
   {
     "id" : "father",
@@ -33,7 +55,7 @@
     "health" : "10",
     "speed" : "10",
     "jump" : "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle2",
     "abilities" : "SWORD_SWING,LONGBOW_SHOT"
   },
   {
@@ -43,21 +65,10 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
   },
 
-  {
-    "id" : "mark",
-    "name" : "Mark",
-    "description": "Son of a balcksmith. \n Your friend",
-    "health" : "10",
-    "speed" : "10",
-    "jump": "10",
-    "spritesheetregion" : "enemy1",
-    "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "HUMMER_SWING"
-  },
 
   {
     "id" : "mark",
@@ -66,7 +77,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle2",
     "abilities" : "HUMMER_SWING"
   },
 
@@ -77,7 +88,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle2",
     "abilities" : "SWORD_SWING"
   },
 
@@ -89,7 +100,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle1_lady",
     "abilities" : "SWORD_SWING"
   },
 
@@ -101,7 +112,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle2",
     "abilities" : "SWORD_SWING"
   },
 
@@ -112,7 +123,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle2",
     "abilities" : "HUMMER_SWING"
   },
 
@@ -123,7 +134,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
   },
 
@@ -134,7 +145,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
   },
 
@@ -147,7 +158,7 @@
     "health" : "10",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "enemy1",
+    "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
   }
 

@@ -107,7 +107,7 @@ public class ActivityWithEffect extends Sprite {
 
                 body.createFixture(fixtureDef).setUserData(this);
 
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 1f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
 
                 break;
             case SPRAY:
@@ -127,7 +127,8 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 1f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
+                runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
 
                 break;
             case BIGBOX:
@@ -145,7 +146,7 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 1f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
                 break;
             case BOX:
                 box = new PolygonShape();
@@ -162,7 +163,8 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 1f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName,  type.getWidth(), type.getHigth(), 0.2f, 0, 1);
+                runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
                 break;
             default:
                 box = new PolygonShape();
@@ -179,7 +181,8 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 1f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
+                runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
         }
 
         body.applyLinearImpulse(direction, body.getWorldCenter(), true);
@@ -207,7 +210,7 @@ public class ActivityWithEffect extends Sprite {
     public TextureRegion getFrame(float dt) {
 
         if(!destroyed && !toDestroy) {
-            region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
+            region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, false);
 
             if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()) {
                 //region.flip(true, false);

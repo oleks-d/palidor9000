@@ -1,5 +1,6 @@
 package com.mygdx.game.screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -107,6 +109,7 @@ public class GameScreen implements Screen {
     boolean shakeRight = true;
 
     boolean TO_RENDER = true;
+    public RandomXS128 randomizer;
 
     public GameScreen(PalidorGame game, String heroName){
         this(game,heroName,null);
@@ -119,6 +122,8 @@ public class GameScreen implements Screen {
         setDay(true);
 
         STOP_GAME = false;
+
+        randomizer = new RandomXS128();
 
         //camera
         camera = new OrthographicCamera();
@@ -193,7 +198,7 @@ public class GameScreen implements Screen {
             else
                 camera.position.y = viewport.getWorldHeight() / 2;
 
-        if(shakeTime + 2d > hero.existingTime)
+        if(shakeTime > hero.existingTime)
             if(shakeRight) {
                 camera.position.y = camera.position.y + 0.05f;
                 shakeRight = false;
@@ -228,6 +233,7 @@ public class GameScreen implements Screen {
             //update hero
             hero.update(delta);
 
+
             if (hero.getAbilityToCast() != AbilityID.NONE && hero.finishedCasting()) {
                 activity = hero.activateAbility(hero.getAbilityToCast());
                 if (activity != null)
@@ -236,11 +242,13 @@ public class GameScreen implements Screen {
 
             //update all enemies
             for (Creature creature : levelmanager.CREATURES) {
-                if(!creature.isActive()) {
-                    if (creature.getBody().getPosition().x < camera.position.x + viewport.getWorldWidth() / 2 && creature.getBody().getPosition().x > camera.position.x - viewport.getWorldWidth() / 2)
-                        creature.makeActive();
-                }else {
+//                if(!creature.isActive()) { //TODO add validation on activ state
+//                    if (creature.getBody().getPosition().x < camera.position.x + viewport.getWorldWidth() / 2 && creature.getBody().getPosition().x > camera.position.x - viewport.getWorldWidth() / 2)
+//                        creature.makeActive();
+//                }else
+                    {
                     creature.update(delta);
+                    //creature.weaponSprite.update(delta);
                     creature.nextStep();
 
                     if (creature.getAbilityToCast() != AbilityID.NONE && creature.finishedCasting()) {
@@ -441,7 +449,7 @@ public class GameScreen implements Screen {
                 }else hero.direction.set(hero.direction.x, 0);
 
                 if (controller.touchedLeft || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                    hero.direction.set(1, hero.direction.y);
+                    hero.direction.set(-1, hero.direction.y);
                     for (Creature creature : levelmanager.SUMMONED_CREATURES) {
                         creature.move(false);
                         if(hero.directionRight) creature.jump(); // change position
@@ -452,7 +460,7 @@ public class GameScreen implements Screen {
                     //Gdx.app.log(hero.getBody().getLinearVelocity().x+"", hero.getBody().getLinearVelocity().y + "");
 
                 } else if (controller.touchedRight || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                    hero.direction.set(-1, hero.direction.y);
+                    hero.direction.set(1, hero.direction.y);
                     for (Creature creature : levelmanager.SUMMONED_CREATURES) {
                         creature.move(true);
                         if(!hero.directionRight) creature.jump(); // change position
@@ -608,7 +616,7 @@ public class GameScreen implements Screen {
 //        }
 //        for(Creature item : levelmanager.CREATURES){
 //            if(item.getX() < x && item.getX() + item.getWidth() > x && item.getY() < y && item.getY() + item.getHeight() > y){
-//                Gdx.app.log("Details", item.description);
+//                Gdx.app.log("Details", item.creatureDescription);
 //            } //else Gdx.app.log("Details", item.getX() + " - " + x + "-" + (item.getX() + item.getWidth()) + " | " + item.getY() + " - " + y + "-" + (item.getY() + item.getHeight()) + y);
 //        }
 //    }
@@ -621,7 +629,7 @@ public class GameScreen implements Screen {
 
         update(delta);
 
-            Gdx.gl.glClearColor(0, 0, 0, 0);
+            Gdx.gl.glClearColor(0, 0, 1, 0);
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             //maprenderer.render(); // show map
@@ -642,11 +650,13 @@ public class GameScreen implements Screen {
             //render all enemies
             for (Creature creature : levelmanager.CREATURES) {
                 creature.draw(game.getBatch());
+                //creature.weaponSprite.draw(game.getBatch());
             }
 
         //render all summoned
         for (Creature creature : levelmanager.SUMMONED_CREATURES) {
             creature.draw(game.getBatch());
+            //creature.weaponSprite.draw(game.getBatch());
         }
 
         //render all objects
@@ -668,6 +678,9 @@ public class GameScreen implements Screen {
             }
 
             hero.draw(game.getBatch());
+            //hero.weaponSprite.draw(game.getBatch());
+            //if(hero.armorSprite.pictureName != null)
+            //    hero.armorSprite.draw(game.getBatch());
             //hero.creatureAim.draw(game.getBatch()); //todo aiming
 
             game.getBatch().end();
@@ -696,8 +709,8 @@ public class GameScreen implements Screen {
 //            game.getBatch().setProjectionMatrix(dialogPanel.stage.getCamera().combined);
 //            dialogPanel.stage.draw();
 
-            //if (Gdx.app.getType() == Application.ApplicationType.Android){
-            controller.stage.draw();
+            if (Gdx.app.getType() == Application.ApplicationType.Android)
+                controller.stage.draw();
         }
 
 
@@ -792,6 +805,6 @@ public class GameScreen implements Screen {
     }
 
     public void shake() {
-        shakeTime = hero.existingTime;
+        shakeTime = hero.existingTime + 2d;
     }
 }

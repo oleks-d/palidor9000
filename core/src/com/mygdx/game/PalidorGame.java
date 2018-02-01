@@ -14,7 +14,7 @@ public class PalidorGame extends Game {
 	public static final float PPM  = 100;
 
 	public static final String TITLE = "Palidor";
-    public static final int TILE_SIZE = 32;
+    public static final int TILE_SIZE = 64;
 	public static final String DATA_DIR = "data";
 	public static final String SPRITES_DIR = "sprites";
 	public static final String MAPS_DIR = "maps";

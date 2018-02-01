@@ -88,6 +88,7 @@ public class WorldContactListener implements ContactListener {
                         }
                     } else {
                         target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
+                        act.createdBy.shake();
                         act.createdBy.applyEffect(target.shieldEffect); // stun if target was protected
                     }
                     //   act.addTargetToAlreadyProcessed(target);
@@ -193,6 +194,12 @@ public class WorldContactListener implements ContactListener {
                     ((Creature) fixA.getUserData()).setStandStill(false);
                 else
                     ((Creature) fixB.getUserData()).setStandStill(false);
+                break;
+            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_POINT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setHasToJump(false);
+                else
+                    ((Creature) fixB.getUserData()).setHasToJump(false);
                 break;
         }
 

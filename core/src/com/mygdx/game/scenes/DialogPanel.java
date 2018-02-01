@@ -211,7 +211,7 @@ public class DialogPanel implements Disposable {
         for(Integer i : actor.getDialogs())
             this.dialogs.add(screen.levelmanager.DIALOGS.get(i));
 
-        addMessage(actor.description, actor.name, actor.icon );
+        addMessage(actor.creatureDescription, actor.name, actor.icon );
         addDialogOptions(dialogs);
     }
 

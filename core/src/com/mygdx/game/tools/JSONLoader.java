@@ -72,7 +72,8 @@ public class JSONLoader {
                             tryToGetValue(component, "usable") != null ? Boolean.valueOf(component.getString("usable")) : false,
                             tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
                             tryToGetValue(component, "process") != null ? component.getString("process") : "",
-                            tryToGetValue(component, "condition") != null ? component.getString("condition") : ""
+                            tryToGetValue(component, "condition") != null ? component.getString("condition") : "",
+                            tryToGetValue(component, "picture") != null ? component.getString("picture") : ""
                     )
             );
         }
@@ -237,7 +238,7 @@ public class JSONLoader {
                 "{\n" +
                 "  \"hero\": {\n" +
                 "    \"name\": \"" + hero.name +"\",\n" +
-                "    \"description\": \"" + hero.description + "\",\n" +
+                "    \"description\": \"" + hero.creatureDescription + "\",\n" +
                 "    \"health\": \""  + hero.stats.health.base + "\",\n" +
                 "    \"speed\": \""  + hero.stats.speed.base + "\",\n" +
                 "    \"jump\": \""  + hero.stats.jumphight.base + "\",\n" +

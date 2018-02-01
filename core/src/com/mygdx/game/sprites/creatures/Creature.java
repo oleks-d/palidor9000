@@ -29,6 +29,9 @@ import java.util.Set;
  */
 public class Creature extends Sprite {
 
+
+    public final boolean isHero;
+    private CreatureDescription description;
     protected World world;
     private Body body;
     public GameScreen screen;
@@ -73,7 +76,7 @@ public class Creature extends Sprite {
     GameItem neck;
 
     public String name;
-    public String description;
+    public String creatureDescription;
     public String spritesheetRegion;
 
     public double existingTime;
@@ -84,7 +87,7 @@ public class Creature extends Sprite {
 
     float JUMP_BASE = 0.5f;
     float SPEED_BASE = 0.02f;
-    public float sight = 100;
+    public float sight = 200;
 
     public AI brain;
     private Set<Integer> enemyOrganizations;
@@ -93,6 +96,15 @@ public class Creature extends Sprite {
 
     public CreatureStatus statusbar;
     //public CreatureAim creatureAim;
+
+    public WeaponSprite weaponSprite;
+    public WeaponSprite weaponSprite2;
+    public ArmorSprite armorSprite;
+
+
+    double shakeTime = -4;
+    boolean shakeRight = true;
+    float distortionY = 0;
 
     Creature closeNeighbor;  // close creature - you can talk with
 
@@ -113,6 +125,15 @@ public class Creature extends Sprite {
     private boolean isHeavy = true;
     private boolean onAGround = false;
 
+    private Animation cutAnimation;
+    private Animation crushAnimation;
+    private Animation fireAnimation;
+    private Animation iceAnimation;
+
+    Array<Animation> animationsList;
+    Array<TextureRegion> animationRegions;
+    Array<Float> animationStateTimers;
+
     public CreatureStatus getStatusbar() {
         return statusbar;
     }
@@ -122,6 +143,9 @@ public class Creature extends Sprite {
         abilityToCast = AbilityID.NONE;
         abilityToCastExecutionTime = 0;
         setState(State.STANDING);
+
+        weaponSprite.resetState();
+        weaponSprite2.resetState();
     }
 
     public AbilityID getAbilityToCast() {
@@ -151,9 +175,15 @@ public class Creature extends Sprite {
         super();
         this.screen = screen;
 
+        this.description = description;
+
+        if(description.id.equals("HERO"))
+        this.isHero = true;
+        else this.isHero = false;
+
         this.id = description.id;
         this.name = description.name;
-        this.description = description.description;
+        this.creatureDescription = description.description;
 
         this.stats = new Characteristics(description.stats);
 
@@ -211,29 +241,43 @@ public class Creature extends Sprite {
         // set animations
         spritesheetRegion = description.region;
 
-        if(spritesheetRegion.contains("animal")) {
-            stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
-            icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6); //TODO
-            deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
-            runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 6,5,4 );
+        if(description.id.contains("animal")) {
+            stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
+            icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
+            deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
+            runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 1, 2);
+            jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 3);
 
-            //pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
-            jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 6, 1);
+            weaponSprite = new WeaponSprite(this, "paw", true);
+            weaponSprite2 = new WeaponSprite(this, "paw", false);
+            armorSprite = new ArmorSprite(this);
         }else {
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
-            deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 10);
-            runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 0, 1);
+            deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
+            runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 1, 2);
+            jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 3);
 
-            //pushAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,8,9);
-            jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 2, 3);
+            weaponSprite = new WeaponSprite(this, "hand",true);
+            weaponSprite2 = new WeaponSprite(this, "hand", false);
+            armorSprite = new ArmorSprite(this);
         }
 
-        //abilityToCastAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
 
-//        shotAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,4,5);
-//        kickAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,2,3);
-//        castAnimation = screen.animationHelper.getAnimationByID(description.region,0.3f,6,7);
+        cutAnimation = screen.animationHelper.getAnimationByID("blood", 32, 32, 0.2f, 0, 1, 2);
+        crushAnimation= screen.animationHelper.getAnimationByID("smash", 32, 32, 0.2f, 0, 1, 2);
+        fireAnimation= screen.animationHelper.getAnimationByID("firedamage", 32, 32, 0.2f, 0, 1, 2);
+        iceAnimation= screen.animationHelper.getAnimationByID("icedamage", 32, 32, 0.2f, 0, 1, 2);
+
+        animationsList = new Array<Animation>();
+        animationStateTimers = new Array<Float>();
+        animationRegions = new Array<TextureRegion>();
+
+        //abilityToCastAnimation = screen.animationHelper.getAnimationByID(creatureDescription.region,0.3f,4,5);
+
+//        shotAnimation = screen.animationHelper.getAnimationByID(creatureDescription.region,0.3f,4,5);
+//        kickAnimation = screen.animationHelper.getAnimationByID(creatureDescription.region,0.3f,2,3);
+//        castAnimation = screen.animationHelper.getAnimationByID(creatureDescription.region,0.3f,6,7);
 
         if(dialogs != null && !dialogs.equals("")) {
             for (String curItem : dialogs.split(",")) {
@@ -245,16 +289,16 @@ public class Creature extends Sprite {
 
     }
     public Creature (GameScreen screen, float x, float y, CreatureDescription description, String items, String deathProcess, int organization, String dialogs) {
-        //super(screen.getAtlas().findRegion(description.region));
+        //super(screen.getAtlas().findRegion(creatureDescription.region));
 
         this(screen, description, items, deathProcess, organization, dialogs);
+        this.description = description;
+        makeAlive(x, y);
 
         //equip
         for (String itemd : description.equiped){
             equipItem(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
         }
-
-        makeAlive(x, y);
     }
 
     public void makeAlive(float x, float y){
@@ -291,7 +335,8 @@ public class Creature extends Sprite {
 //        shape.setAsBox(getWidth() / 3,getHeight() / 3);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(PalidorGame.TILE_SIZE / 2 / PalidorGame.PPM );
+        shape.setRadius(PalidorGame.TILE_SIZE * 1/3 / PalidorGame.PPM );
+        //shape.setRadius(PalidorGame.TILE_SIZE /2 / PalidorGame.PPM );
         //shape.setRadius(0.2f);
 
         FixtureDef fixtureDef = new FixtureDef();
@@ -350,6 +395,10 @@ public class Creature extends Sprite {
 
             updatePosition(dt);
 
+            weaponSprite.update(dt);
+            weaponSprite2.update(dt);
+            armorSprite.update(dt);
+
             if(currentState == State.FALLING)
                 updateGravity(true);
             else
@@ -370,6 +419,8 @@ public class Creature extends Sprite {
             //creatureAim.updatePosition(); //TODO aiming
             if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
                 statusbar.removeMessage();
+
+            setAnimationFrames(dt);
         }
     }
 
@@ -390,7 +441,19 @@ public class Creature extends Sprite {
 
 
     public void updatePosition(float dt){
-        this.setPosition(body.getPosition().x - getWidth()/2 , body.getPosition().y - getHeight() /2);
+
+        if(shakeTime > existingTime)
+            if(shakeRight) {
+                distortionY =  + 0.05f;
+                shakeRight = false;
+            }else {
+                distortionY = - 0.05f;
+                shakeRight = true;
+            }
+        else
+            distortionY = 0;
+
+        this.setPosition(body.getPosition().x - getWidth()/2 , body.getPosition().y - getHeight() /2 + distortionY);
         this.setRegion(getFrame(dt));
 
     }
@@ -411,11 +474,11 @@ public class Creature extends Sprite {
                 //region = (TextureRegion) castAnimation.getKeyFrame(stateTimer, true);
                 break;
             case KICKING:
-                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, false);
                 //region = (TextureRegion) kickAnimation.getKeyFrame(stateTimer, true);
                 break;
             case SHOTING:
-                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, true);
+                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, false);
                 //region = (TextureRegion) shotAnimation.getKeyFrame(stateTimer, true);
                 break;
 
@@ -480,9 +543,26 @@ public class Creature extends Sprite {
     public void draw(Batch batch) {
         if(!destroyed) {
             try {
+//                if(this.id.equals("animal_bolfir")){
+//                    Gdx.app.log("error", "");
+//                }
+
+                weaponSprite.draw(batch);
                 super.draw(batch);
+                armorSprite.draw(batch);
                 statusbar.draw(batch);
+                weaponSprite2.draw(batch);
+
+
+
+                for(int i = 0 ; i<animationRegions.size;i++) {
+                    TextureRegion animregion = animationRegions.get(i);
+                    batch.draw(animregion, getX(), getY() + getHeight()/2, animregion.getRegionWidth() / PalidorGame.PPM, animregion.getRegionHeight() / PalidorGame.PPM);
+                }
+
             }catch(Exception e){ //TODO
+                Gdx.app.log("error", e.getMessage());
+                e.printStackTrace();
                 //       batch.draw(region, getX()/100,getY()/100); //TODO
                 //       statusbar.draw(batch);
             }
@@ -580,7 +660,7 @@ public class Creature extends Sprite {
 
     public void moveUp() {
         getBody().applyLinearImpulse(new Vector2(0, JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
-        currentState = State.JUMPING;
+        //currentState = State.JUMPING;
     }
 
     public void move(boolean moveright){
@@ -615,6 +695,7 @@ public class Creature extends Sprite {
         {
             if(checkCooldownExpired(ability)) {
                 abilityToCastExecutionTime = AbilityHandler.getAbilityCastTime(this, ability);
+
                 //if(abilityToCastExecutionTime > 0.2){
                 setState(ability.getState());
                 //}
@@ -837,6 +918,7 @@ public class Creature extends Sprite {
                 break;
             case ARMOR:
                 armor = item;
+                armorSprite.setPicture(item.getPicture());
                 break;
             // TODO add all
             case WEAPON_MAGIC_ICE:
@@ -850,10 +932,16 @@ public class Creature extends Sprite {
             case    WEAPON_SLING:
             case    WEAPON_XBOW:
             case    WEAPON_SHIELD:
-                if(weapon1 == null)
+                if(weapon1 == null) {
                     weapon1 = item;
-                else if (weapon2 == null)
+                    weaponSprite.setPicture(item.getPicture());
+                }
+                else if (weapon2 == null) {
                     weapon2 = item;
+                    weaponSprite2.setPicture(item.getPicture());
+                } else {
+                    return "Item does not fit slot (remove equiped item)";
+                }
                 break;
         }
         inventory.removeValue(item,true);
@@ -875,6 +963,7 @@ public class Creature extends Sprite {
                 break;
             case ARMOR:
                 armor = null;
+                armorSprite.setPicture(null);
                 break;
             case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:
@@ -887,10 +976,14 @@ public class Creature extends Sprite {
             case    WEAPON_SLING:
             case    WEAPON_XBOW:
             case    WEAPON_SHIELD:
-                if(weapon1 != null)
+                if(weapon1 != null) {
                     weapon1 = null;
-                else if (weapon2 != null)
+                    weaponSprite.setPicture("hand");
+            }
+                else if (weapon2 != null) {
                     weapon2 = null;
+                    weaponSprite2.setPicture("hand");
+                }
                 break;
             // TODO add all
         }
@@ -898,6 +991,7 @@ public class Creature extends Sprite {
         inventory.add(item);
         statusbar.update();
     }
+
 
     //throw to ground
     public void throwFromInventory(GameItem item) {
@@ -956,9 +1050,12 @@ public class Creature extends Sprite {
     /// CASTING PROCESS
 
     public void setAbilityToCast(AbilityID abilityToCast) {
-        if(abilityToCast != AbilityID.NONE)
-            this.abilityToCastAnimation = AbilityHandler.getAnimation(screen, abilityToCast, spritesheetRegion);
+
         this.abilityToCast = abilityToCast;
+        if(abilityToCast != AbilityID.NONE) {
+            this.abilityToCastAnimation = AbilityHandler.getAnimation(screen, abilityToCast, spritesheetRegion);
+            armorSprite.updateAbilityToCastAnimation(); //TODO find another solution
+        }
     }
 
     public boolean finishedCasting() {
@@ -991,13 +1088,53 @@ public class Creature extends Sprite {
             statusbar.addMessage(message, existingTime + 2f, font);
     }
 
-    public void doDamage(int damageValue) {
+    public void doDamage(int damageValue, EffectID damageType) {
         stats.health.current = stats.health.current - damageValue;
         addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+
+        switch (damageType){
+            case CUT_DAMAGE:
+                startAnimation(cutAnimation);
+                break;
+            case CRUSH_DAMAGE:
+                startAnimation(crushAnimation);
+                break;
+            case FIRE_DAMAGE:
+                startAnimation(fireAnimation);
+                break;
+            case ICE_DAMAGE:
+                startAnimation(iceAnimation);
+                break;
+        }
+
+
     }
 
-    public void setNeighbor(Creature neighbor) {
-        this.closeNeighbor = neighbor;
+    private void startAnimation(Animation animation) {
+        if(animation != null) {
+            animationsList.add(cutAnimation);
+            animationStateTimers.add(0f);
+        }
+    }
+
+    public void setAnimationFrames(float dt){
+        TextureRegion animregion;
+        animationRegions.clear();
+        for(int i = 0 ; i<animationsList.size;i++) {
+            Animation anim = animationsList.get(i);
+            animregion = (TextureRegion) anim.getKeyFrame(animationStateTimers.get(i), false);
+            if (anim.isAnimationFinished(animationStateTimers.get(i))) {
+                animationsList.removeIndex(i);
+                animationStateTimers.removeIndex(i);
+            } else {
+                animationRegions.add(animregion);
+                animationStateTimers.set(i, animationStateTimers.get(i) + dt);
+            }
+        }
+    }
+
+    public void setNeighbor(Creature neighbor) {  // TODO add dialogs between
+            this.closeNeighbor = neighbor;
     }
 
     public Array<Integer> getDialogs() {
@@ -1016,6 +1153,17 @@ public class Creature extends Sprite {
 
     public void attackIfEnemyIsNear() { //TODO - add logic
         useAbility(abilities.first());
+    }
+
+    public void removeShield() {
+        shieldEffect = null;
+        weaponSprite2.holding = false;
+        weaponSprite2.resetState();
+    }
+
+    public void shake() {
+        shakeTime = existingTime + 1d;
+
     }
 
 //    public void onAGround(boolean val) {

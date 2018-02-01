@@ -70,6 +70,9 @@ public class Hero extends Creature {
         rivalOrganizations.put(1,"0,2");
         rivalOrganizations.put(2,"0,1");
 
+//        weaponSprite = new WeaponSprite(this);
+//        armorSprite = new ArmorSprite(this);
+
         //equip
         for (String itemd : heroDescription.equiped){
             equipItem(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
@@ -156,22 +159,25 @@ public class Hero extends Creature {
     }
 
     public void attack(boolean isAbility1, boolean isPower) {
-        if(isAbility1)
-            if(isPower) {
+        if(isAbility1) {
+            weaponSprite.isMoving = true;
+            if (isPower) {
                 if (selectedAtackAbilities.size > 1)
                     useAbility(selectedAtackAbilities.get(1));
-            }else {
+            } else {
                 if (selectedAtackAbilities.size > 0)
                     useAbility(selectedAtackAbilities.get(0));
             }
-        else
-            if(isPower) {
+        }else {
+            weaponSprite2.isMoving = true;
+            if (isPower) {
                 if (selectedDefenseAbilities.size > 1)
                     useAbility(selectedDefenseAbilities.get(1));
-            }else {
+            } else {
                 if (selectedDefenseAbilities.size > 0)
                     useAbility(selectedDefenseAbilities.get(0));
             }
+        }
     }
 
 
@@ -188,6 +194,7 @@ public class Hero extends Creature {
                 break;
             case ARMOR:
                 armor = item;
+                armorSprite.setPicture(item.getPicture());
                 break;
             //case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:
@@ -195,6 +202,7 @@ public class Hero extends Creature {
 
                     if(weapon1 == null) {
                         weapon1 = item;
+                        weaponSprite.setPicture(item.getPicture());
                         selectedAtackAbilities.clear();
                         selectedAtackAbilities.add(AbilityID.FIREWALL);
                         if (abilities.contains(AbilityID.FIREBALL, true))
@@ -202,6 +210,7 @@ public class Hero extends Creature {
 
                     } else if (weapon2 == null) {
                         weapon2 = item;
+                        weaponSprite2.setPicture(item.getPicture());
                         selectedDefenseAbilities.clear();
                         if (abilities.contains(AbilityID.FIRESHIELD, true))
                             selectedDefenseAbilities.add(AbilityID.FIRESHIELD);
@@ -211,7 +220,7 @@ public class Hero extends Creature {
                                 selectedAtackAbilities.add(AbilityID.FIREBALL);
                         }
 
-                    }
+                    } else  return "Item does not fit any slot (remove equiped item)";
                 } else return "NO REQUIRED SKILL (WILL)";;
                 break;
 //            case WEAPON_MAGIC_NATURE:
@@ -242,6 +251,7 @@ public class Hero extends Creature {
 
                     if(weapon1 == null) {
                         weapon1 = item;
+                        weaponSprite.setPicture(item.getPicture());
                         selectedAtackAbilities.clear();
                         selectedAtackAbilities.add(AbilityID.SWORD_SWING);
                         if (abilities.contains(AbilityID.SWORD_SMASH, true))
@@ -249,11 +259,12 @@ public class Hero extends Creature {
 
                     } else if (weapon2 == null) {
                         weapon2 = item;
+                        weaponSprite2.setPicture(item.getPicture());
                         selectedDefenseAbilities.clear();
                         selectedDefenseAbilities.add(AbilityID.SWORD_SWING);
                         if (abilities.contains(AbilityID.SWORD_SMASH, true))
                             selectedDefenseAbilities.add(AbilityID.SWORD_SMASH);
-                    }
+                    }  else  return "Item does not fit any slot (remove equiped item)";
                 } else return "NO REQUIRED SKILL (STRENTH)";
                 break;
             case    WEAPON_HUMMER:
@@ -261,6 +272,7 @@ public class Hero extends Creature {
 
                     if(weapon1 == null) {
                         weapon1 = item;
+                        weaponSprite.setPicture(item.getPicture());
                         selectedAtackAbilities.clear();
                         selectedAtackAbilities.add(AbilityID.HUMMER_SWING);
                         if (abilities.contains(AbilityID.HUMMER_SMASH, true))
@@ -268,11 +280,12 @@ public class Hero extends Creature {
 
                     } else if (weapon2 == null) {
                         weapon2 = item;
+                        weaponSprite2.setPicture(item.getPicture());
                         selectedDefenseAbilities.clear();
                         selectedDefenseAbilities.add(AbilityID.HUMMER_SWING);
                         if (abilities.contains(AbilityID.HUMMER_SMASH, true))
                             selectedDefenseAbilities.add(AbilityID.HUMMER_SMASH);
-                    }
+                    }  else  return "Item does not fit any slot (remove equiped item)";
                 } else return "NO REQUIRED SKILL (STRENTH)";
                 break;
             case    WEAPON_BOW:
@@ -280,6 +293,7 @@ public class Hero extends Creature {
 
                     if(weapon1 == null) {
                         weapon1 = item;
+                        weaponSprite.setPicture(item.getPicture());
                         selectedAtackAbilities.clear();
                         selectedAtackAbilities.add(AbilityID.LONGBOW_SHOT);
                         if (abilities.contains(AbilityID.TRIPLE_SHOT, true))
@@ -287,40 +301,36 @@ public class Hero extends Creature {
 
                     } else if (weapon2 == null) {
                         weapon2 = item;
+                        weaponSprite2.setPicture(item.getPicture());
                         selectedDefenseAbilities.clear();
                         selectedDefenseAbilities.add(AbilityID.LONGBOW_SHOT);
                         if (abilities.contains(AbilityID.TRIPLE_SHOT, true))
                             selectedDefenseAbilities.add(AbilityID.TRIPLE_SHOT);
-                    }
+                    }  else  return "Item does not fit any slot (remove equiped item)";
                 } else return "NO REQUIRED SKILL (ACCURACY)";;
                 break;
 //            case    WEAPON_SLING:
 //            case    WEAPON_XBOW:
             case    WEAPON_SHIELD:
                 if(abilities.contains(AbilityID.COVER, true)) {
-                    if (weapon1 == null) {
-                        weapon1 = item;
-                        selectedAtackAbilities.clear();
-                        if (abilities.contains(AbilityID.COVER, true))
-                            selectedAtackAbilities.add(AbilityID.COVER);
-                        if (abilities.contains(AbilityID.BARSKIN, true))
-                            selectedAtackAbilities.add(AbilityID.BARSKIN);
-                    } else if (weapon2 == null) {
+                     if (weapon2 == null) {
                         weapon2 = item;
+                        weaponSprite2.setPicture(item.getPicture());
                         selectedDefenseAbilities.clear();
                         if (abilities.contains(AbilityID.COVER, true))
                             selectedDefenseAbilities.add(AbilityID.COVER);
                         if (abilities.contains(AbilityID.BARSKIN, true))
                             selectedDefenseAbilities.add(AbilityID.BARSKIN);
-                    }
-                } else {
-                    return "NO REQUIRED SKILL (ENDURANCE)";
-                };
+                    } else return "Item does not fit into any slot (remove equiped Secondary item)";
+                } else return "NO REQUIRED SKILL (ENDURANCE)";
                 break;
+            default:
+                return "Item can not be equiped";
         }
         inventory.removeValue(item,true);
         if(statusbar != null)
             statusbar.update();
+
 
         return result;
     }
@@ -340,6 +350,7 @@ public class Hero extends Creature {
             case ARMOR:
                 armor = null;
                 inventory.add(item);
+                armorSprite.setPicture(null);
                 break;
             case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:
@@ -352,14 +363,17 @@ public class Hero extends Creature {
             case    WEAPON_SLING:
             case    WEAPON_XBOW:
             case    WEAPON_SHIELD:
-                if(weapon1.equals(item)) {
+                if(weapon1 != null && weapon1.equals(item)) {
                     weapon1 = null;
+                    weaponSprite.setPicture("hand");
                     selectedAtackAbilities.clear();
                     if(abilities.contains(AbilityID.DODGE, true))
                         selectedAtackAbilities.add(AbilityID.DODGE);
                     inventory.add(item);
-                } else if (weapon2.equals(item)) {
+                } else if (weapon2 != null && weapon2.equals(item)) {
                     weapon2 = null;
+                    weaponSprite2.setPicture("hand");
+                    selectedDefenseAbilities.clear();
                     if(abilities.contains(AbilityID.DODGE, true))
                         selectedDefenseAbilities.add(AbilityID.DODGE);
                     inventory.add(item);

@@ -21,11 +21,11 @@ public enum AbilityID{
 
     HUMMER_SWING("Smash",  "Melee strike \n (crush damage)", "hummer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
 //    AXE_SWING("Axe swing",  "Melee strike", "axe", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
-    SWORD_SWING("Swing",  "Melee strike \n (cut damage)", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
+    SWORD_SWING("Swing",  "Melee strike \n (cut damage)", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 0.5f ),
 
     HUMMER_SMASH("Total SMASH",  "Stunning Melee strike (use Smash twice) \n (stun 3 sec)", "hummer_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
 //    AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
-    SWORD_SMASH("Circle of death",  "Melee strike with multiple targets (use Swing twice) \n every enemy around will be damaged", "sword_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
+    SWORD_SMASH("Circle of death",  "Melee strike with multiple targets (use Swing twice) \n every enemy around will be damaged", "sword_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 1f, 1f ),
 
 
     DITRUCTING_SHOT("Stuning shot", "Stunning shot \n (2 sec of Stun)", "bow", State.SHOTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.1f, 10f),
@@ -50,7 +50,7 @@ public enum AbilityID{
     POWER_SHOUT("Power shout", "Makes you muuuch stronger", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.BIGBOX, 0.1f, 60f),
     TRADE("Trade", "Sell item on a full price", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
 
-    FIREWALL("Firewall", "Wall of fire in specified direction \n (fire damage)", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 0.1f, 1f),
+    FIREWALL("Firewall", "Wall of fire in specified direction \n (fire damage)", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 1f, 1f),
     ICEWALL("Icewall", "Ice", "ice_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 0.1f, 0.1f),
     FIRESHIELD("Fireshield", "Shield of fire \n Enemy that will atack you will get fire damage", "shield_red", State.CASTING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.SELF, 0.1f, 3f),
     ICESHIELD("Iceshield", "Iceshield", "shield", State.CASTING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.SELF, 0.1f, 3f),

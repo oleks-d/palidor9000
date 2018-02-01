@@ -82,6 +82,7 @@ public class AI {
             if (targetX < creature.getX())    //move/atack left
             {
                 creature.directionRight = false;
+                creature.direction.set(-1, 0);
                 if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) // is reachable
                 if (targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM             // is close
                         && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
@@ -91,6 +92,7 @@ public class AI {
             } else if (targetX > creature.getX()) {        //move/atack right
                 {
                     creature.directionRight = true;
+                    creature.direction.set(1, 0);
                     if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) // is reachable
                     if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM             // is close
                             && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
@@ -105,6 +107,7 @@ public class AI {
 
             if (isHasToJump() && targetY - 0.05 > creature.getY()) {
                 result = CreatureAction.JUMP;
+                //setHasToJump(false);
             }
         } else {
             if(moveLeft)
@@ -119,10 +122,13 @@ public class AI {
         }
 
         //creature.direction.set(-(targetX - creature.getBody().getPosition().x), targetY - creature.getBody().getPosition().y );
-        if(targetX > creature.getBody().getPosition().x)
-            creature.direction.set(-1,0);
-        else
-            creature.direction.set(1,0);
+//        if(targetX > creature.getBody().getPosition().x) {
+//            creature.direction.set(1, 0);
+//            creature.directionRight = true;
+//        }else {
+//            creature.direction.set(-1, 0);
+//            creature.directionRight = false;
+//        }
         //creature.direction.clamp(1,1);
         //creature.direction.set(creature.targetVector.x > 1 ? 1: (creature.targetVector.x < -1 ? -1f : creature.targetVector.x), creature.targetVector.y > 1 ? 1:(creature.targetVector.y < -1 ? -1f : creature.targetVector.y));
 
@@ -144,17 +150,20 @@ public class AI {
                 creature.jump();
                 break;
             case RANGE_ATACK:
-                if(creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null)
+                if(creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
                     creature.useAbility(creature.findAbility(AbilityType.LONG_RANGE_ATACK));
+                    creature.weaponSprite.isMoving = true;
+                }
                     else if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
                     creature.move(creature.directionRight);
                 }
 
                 break;
             case CLOSE_ATACK:
-                if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null)
+                if(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
                     creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
-                else
+                    creature.weaponSprite.isMoving = true;
+                }else
                     creature.move(creature.directionRight);
 //                    else if(creature.findAbility(AbilityType.BUFF) != null)
 //                    creature.useAbility(creature.findAbility(AbilityType.BUFF));

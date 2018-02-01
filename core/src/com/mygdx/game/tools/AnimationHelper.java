@@ -41,7 +41,7 @@ public class AnimationHelper {
 
 
     public TextureRegion getTextureRegionByIDAndIndex(String id) {
-        return  getAtlas().findRegion(id);
+        return  new TextureRegion(getAtlas().findRegion(id));
     }
 
     public TextureRegion getTextureRegionByIDAndIndex(String id, int index) {

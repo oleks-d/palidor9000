@@ -5,12 +5,13 @@
     "health": "10",
     "speed": "10",
     "jump": "10",
-    "spritesheetregion": "enemy3",
+    "spritesheetregion": "triangle1",
     "abilities": "SUMMON_MARK",
     "org": "0",
-    "items": "",
     "equipeditems": ""
   },
+
+  "items": "axe_1, armor_1",
 
   "exp":"1000",
   "money" : "100",

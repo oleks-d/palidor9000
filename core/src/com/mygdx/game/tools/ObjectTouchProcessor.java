@@ -1,5 +1,6 @@
 package com.mygdx.game.tools;
 
+import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.enums.GameObjectType;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.gameobjects.GameObject;
@@ -22,7 +23,7 @@ public class ObjectTouchProcessor {
             }
         }
         if (object.getType() == GameObjectType.SPIKE){
-            creature.doDamage(5);
+            creature.doDamage(5, EffectID.CRUSH_DAMAGE);
         }
     }
 }

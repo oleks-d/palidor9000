@@ -31,12 +31,12 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE), 0f));
 
-                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+                direction = new Vector2((creature.direction.x * 1f), creature.direction.y * 1f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
@@ -48,11 +48,11 @@ public class AbilityHandler {
                 break;
             case SWORD_SWING:
                 activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
-                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+                direction = new Vector2((creature.direction.x * 1f), creature.direction.y * 1f );
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
-                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
@@ -65,8 +65,8 @@ public class AbilityHandler {
                 direction = new Vector2(1,0);
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
@@ -76,63 +76,63 @@ public class AbilityHandler {
                 direction = new Vector2(-1,0);
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
                         "soundwall"); //TODO anim
                 result.setCreatedBy(creature);
                 results.add(result);
-                direction = new Vector2(1,-1);
-                result = new ActivityWithEffect(
-                        screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
-                        activeEffects,
-                        id.getActivityAreaType(),
-                        direction,
-                        "soundwall"); //TODO anim
-                result.setCreatedBy(creature);
-                results.add(result);
-                direction = new Vector2(-1,-1);
-                result = new ActivityWithEffect(
-                        screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
-                        activeEffects,
-                        id.getActivityAreaType(),
-                        direction,
-                        "soundwall"); //TODO anim
-                result.setCreatedBy(creature);
-                results.add(result);
-                direction = new Vector2(1,1);
-                result = new ActivityWithEffect(
-                        screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
-                        activeEffects,
-                        id.getActivityAreaType(),
-                        direction,
-                        "soundwall"); //TODO anim
-                result.setCreatedBy(creature);
-                results.add(result);
-                direction = new Vector2(-1,1);
-                result = new ActivityWithEffect(
-                        screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
-                        activeEffects,
-                        id.getActivityAreaType(),
-                        direction,
-                        "soundwall"); //TODO anim
+//                direction = new Vector2(1,-1);
+//                result = new ActivityWithEffect(
+//                        screen,
+//                        creature.getBody().getPosition().x * PalidorGame.PPM,
+//                        creature.getBody().getPosition().y * PalidorGame.PPM,
+//                        activeEffects,
+//                        id.getActivityAreaType(),
+//                        direction,
+//                        "soundwall"); //TODO anim
+//                result.setCreatedBy(creature);
+//                results.add(result);
+//                direction = new Vector2(-1,-1);
+//                result = new ActivityWithEffect(
+//                        screen,
+//                        creature.getBody().getPosition().x * PalidorGame.PPM,
+//                        creature.getBody().getPosition().y * PalidorGame.PPM,
+//                        activeEffects,
+//                        id.getActivityAreaType(),
+//                        direction,
+//                        "soundwall"); //TODO anim
+//                result.setCreatedBy(creature);
+//                results.add(result);
+//                direction = new Vector2(1,1);
+//                result = new ActivityWithEffect(
+//                        screen,
+//                        creature.getBody().getPosition().x * PalidorGame.PPM,
+//                        creature.getBody().getPosition().y * PalidorGame.PPM,
+//                        activeEffects,
+//                        id.getActivityAreaType(),
+//                        direction,
+//                        "soundwall"); //TODO anim
+//                result.setCreatedBy(creature);
+//                results.add(result);
+//                direction = new Vector2(-1,1);
+//                result = new ActivityWithEffect(
+//                        screen,
+//                        creature.getBody().getPosition().x * PalidorGame.PPM,
+//                        creature.getBody().getPosition().y * PalidorGame.PPM,
+//                        activeEffects,
+//                        id.getActivityAreaType(),
+//                        direction,
+//                        "soundwall"); //TODO anim
                 result.setCreatedBy(creature);
                 results.add(result);
                 direction = new Vector2(0,1);
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
@@ -142,8 +142,8 @@ public class AbilityHandler {
                 direction = new Vector2(0,-1);
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
@@ -154,10 +154,10 @@ public class AbilityHandler {
 //            case AXE_SWING:
 //                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.01f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 //                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 1f  + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE), 0f));
-//                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+//                direction = new Vector2((creature.direction.x * 1f), creature.direction.y * 1f );
 //                result = new ActivityWithEffect(
 //                        screen,
-//                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+//                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
 //                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
 //                        activeEffects,
 //                        id.getActivityAreaType(),
@@ -184,10 +184,10 @@ public class AbilityHandler {
 //                break;
             case HUMMER_SWING:
                 activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 2f  + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE), 0f));
-                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+                direction = new Vector2((creature.direction.x * 1f), creature.direction.y * 1f );
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
                         creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
                         activeEffects,
                         id.getActivityAreaType(),
@@ -202,8 +202,8 @@ public class AbilityHandler {
                 direction = new Vector2(0,0);
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE/2,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
@@ -223,6 +223,7 @@ public class AbilityHandler {
             case COVER:
                 creature.applyEffect(new Effect(EffectID.COVERED_BY_SHIELD, 1f, 1f, 0f));
                 creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
+                break;
             case DODGE:
                 creature.applyEffect(new Effect(EffectID.DODGE, 1f, 1f, 0f));
                 //creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
@@ -232,7 +233,7 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.STUNED, 0.01f, 0f, 0f));
 
-                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
+                direction = new Vector2((creature.direction.x * 10f), creature.direction.y * 10f );
                 result = new ActivityWithEffect(
                         screen,
                         creature.getBody().getPosition().x * PalidorGame.PPM ,
@@ -256,11 +257,11 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 
-                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
+                direction = new Vector2((creature.direction.x * 10f), creature.direction.y * 10f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
                         creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y * PalidorGame.TILE_SIZE,
                         activeEffects,
                         id.getActivityAreaType(),
@@ -274,11 +275,23 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 
-                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
+                direction = new Vector2((creature.directionRight?1:-1) * 10f, 1 * 10f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y * PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "arrow"); //TODO anim
+                result.setCreatedBy(creature);
+                results.add(result);
+
+                    direction = new Vector2((creature.directionRight?1:-1) * 10f, 0 * 10f );
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
                         creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y * PalidorGame.TILE_SIZE,
                         activeEffects,
                         id.getActivityAreaType(),
@@ -287,6 +300,20 @@ public class AbilityHandler {
 
                 result.setCreatedBy(creature);
                 results.add(result);
+
+                    direction = new Vector2((creature.directionRight?1:-1) * 10f, -1 * 10f );
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y * PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "arrow"); //TODO anim
+
+                result.setCreatedBy(creature);
+                results.add(result);
+
                 break;
 
             case FIREWALL:
@@ -294,7 +321,7 @@ public class AbilityHandler {
                     activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
                     activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
 
-                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
 
                     result = new ActivityWithEffect(
                             screen,
@@ -314,7 +341,7 @@ public class AbilityHandler {
                 activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
                 activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
 
-                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
 
                 result = new ActivityWithEffect(
                         screen,
@@ -339,11 +366,11 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.THROW_FROM_INVENTORY, 0.01f, 1f, 0f));
 
-                direction = new Vector2(-(creature.direction.x * 1f), creature.direction.y * 1f );
+                direction = new Vector2((creature.direction.x * 1f), creature.direction.y * 1f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM - creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
                         creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
                         activeEffects,
                         id.getActivityAreaType(),
@@ -369,7 +396,7 @@ public class AbilityHandler {
 //
 //                //directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE/2) : -(PalidorGame.TILE_SIZE/2);
 //                //direction = new Vector2(creature.directionRight == true ? 5 : -5, 0);
-//                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+//                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
 //
 //                result = new ActivityWithEffect(
 //                        screen,
@@ -394,7 +421,7 @@ public class AbilityHandler {
 //                //directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE/2) : -(PalidorGame.TILE_SIZE/2);
 //                //direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
 //
-//                direction = new Vector2(-(creature.direction.x * 0.1f), creature.direction.y * 0.1f );
+//                direction = new Vector2((creature.direction.x * 0.1f), creature.direction.y * 0.1f );
 //
 //                result = new ActivityWithEffect(
 //                        screen,
@@ -414,7 +441,7 @@ public class AbilityHandler {
 //                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 //
 //                //directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE/2) : -(PalidorGame.TILE_SIZE/2);
-//                direction = new Vector2(-(creature.direction.x * 10), creature.direction.y * 10 );  ;//new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
+//                direction = new Vector2((creature.direction.x * 10), creature.direction.y * 10 );  ;//new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
 ////Gdx.app.log("direction", direction.x + "-" + direction.y );
 //                result = new ActivityWithEffect(
 //                        screen,
@@ -436,7 +463,7 @@ public class AbilityHandler {
 //                //directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE/2) : -(PalidorGame.TILE_SIZE/2);
 //                //direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
 //
-//                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
+//                direction = new Vector2((creature.direction.x * 10f), creature.direction.y * 10f );
 //
 //                result = new ActivityWithEffect(
 //                        screen,
@@ -458,7 +485,7 @@ public class AbilityHandler {
 ////                directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE/2) : -(PalidorGame.TILE_SIZE/2);
 ////                direction = new Vector2(creature.directionRight == true ? 0.1f : -0.1f, 0 );
 //
-//                direction = new Vector2(-(creature.direction.x * 10f), creature.direction.y * 10f );
+//                direction = new Vector2((creature.direction.x * 10f), creature.direction.y * 10f );
 //
 //                result = new ActivityWithEffect(
 //                        screen,
@@ -480,7 +507,7 @@ public class AbilityHandler {
 //
 //                //directionPlus = creature.directionRight == true ? (PalidorGame.TILE_SIZE/2) : -(PalidorGame.TILE_SIZE/2);
 //                //direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
-//                direction = new Vector2(-(creature.direction.x * 5f), creature.direction.y * 5f );
+//                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
 //                result = new ActivityWithEffect(
 //                        screen,
 //                        creature.getBody().getPosition().x * PalidorGame.PPM ,
@@ -524,7 +551,7 @@ public class AbilityHandler {
 //                activeEffects.add(creature.directionRight == true ? new Effect(EffectID.MOVE_LEFT, 0.01f, 10f, 0f):new Effect(EffectID.MOVE_RIGHT, 0.01f, 10f, 0f));
 //                //direction = new Vector2(creature.directionRight == true ? 10f : -10f, 0 );
 //
-//                direction = new Vector2(-(creature.direction.x * 0.1f), creature.direction.y * 0.1f );
+//                direction = new Vector2((creature.direction.x * 0.1f), creature.direction.y * 0.1f );
 //
 //                result = new ActivityWithEffect(
 //                        screen,
@@ -558,15 +585,16 @@ public class AbilityHandler {
     public static Animation getAnimation(GameScreen screen, AbilityID abilityToCast, String spritesheetRegion) {
         switch(abilityToCast) {
             case LONGBOW_SHOT:
-                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 4, 5);
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 4, 5);
             case PUNCH:
-                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 2, 3);
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 2, 3);
             case FIREWALL:
-                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 6, 7);
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 6, 7);
             case ANIMAL_PUNCH:
-                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 1, 2, 3);
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 1, 2, 3);
             default:
-                return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, abilityToCast.getCastTime()/4, 4, 4, 4, 5);
         }
     }
 }

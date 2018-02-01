@@ -18,9 +18,10 @@ public class ItemDescription {
     public String id;
     public String process;
     public String condition;
+    public String picture;
 
 
-    public ItemDescription(String id, String name, String description, String image, int value, EquipmentType type, boolean usable, String effects, String process, String condition) {
+    public ItemDescription(String id, String name, String description, String image, int value, EquipmentType type, boolean usable, String effects, String process, String condition, String picture) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,6 +31,7 @@ public class ItemDescription {
         this.usable = usable;
         this.process = process;
         this.condition = condition;
+        this.picture = picture;
         this.effects = new Array<Effect>();
         if(!effects.equals("")) {
             for(String curEffect : effects.split(",")){

@@ -45,7 +45,8 @@
     "value" : "100",
     "image" : "armor_green",
     "type" : "ARMOR",
-    "effects": "MINUS_CUT_DAMAGE 0 1 0"
+    "effects": "MINUS_CUT_DAMAGE 0 1 0",
+    "picture" : "triangle_armor_red"
   },
   {
     "id":"sword_of_ice",
@@ -63,6 +64,7 @@
     "value" : "100",
     "image" : "bow",
     "type" : "WEAPON_BOW"
+    "picture" : "spear_weapon",
   },
   {
     "id":"hummer_1",
@@ -70,7 +72,8 @@
     "description" : "Simple crushing weapon \n (Strenth skill required)",
     "value" : "100",
     "image" : "hummer",
-    "type" : "WEAPON_HUMMER"
+    "type" : "WEAPON_HUMMER",
+    "picture" : "hummer_weapon",
   },
   {
     "id":"shield_1",
@@ -78,7 +81,8 @@
     "description" : "Simple shield \n (Endurance skill required)",
     "value" : "100",
     "image" : "shield",
-    "type" : "WEAPON_SHIELD"
+    "type" : "WEAPON_SHIELD",
+    "picture" : "shield_weapon"
   },
   {
     "id":"axe_1",
@@ -86,6 +90,7 @@
     "description" : "Rusty axe \n (Strenth skill required)",
     "value" : "100",
     "image" : "axe",
+    "picture" : "axe_weapon",
     "type" : "WEAPON_AXE"
   },
   {
@@ -95,6 +100,7 @@
     "value" : "100",
     "image" : "stuff_red",
     "type" : "WEAPON_MAGIC_FIRE",
+    "picture" : "fire_weapon",
     "effects": ""
   },
 

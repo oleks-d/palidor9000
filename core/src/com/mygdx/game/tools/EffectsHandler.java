@@ -18,8 +18,8 @@ public class EffectsHandler {
                             ;
 
                             if(damageValue > 0) {// if was not stoped by armor/buffs
-                                creature.stats.health.current = creature.stats.health.current - damageValue;
-                                creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+                                creature.doDamage(damageValue,EffectID.CUT_DAMAGE);
+                                //creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                             }
                     }else { // if had shield remove shield
                         creature.addStatusMessage("Has shield to " + EffectID.CUT_DAMAGE.toString(), Fonts.IMPORTANT);
@@ -39,8 +39,8 @@ public class EffectsHandler {
                                 ;
 
                         if(damageValue > 0) {// if was not stoped by armor/buffs
-                            creature.stats.health.current = creature.stats.health.current - damageValue;
-                            creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+                            creature.doDamage(damageValue,EffectID.CRUSH_DAMAGE);
+                            //creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                         }
                     }else { // if had shield remove shield
                         creature.addStatusMessage("Has shiled to " + EffectID.CRUSH_DAMAGE.toString(), Fonts.IMPORTANT);
@@ -60,8 +60,8 @@ public class EffectsHandler {
                                 ;
 
                         if(damageValue > 0) { // if was not stoped by armor/buffs
-                            creature.stats.health.current = creature.stats.health.current - damageValue;
-                            creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+                            creature.doDamage(damageValue,EffectID.FIRE_DAMAGE);
+                            //creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                         }
                     }else { // if had shield remove shield
                         creature.addStatusMessage("Has shield to " + EffectID.FIRE_DAMAGE.toString(), Fonts.IMPORTANT);
@@ -81,8 +81,8 @@ public class EffectsHandler {
                                 ;
 
                         if(damageValue > 0) {// if was not stoped by armor/buffs
-                            creature.stats.health.current = creature.stats.health.current - damageValue;
-                            creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+                            creature.doDamage(damageValue,EffectID.ICE_DAMAGE);
+                            //creature.addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
                         }
                     }else { // if had shield remove shield
                         creature.addStatusMessage("Has shield to " + EffectID.ICE_DAMAGE.toString(), Fonts.IMPORTANT);
@@ -139,7 +139,7 @@ public class EffectsHandler {
                 break;
             case COVERED_BY_FIRE_SHIELD:
             case COVERED_BY_SHIELD:
-                creature.shieldEffect = null;
+                creature.removeShield();
                 break;
             case INVISIBLE:
                 creature.setInvisible(false);
