@@ -71,15 +71,6 @@
   <object id="69" name="hero_Mountains" x="85" y="588"/>
   <object id="53" name="hero_Start" x="872" y="551"/>
   <object id="106" name="hero_Ruins" x="296.99" y="95.037"/>
-  <object id="107" name="stand" x="2032.73" y="225.713"/>
-  <object id="108" name="stand" x="1937.7" y="121.436"/>
-  <object id="109" name="stand" x="1814.94" y="217.793"/>
-  <object id="110" name="stand" x="1803.06" y="472.545"/>
-  <object id="111" name="stand" x="1962.78" y="472.545"/>
-  <object id="112" name="stand" x="2346.88" y="505.544"/>
-  <object id="113" name="stand" x="2638.6" y="600.581"/>
-  <object id="114" name="stand" x="1387.28" y="591.341"/>
-  <object id="115" name="stand" x="1512.67" y="592.661"/>
  </objectgroup>
  <objectgroup name="triggers">
   <object id="54" name="story" x="962.757" y="557.8">

@@ -9,6 +9,7 @@ import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.ActivityAreaType;
+import com.mygdx.game.enums.State;
 
 /**
  * Created by odiachuk on 1/9/18.
@@ -48,15 +49,40 @@ public class WeaponSprite extends Sprite {
 
     public void update(float delta){
 
-//        if(timeToMoveWeapon <= owner.existingTime) {
-//            moveDown = !moveDown;
-//                ///moveDown = owner.screen.randomizer.nextBoolean();
-//                timeToMoveWeapon = owner.existingTime + 0.5;
-//            } else {
-//            //distortionX = (owner.screen.randomizer.nextBoolean() ? 0.05f:-0.05f);  //TODO distortion
-//            distortionY = distortionY + (moveDown ? 0.01f:-0.01f);
-//
-//        }
+        if(owner.getState() == State.STANDING){
+            if(timeToMoveWeapon <= owner.existingTime) {
+                moveDown = !moveDown;
+                    ///moveDown = owner.screen.randomizer.nextBoolean();
+                    timeToMoveWeapon = owner.existingTime + 0.5;
+                } else {
+                //distortionX = (owner.screen.randomizer.nextBoolean() ? 0.05f:-0.05f);  //TODO distortion
+
+                if (isMain)
+                    distortionY = distortionY + (moveDown ? 0.005f:-0.005f);
+                else
+                    distortionY = distortionY + (moveDown ? -0.005f:0.005f);
+
+                distortionX = 0;
+
+            }
+        }
+
+        if(owner.getState() == State.RUNNING) {
+            if (timeToMoveWeapon <= owner.existingTime) {
+                moveDown = !moveDown;
+                ///moveDown = owner.screen.randomizer.nextBoolean();
+                timeToMoveWeapon = owner.existingTime + 0.2;
+            } else {
+                //distortionX = (owner.screen.randomizer.nextBoolean() ? 0.05f:-0.05f);  //TODO distortion
+
+                if (isMain)
+                    distortionX = distortionX + (moveDown ? 0.01f : -0.01f);
+                else
+                    distortionX = distortionX + (moveDown ? -0.01f : 0.01f);
+
+            }
+            distortionY = 0;
+        }
 
                 if (isMoving && owner.timeSpentOnCast != 0 && owner.abilityToCast != AbilityID.NONE && !owner.abilityToCast.getType().equals(AbilityType.BUFF)) {
 
@@ -136,13 +162,6 @@ public class WeaponSprite extends Sprite {
                 picture.flip(true,false);
             }
 
-//        if (!owner.directionRight && !owner.region.isFlipX()){
-//            picture.flip(true, false);
-//        } else
-//            if (owner.directionRight && owner.region.isFlipX()){
-//                picture.flip(true,false);
-//            }
-
     }
 
     @Override
@@ -169,7 +188,7 @@ public class WeaponSprite extends Sprite {
             angle = 15;
             trajectoryX = 0;
             trajectoryY = 0;
-
+            distortionY = 0;
             if(!isMain) {
                 distortionX = -0.1f;
                 defaultAngle = 15;
@@ -181,16 +200,7 @@ public class WeaponSprite extends Sprite {
         }
     }
 
-
-    //    public void rotatePoint(float pointX, float pointY, float centerX, float centerY, double angle){
-//
-//        angle = (angle ) * (Math.PI/180); // Convert to radians
-//
-//        double rotatedX = Math.cos(angle) * (pointX - centerX) - Math.sin(angle) * (pointY-centerY) + centerY;
-//
-//        double rotatedY = Math.sin(angle) * (pointX - centerX) + Math.cos(angle) * (pointY - centerY) + centerY;
-//
-//        return ;
-//
-//    }
+    public void setDistortionX(float val){
+        distortionX = val;
+    }
 }

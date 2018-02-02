@@ -171,20 +171,21 @@ public class LevelManager implements Disposable{
         Integer organization =  organizationID==null ? 0 : Integer.valueOf(organizationID) ;
         String dialogs = (String)object.getProperties().get("dialogs");
         String condition = (String)object.getProperties().get("condition");
+        String program = (String)object.getProperties().get("program");
         if(!(ConditionProcessor.conditionSatisfied(hero, condition))) {
-                UNAVAILABLE_CREATURES.add(new UnavailableCreatures(object.getName(), rect,  condition, items, deathProcess, organization, dialogs));
+                UNAVAILABLE_CREATURES.add(new UnavailableCreatures(object.getName(), rect,  condition, items, deathProcess, organization, dialogs, program));
                 return; //do not create if condition did not pass
         }
-        CREATURES.add(new Creature(screen, rect.getX() , rect.getY(), CREATURE_DESCRIPTIONS.get(object.getName()), items==null?"":items, deathProcess==null?"":deathProcess, organization==null?0:organization, dialogs==null?"":dialogs));
+        CREATURES.add(new Creature(screen, rect.getX() , rect.getY(), CREATURE_DESCRIPTIONS.get(object.getName()), items==null?"":items, deathProcess==null?"":deathProcess, organization==null?0:organization, dialogs==null?"":dialogs , program==null?"":program));
 
     }
 
     public void createSummonedCreature(GameScreen screen, float x, float y, String object) {
-            SUMMONED_CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , 0 , null));
+            SUMMONED_CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , 0 , null, null));
     }
 
     public void createCreature(GameScreen screen, float x, float y, String object, int org) {
-        CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null));
+        CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null, null));
     }
 
     public void createInteractiveObject(GameScreen screen, MapObject object) {
@@ -223,6 +224,39 @@ public class LevelManager implements Disposable{
         Filter filter = new Filter();
         filter.categoryBits = PalidorGame.GROUND_BIT;
         fixture.setFilterData(filter);
+
+
+        // set critical points
+
+
+        shape = new PolygonShape();
+        shape.setAsBox(12 / PalidorGame.PPM, 8 / PalidorGame.PPM, new Vector2(-(rect.getWidth()/ 2 / PalidorGame.PPM), rect.getHeight() / PalidorGame.PPM), 0);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+
+        fixture = body.createFixture(fixtureDef);
+        fixture.setSensor(true);
+
+        filter = new Filter();
+            filter.categoryBits = PalidorGame.MOVE_RIGHT_POINT;
+        fixture.setFilterData(filter);
+
+
+
+        shape = new PolygonShape();
+        shape.setAsBox(12 / PalidorGame.PPM, 8 / PalidorGame.PPM, new Vector2(rect.getWidth()/ 2 / PalidorGame.PPM, rect.getHeight() / PalidorGame.PPM ), 0);
+
+        fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+
+        fixture = body.createFixture(fixtureDef);
+        fixture.setSensor(true);
+
+        filter = new Filter();
+            filter.categoryBits = PalidorGame.MOVE_LEFT_POINT;
+        fixture.setFilterData(filter);
+
     }
 
     private void createAIPoint(World world, MapObject object) {
@@ -407,6 +441,7 @@ public class LevelManager implements Disposable{
                         "    <property name=\"deathprocess\" value=\"" + CREATURES.get(i).getDeathProcess() + "\"/>" +
                         "    <property name=\"organization\" value=\"" + CREATURES.get(i).getOrganization() + "\"/>" +
                         "    <property name=\"dialogs\" value=\"" + CREATURES.get(i).getDialogs().toString().replaceAll("[\\[\\]]", "") + "\"/>" +
+                        "    <property name=\"program\" value=\"" + CREATURES.get(i).getProgram().toString().replaceAll("[\\[\\]]", "") + "\"/>" +
                         "   </properties>\n");
                 writer.write("\n");
                 writer.write("</object>");
@@ -421,6 +456,7 @@ public class LevelManager implements Disposable{
                         "    <property name=\"deathprocess\" value=\"" + UNAVAILABLE_CREATURES.get(i).getDeathProcess() + "\"/>" +
                         "    <property name=\"organization\" value=\"" + UNAVAILABLE_CREATURES.get(i).getOrganization() + "\"/>" +
                         "    <property name=\"dialogs\" value=\"" + UNAVAILABLE_CREATURES.get(i).getDialogs() + "\"/>" +
+                        "    <property name=\"program\" value=\"" + UNAVAILABLE_CREATURES.get(i).getProgram() + "\"/>" +
                         "   </properties>\n");
                 writer.write("\n");
                 writer.write("</object>");
@@ -524,8 +560,9 @@ public class LevelManager implements Disposable{
     private class UnavailableCreatures {
         String name;
         Rectangle rect;
+        private String program;
 
-        public UnavailableCreatures(String name, Rectangle rect, String condition, String items, String deathProcess, Integer organization, String dialogs) {
+        public UnavailableCreatures(String name, Rectangle rect, String condition, String items, String deathProcess, Integer organization, String dialogs, String program) {
             this.name = name;
             this.rect = rect;
             this.condition = condition;
@@ -533,6 +570,7 @@ public class LevelManager implements Disposable{
             this.deathProcess = deathProcess;
             this.organization = organization;
             this.dialogs = dialogs;
+            this.program = program;
         }
 
         String condition;
@@ -560,6 +598,10 @@ public class LevelManager implements Disposable{
 
         public String getConditions() {
             return condition==null?"":condition;
+        }
+
+        public String getProgram() {
+            return program;
         }
     }
 }

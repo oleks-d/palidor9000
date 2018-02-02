@@ -107,7 +107,6 @@ public class ArmorSprite extends Sprite {
             runAnimation = owner.screen.animationHelper.getAnimationByID(pictureName, 0.2f, 1, 2);
             jumpAnimation = owner.screen.animationHelper.getAnimationByID(pictureName, 0.3f, 3);
 
-
             updatePicture();
         }
 

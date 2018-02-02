@@ -46,7 +46,7 @@ public class Hero extends Creature {
                  int experience,
                  int money,
                  String items){
-        super(screen, heroDescription, items, null, 0, null);
+        super(screen, heroDescription, items, null, 0, null, null);
 
         this.canPickUpObjects = true;
 

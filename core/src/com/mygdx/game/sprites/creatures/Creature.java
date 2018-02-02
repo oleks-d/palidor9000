@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -134,6 +135,9 @@ public class Creature extends Sprite {
     Array<TextureRegion> animationRegions;
     Array<Float> animationStateTimers;
 
+    public String program;
+
+
     public CreatureStatus getStatusbar() {
         return statusbar;
     }
@@ -171,7 +175,7 @@ public class Creature extends Sprite {
         this.IN_BATTLE = IN_BATTLE;
     }
 
-    public Creature(GameScreen screen, CreatureDescription description, String items, String deathProcess, int organization, String dialogs){
+    public Creature(GameScreen screen, CreatureDescription description, String items, String deathProcess, int organization, String dialogs, String program){
         super();
         this.screen = screen;
 
@@ -216,7 +220,7 @@ public class Creature extends Sprite {
 
         isActive = false;
 
-        this.brain = new AI();
+        this.brain = new AI(this,screen,program);
 
         for(Effect effect: description.effects){
             applyEffect(effect);
@@ -287,11 +291,14 @@ public class Creature extends Sprite {
         }
 
 
+         this.program = program;
+
+
     }
-    public Creature (GameScreen screen, float x, float y, CreatureDescription description, String items, String deathProcess, int organization, String dialogs) {
+    public Creature (GameScreen screen, float x, float y, CreatureDescription description, String items, String deathProcess, int organization, String dialogs, String program) {
         //super(screen.getAtlas().findRegion(creatureDescription.region));
 
-        this(screen, description, items, deathProcess, organization, dialogs);
+        this(screen, description, items, deathProcess, organization, dialogs, program);
         this.description = description;
         makeAlive(x, y);
 
@@ -574,8 +581,8 @@ public class Creature extends Sprite {
     ///// AI
 
     //next AI step
-    public void nextStep(){
-        brain.getNextStep(this,screen);
+    public void nextStep(float delta){
+        brain.getNextStep(delta);
     }
 
     // find ability by type for AI
@@ -588,6 +595,7 @@ public class Creature extends Sprite {
         return null;
     }
 
+    //TODO activity tracking
     public void makeActive() {
         isActive = true;
     }
@@ -598,12 +606,10 @@ public class Creature extends Sprite {
 
     public void setMoveLeft(boolean b) {
         this.brain.setMoveLeft(b);
-        this.brain.setMoveRight(!b);
     }
 
     public void setMoveRight(boolean b) {
         this.brain.setMoveRight(b);
-        this.brain.setMoveLeft(!b);
     }
 
     public void setHasToJump(boolean hasToJump) {
@@ -1133,8 +1139,14 @@ public class Creature extends Sprite {
         }
     }
 
-    public void setNeighbor(Creature neighbor) {  // TODO add dialogs between
+    public void setNeighbor(Creature neighbor) {
+        if(this.closeNeighbor == null)
             this.closeNeighbor = neighbor;
+    }
+
+
+    public Creature getNeighbor() {  // TODO add dialogs between
+        return this.closeNeighbor;
     }
 
     public Array<Integer> getDialogs() {
@@ -1163,7 +1175,10 @@ public class Creature extends Sprite {
 
     public void shake() {
         shakeTime = existingTime + 1d;
+    }
 
+    public String getProgram() {
+        return program;
     }
 
 //    public void onAGround(boolean val) {

@@ -249,7 +249,7 @@ public class GameScreen implements Screen {
                     {
                     creature.update(delta);
                     //creature.weaponSprite.update(delta);
-                    creature.nextStep();
+                    creature.nextStep(delta);
 
                     if (creature.getAbilityToCast() != AbilityID.NONE && creature.finishedCasting()) {
                         activity = creature.activateAbility(creature.getAbilityToCast());

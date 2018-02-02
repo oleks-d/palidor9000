@@ -257,7 +257,7 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 
-                direction = new Vector2((creature.direction.x * 10f), creature.direction.y * 10f );
+                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
 
                 result = new ActivityWithEffect(
                         screen,
@@ -275,7 +275,7 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 1f  + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
 
-                direction = new Vector2((creature.directionRight?1:-1) * 10f, 1 * 10f );
+                direction = new Vector2((creature.directionRight?1:-1) * 5f, 1 * 5f );
 
                 result = new ActivityWithEffect(
                         screen,
@@ -288,7 +288,7 @@ public class AbilityHandler {
                 result.setCreatedBy(creature);
                 results.add(result);
 
-                    direction = new Vector2((creature.directionRight?1:-1) * 10f, 0 * 10f );
+                    direction = new Vector2((creature.directionRight?1:-1) * 5f, 0 * 5f );
                 result = new ActivityWithEffect(
                         screen,
                         creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
@@ -301,7 +301,7 @@ public class AbilityHandler {
                 result.setCreatedBy(creature);
                 results.add(result);
 
-                    direction = new Vector2((creature.directionRight?1:-1) * 10f, -1 * 10f );
+                    direction = new Vector2((creature.directionRight?1:-1) * 5f, -1 * 5f );
                 result = new ActivityWithEffect(
                         screen,
                         creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
