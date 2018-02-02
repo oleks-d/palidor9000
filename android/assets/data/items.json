@@ -1,4 +1,13 @@
 {"items":[
+
+  {
+    "id":"key_99",
+    "name" : "Final Key",
+    "description" : "Final Key",
+    "value" : "0",
+    "image" : "key1"
+  },
+
   {
     "id":"key_1",
     "name" : "Ancient key",
@@ -139,7 +148,8 @@
     "value" : "100",
     "image" : "blue_book",
     "usable" : "TRUE",
-    "condition" : "A:READ_BASIC"
+    "condition" : "A:READ_BASIC",
+    "process" : "A:ROLFS_TALK"
   },
 
   {

@@ -11,16 +11,16 @@
     "equipeditems": ""
   },
 
-  "items": "",
+  "items": "armor_1, axe_1, hummer_1, fire_1, shield_1, helmet_1, bow_1",
 
-  "exp":"0",
+  "exp":"1000",
   "money" : "0",
 
-  "globalStates" : [{"key" : "MainStory", "value" : "NotStarted"}
+  "globalStates" : [{"key" : "NEXT", "value" : "0"}
   ],
 
   "previousLevel" : "Start",
-  "currentLevel" : "Willage",
+  "currentLevel" : "Pit",
 
 
   "selectedAtackAbilities" : "",

@@ -189,11 +189,11 @@ public class GameScreen implements Screen {
 
         // handle camera after hero position update // TODO check for upper corner
 
-            if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 ) //&& hero.getBody().getPosition().x < 32-viewport.getWorldWidth() / 2)
+            if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 )
                 camera.position.x = (hero.getBody().getPosition().x );
             else
                 camera.position.x = viewport.getWorldWidth() / 2;
-            if (hero.getBody().getPosition().y > viewport.getWorldHeight() / 2 )
+            if (hero.getBody().getPosition().y > viewport.getWorldHeight() / 2)
                 camera.position.y = (hero.getBody().getPosition().y );
             else
                 camera.position.y = viewport.getWorldHeight() / 2;
@@ -258,6 +258,8 @@ public class GameScreen implements Screen {
                     };
                 }
             }
+
+
 
 
             //update all summoned
@@ -738,7 +740,7 @@ public class GameScreen implements Screen {
 
     public boolean gameWin(){  // TODO extend
         for(GameItem item : hero.getInventory()){
-            if(item.itemname.equals("Key from next level")){
+            if(item.itemname.equals("Final Key")){
 
             PalidorGame.gameDetails = "You found a Key!";
             return true;
@@ -804,7 +806,7 @@ public class GameScreen implements Screen {
         return hero.getRivalOrganizations();
     }
 
-    public void shake() {
-        shakeTime = hero.existingTime + 2d;
+    public void shake(double length) {
+        shakeTime = hero.existingTime + length;
     }
 }

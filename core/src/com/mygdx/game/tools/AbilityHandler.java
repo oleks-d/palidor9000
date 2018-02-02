@@ -210,7 +210,7 @@ public class AbilityHandler {
                         "soundwall"); //TODO anim
                 result.setCreatedBy(creature);
                 results.add(result);
-                screen.shake();
+                screen.shake(2);
                 break;
             case SHOUT:
                 creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 15f, 1f, 0f));
@@ -387,6 +387,8 @@ public class AbilityHandler {
                     screen.levelmanager.createSummonedCreature(screen, creature.getX()*PalidorGame.PPM, creature.getY()*PalidorGame.PPM, "mark");
 
                 break;
+
+
 //            case ICEWALL:
 //                Gdx.app.log("Ability", "Icewall");
 //

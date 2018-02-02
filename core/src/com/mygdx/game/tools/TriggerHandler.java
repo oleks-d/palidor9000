@@ -28,7 +28,8 @@ public class TriggerHandler {
             case "story": // story points
                 if(creature.equals(creature.screen.hero)) {
                     if ((ConditionProcessor.conditionSatisfied(creature.screen.hero, trigger.getCondition()))){
-                        creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
+                        if(trigger.getKey() != null && trigger.getValue() != null )
+                            creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
                         ConditionProcessor.conditionProcess(creature.screen.hero, trigger.getProcess());
                         creature.screen.dialogPanel.addMessage(trigger.getDescription(), "Story", creature.screen.animationHelper.getTextureRegionByIDAndIndex("book"));
                         creature.screen.showDialog();
@@ -38,7 +39,8 @@ public class TriggerHandler {
             case "step": // story points
                 if(creature.equals(creature.screen.hero)) {
                     if ((ConditionProcessor.conditionSatisfied(creature.screen.hero, trigger.getCondition()))){
-                        creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
+                        if(trigger.getKey() != null && trigger.getValue() != null )
+                            creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
                         ConditionProcessor.conditionProcess(creature.screen.hero, trigger.getProcess());
                         creature.addStatusMessage(trigger.getDescription(),Fonts.IMPORTANT);
                     }

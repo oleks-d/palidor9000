@@ -390,13 +390,35 @@ public class Hero extends Creature {
     public String useItem(GameItem item) {
         if(item.getCondition()!=null && !"".equals(item.getCondition())){
             if(ConditionProcessor.conditionSatisfied(this, item.getCondition())){
-                return super.useItem(item);
+                if(item.getEffects() != null && item.getEffects().size>0) {
+                    for (Effect curEffect : item.getEffects()) {
+                        applyEffect(curEffect);
+                    }
+                }
+                if(item.getProcess() != null && !"".equals(item.getProcess()))
+                    ConditionProcessor.conditionProcess(this,item.getProcess());
+                inventory.removeValue(item,true);
+                addStatusMessage(item.itemname + " was used", Fonts.INFO);
+
+                return "";
+
             } else {
                 return "You can not use this so far";
             }
 
         }
-        return super.useItem(item);
+
+        if(item.getEffects() != null && item.getEffects().size>0) {
+            for (Effect curEffect : item.getEffects()) {
+                applyEffect(curEffect);
+            }
+        }
+        if(item.getProcess() != null && !"".equals(item.getProcess()))
+            ConditionProcessor.conditionProcess(this,item.getProcess());
+        inventory.removeValue(item,true);
+        addStatusMessage(item.itemname + " was used", Fonts.INFO);
+
+        return "";
     }
 
     public void addAbilities(AbilityID[] abilities) {
@@ -452,5 +474,14 @@ public class Hero extends Creature {
     public void summonCreature(int i) {
         if(i<summonAbilities.size)
             useAbility(summonAbilities.get(i));
+    }
+
+    public void addSkill(Skill skill) {
+        skills.add(skill);
+        addAbilities(skill.getAbilities());
+    }
+
+    public Array<Skill> getSkills() {
+        return skills;
     }
 }

@@ -108,6 +108,8 @@
   <object id="185" name="step" x="1310" y="207" width="99" height="9">
    <properties>
     <property name="key" value="STEP_ON"/>
+    <property name="process" value="SS:2"/>
+    <property name="text" value="Mountins are shaking"/>
     <property name="value" value="1"/>
    </properties>
   </object>
@@ -115,7 +117,7 @@
  <objectgroup name="entities"/>
  <objectgroup name="creatures"/>
  <objectgroup name="objects">
-  <object id="173" name="box_1" x="946" y="600" width="96" height="10">
+  <object id="173" name="box_1" x="893" y="600" width="96" height="10">
    <properties>
     <property name="program" value="rrrrrlllll"/>
    </properties>
@@ -125,18 +127,18 @@
     <property name="program" value="llllrrrr"/>
    </properties>
   </object>
-  <object id="180" name="spike_down" x="1059" y="118" width="28" height="13">
+  <object id="180" name="spike_down" x="1060" y="113" width="28" height="13">
    <properties>
     <property name="program" value="ntfddddddo"/>
     <property name="trigger" value="T:STEP_ON:1"/>
    </properties>
   </object>
-  <object id="181" name="spike_down" x="1154" y="119" width="27" height="13">
+  <object id="181" name="spike_down" x="1154" y="116" width="27" height="13">
    <properties>
     <property name="program" value="nfddddddo"/>
    </properties>
   </object>
-  <object id="183" name="spike_down" x="1248" y="120" width="29" height="11">
+  <object id="183" name="spike_down" x="1247" y="117" width="29" height="11">
    <properties>
     <property name="program" value="nfddddddo"/>
    </properties>

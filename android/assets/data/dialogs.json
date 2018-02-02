@@ -22,45 +22,72 @@
     ]
   },
 
+
   {"id":101,
-    "title":"Greetings",
+    "title":"Lesson",
+    "condition":"NT:Father:Lessons",
     "replics": [
-      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
-      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
-      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
-    ]
-  },
-  {"id":102,
-    "title":"Greetings",
-    "replics": [
-      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
-      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
-      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+      {"id": 1 ,"text" : "Hi Son! \n Are you ready for final exam for HUNTER?", "answers" :
+      [ {"text":"What can you teach me?", "next":2}]},
+
+      {"id": 2 ,"text" : "I may tell you about different ways \n to DEFEAT your enemies", "answers" :
+      [ {"text":"Teach me Strength (melee weapon)", "next":3, "process":"S:STRENGTH1;IA:hummer_1;T:Father:Lessons"},
+        {"text":"Teach me Accuracy (range weapon)", "next":3, "process":"S:ACCURACY1;IA:bow_1;T:Father:Lessons"},
+        {"text":"Teach me Willpower (magic weapon)", "next":3, "process":"S:WILL1;IA:fire_1;T:Father:Lessons"},
+        {"text":"Teach me Endurance (shields)", "next":3, "process":"S:ENDURANCE1;IA:shield_1;T:Father:Lessons"} ]},
+
+        {"id": 3 ,"text" : " (Shows you some tricks) \n Now you looks much Stronger! \n Now Go to Forest on East and bring me Berries \n And visit you Mother before you go", "answers" : [{"text":"Thank you Father!", "process": "T:QUEST_BERRIES:1" , "next":0}]}
     ]
   },
   {"id":103,
-    "title":"Greetings",
+    "title":"Lesson",
+    "condition":"NT:Mather:Lessons",
     "replics": [
-      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
-      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
-      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+      {"id": 1 ,"text" : "Hi Son! \n Are you ready for final exam for STALKER?", "answers" : [ {"text":"What can you teach me?", "next":2}]},
+      {"id": 2 ,"text" : "I may tell you about different ways \n to AVOID your enemies", "answers" :
+      [ {"text":"Teach me Agility (better jumps and running)", "next":3, "process":"S:AGILITY1;T:Mather:Lessons"},
+        {"text":"Teach me Hide (hiding)", "next":3, "process":"S:MASK1;T:Mather:Lessons"},
+        {"text":"Teach me Charisma (talk with others)", "next":3, "process":"S:CHARISMA1;T:Mather:Lessons"},
+        {"text":"Teach me Inteligance (reading and using books)", "next":3, "process":"S:INTELLIGENCE1;IA:book_about_rolfs;T:Mather:Lessons"} ]},
+
+      {"id": 3 ,"text" : " (Shows you some tricks) \n Now you looks much Stronger! \n Now Go to Forest on East and bring me Berries \n And visit you Father before you go", "answers" : [{"text":"Thank you Mother!", "process": "T:QUEST_BERRIES:1" , "next":0}]}
+
+
     ]
   },
+
+  {"id":102,
+    "title":"Bring Berries",
+    "condition" : "I:berry",
+    "replics": [
+      {"id": 1 ,"text" : "Son, Did you get berries?", "answers" :       [ {"text":"Yes! Take it.", "next":2}]},
+      {"id": 2 ,"text" : "Great job! \n Now I think you are ready to be a hunter", "answers" :
+      [ {"text":"Thank you!", "next":0, "process":"T:HUNTER_PROF:1;EX:100;MA:10"}]
+    }]},
+
   {"id":104,
-    "title":"Greetings",
+    "title":"Bring Berries",
+    "condition" : "I:berry",
     "replics": [
-      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
-      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
-      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
-    ]
-  },
+      {"id": 1 ,"text" : "Son, Did you get berries?", "answers" :       [ {"text":"Yes! Take it.", "next":2}]},
+      {"id": 2 ,"text" : "Great job! \n Now I think you are ready to be a stalker", "answers" :
+      [ {"text":"Thank you!", "next":0, "process":"T:STALKER_PROF:1;EX:100;MA:10"}]
+      }]},
+
+
   {"id":105,
     "title":"Greetings",
     "replics": [
-      {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
-      {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
-      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+      {"id": 1 ,"text" : "Hi!", "answers" : [{"text":"Hi Mark", "next":0}, {"condition":"S:CHARISMA1","text":"I need your help Mark!", "next":2}]},
+      {"id": 2 ,"text" : "Ok, I will help you.", "answers" : [{"text":"Thanks Mark!", "next":0, "process":"A:SUMMON_MARK"}]}
+    ]},
+
+  {"id":106,
+    "title":"Fr fr fr?",
+    "condition" : "A:ROLFS_TALK",
+    "replics": [
+      {"id": 1 ,"text" : "Fr fr fr GGGru!", "answers" : [{"text":"FFF uf fuf! \n (Do you want to be friend?)", "next":0, "process":"FR:fff"}]}
+    ]}
+
     ]
-  },
-      ]
 }

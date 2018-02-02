@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "name": "jj",
+    "description": "Player",
+    "health": "10",
+    "speed": "10",
+    "jump": "10",
+    "spritesheetregion": "triangle1",
+    "abilities": "READ_BASIC,ROLFS_TALK",
+    "org": "1",
+    "equipeditems": ""
+  },
+
+    "items": "berry",
+  "globalStates" : [
+{ "key" : "Mather", "value" : "Lessons"},
+{ "key" : "QUEST_BERRIES", "value" : "1"},
+{ "key" : "MainStory", "value" : "Started"}  ],
+
+  "currentLevel" : "Willage",
+  "previousLevel" : "Forest",
+  "exp" : "0",
+  "money" : "0",
+
+  "selectedAtackAbilities" : "",
+  "selectedDefenseAbilities": "",
+  "summon": "",
+  "skills": "INTELLIGENCE1",
+
+
+}

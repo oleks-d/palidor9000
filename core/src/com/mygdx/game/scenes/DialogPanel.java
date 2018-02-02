@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.dialogs.DialogAnswer;
+import com.mygdx.game.dialogs.DialogReplic;
 import com.mygdx.game.dialogs.GameDialog;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
@@ -57,6 +58,8 @@ public class DialogPanel implements Disposable {
     public int currentReplic = 1; // number of selected on a first screen dialog
     private GameDialog currentGameDialog;
 
+    GameDialog CLOSE_DIALOG;
+
     public DialogPanel(SpriteBatch sb, GameScreen screen){
 
         this.sb = sb;
@@ -73,6 +76,10 @@ public class DialogPanel implements Disposable {
         optionLabels = new Array<Label>();
 
         dialogLabel = new Label(" --- --- --- --- --- --- ", new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+
+        //default close dialog
+        CLOSE_DIALOG = new GameDialog(0);
+        CLOSE_DIALOG.setTitle("<Bye>");
 
         update();
     }
@@ -176,7 +183,12 @@ public class DialogPanel implements Disposable {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         currentGameDialog = dialogs.get(index);
-                        showDialog();
+
+                        if(currentGameDialog.equals(CLOSE_DIALOG))
+                            screen.endDialog();
+                        else
+                            showDialog();
+
                         return true;
                     }
 
@@ -210,6 +222,8 @@ public class DialogPanel implements Disposable {
         this.dialogs = new Array<GameDialog>();
         for(Integer i : actor.getDialogs())
             this.dialogs.add(screen.levelmanager.DIALOGS.get(i));
+
+        this.dialogs.add(CLOSE_DIALOG);
 
         addMessage(actor.creatureDescription, actor.name, actor.icon );
         addDialogOptions(dialogs);

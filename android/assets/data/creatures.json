@@ -17,11 +17,11 @@
     "name" : "Bolfir",
     "description": "Fast bolfir",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "8",
     "jump": "10",
     "spritesheetregion" : "rolf3",
     "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH"
+    "abilities" : "PUNCH,LONGBOW_SHOT"
   },
 
   {

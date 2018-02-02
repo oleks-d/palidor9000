@@ -5,6 +5,7 @@ import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.stuctures.Effect;
+import com.mygdx.game.stuctures.Skill;
 
 /**
  * Created by odiachuk on 1/24/18.
@@ -39,6 +40,12 @@ public class ConditionProcessor {
                         break;
                     case "A": //check ability
                         if (hero.getAbilities().contains(AbilityID.valueOf(conditionKey), true))
+                            result = result && true;
+                        else
+                            result = result && false;
+                        break;
+                    case "S": //check ability
+                        if (hero.getSkills().contains(Skill.valueOf(conditionKey), true))
                             result = result && true;
                         else
                             result = result && false;
@@ -107,17 +114,31 @@ public class ConditionProcessor {
                     case "A": //add ability
                         hero.addAbilities(new AbilityID[]{AbilityID.valueOf(conditionKey)});
                         break;
+                    case "S": //add ability
+                        hero.addSkill(Skill.valueOf(conditionKey));
+                        break;
                     case "AE": //add effect
                         hero.applyEffect(new Effect(conditionKey));
                         break;
                     case "MR": // money REMOVE
                         hero.removeMoney(conditionKey);
                         break;
-                    case "MA": // item ADD
+                    case "MA": // money ADD
                         hero.addMoney(conditionKey);
                         break;
                     case "EX": // item ADD
                         hero.addExperience(conditionKey);
+                        break;
+
+                    case "FR": // make a friend
+                        hero.getNeighbor().setOrganization(0);
+                        break;
+                    case "UNFR": // make an enemy
+                        hero.getNeighbor().setOrganization(2);
+                        break;
+
+                    case "SS": // SHAKE Earth
+                        hero.screen.shake(Double.parseDouble(conditionKey));
                         break;
                 }
             }

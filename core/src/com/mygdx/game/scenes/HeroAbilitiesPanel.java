@@ -203,8 +203,8 @@ public class HeroAbilitiesPanel implements Disposable {
                         currentDetails = skill.getDescription();
                         if(hero.hasSkillByID(skill.getIdOfRequiredSkill())){
                             if (hero.experience >= skill.getPrice() ){
-                                hero.skills.add(skill);
-                                hero.addAbilities(skill.getAbilities());
+                                hero.addSkill(skill);
+
                                 hero.experience = hero.experience - skill.getPrice();
                                 //update();
                             } else

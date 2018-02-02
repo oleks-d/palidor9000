@@ -88,7 +88,7 @@ public class Creature extends Sprite {
 
     float JUMP_BASE = 0.5f;
     float SPEED_BASE = 0.02f;
-    public float sight = 200;
+    public float sight = 300;
 
     public AI brain;
     private Set<Integer> enemyOrganizations;
@@ -1140,12 +1140,11 @@ public class Creature extends Sprite {
     }
 
     public void setNeighbor(Creature neighbor) {
-        if(this.closeNeighbor == null)
             this.closeNeighbor = neighbor;
     }
 
 
-    public Creature getNeighbor() {  // TODO add dialogs between
+    public Creature getNeighbor() {  // TODO add dialogs between peacefull
         return this.closeNeighbor;
     }
 
@@ -1179,6 +1178,10 @@ public class Creature extends Sprite {
 
     public String getProgram() {
         return program;
+    }
+
+    public void setOrganization(int organization) {
+        this.organization = organization;
     }
 
 //    public void onAGround(boolean val) {

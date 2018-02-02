@@ -2,14 +2,17 @@ package com.mygdx.game.ai;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.CreatureAction;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
+import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.tools.ConditionProcessor;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import static com.mygdx.game.PalidorGame.PPM;
@@ -18,6 +21,8 @@ import static com.mygdx.game.PalidorGame.PPM;
  * Created by odiachuk on 12/26/17.
  */
 public class AI {
+    private final Array<Creature> listOfEnemies;
+
     private boolean moveLeft;
     private boolean moveRight;
     private boolean standStill;
@@ -32,8 +37,6 @@ public class AI {
     float speedInCurrentStep = 1;
     float timeMovementTakes = 1;
     int currentStepNumber;
-    Vector2 direction;
-
 
     GameScreen screen;
     Creature creature;
@@ -46,57 +49,85 @@ public class AI {
 
         currentStepNumber = 0;
 
+        listOfEnemies = new Array<Creature>();
+
         if(program != null && !program.equals("")) {
             steps = program.toCharArray();
         }
     }
 
+    private boolean isVisible(Creature mob) {
+        return (mob.isEnemy(creature) //is enemy
+                && !mob.isHidden() // not hidden
+          //      && ( mob.getBody().getPosition().x + creature.sight/PPM < creature.getBody().getPosition().x && mob.getBody().getPosition().x - creature.sight/PPM > creature.getBody().getPosition().x)); // visible
+                && ( mob.getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM && mob.getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM ));
+
+        };
+
+    private boolean isReachable(Creature creature) {
+        if((creature.getY() - 0.30 < creature.getY() && creature.getY() + 0.30 > creature.getY()))
+            return true;
+        return false;
+
+    }
+
+    private int getDistance(Creature mob) {
+        if(isReachable(mob))
+            return Math.abs(Math.round(creature.getX() - mob.getX()));
+        else
+            return Math.abs(Math.round(creature.getX() - mob.getX()))+10;
+    }
+
     public void getNextStep( float delta) {
 
-        float targetX= 0, targetY=0;
+        int curDistanceToEnemy =0;
+        int shortestDistanceToEnemy =0;
+
+        float targetX = 0, targetY = 0;
+        listOfEnemies.clear();
 
         CreatureAction result = CreatureAction.STOP;
 
         //define nearby situation :
 
-        // look for creatures nearby
-        for(int i = 0; i<screen.levelmanager.CREATURES.size; i++){
-            Creature mob = screen.levelmanager.CREATURES.get(i);
-
-            if(mob.isEnemy(creature) //is enemy
-            && !mob.isHidden() // not hidden
-            && ( mob.getBody().getPosition().x + creature.sight/PPM < creature.getBody().getPosition().x && mob.getBody().getPosition().x - creature.sight/PPM > creature.getBody().getPosition().x)) { // visible
-                targetX = screen.levelmanager.CREATURES.get(i).getX();
-                targetY = screen.levelmanager.CREATURES.get(i).getY();
-                //result = new Random().nextBoolean() ? CreatureAction.MOVE_LEFT : CreatureAction.MOVE_RIGHT;
-            }
-        }
-
-        for(int i = 0; i<screen.levelmanager.SUMMONED_CREATURES.size; i++){
-            Creature mob = screen.levelmanager.SUMMONED_CREATURES.get(i);
-
-            if(mob.isEnemy(creature) //is enemy
-                    && !mob.isHidden() // not hidden
-                    && ( mob.getBody().getPosition().x + creature.sight/PPM < creature.getBody().getPosition().x && mob.getBody().getPosition().x - creature.sight/PPM > creature.getBody().getPosition().x)) { // visible
-                targetX = screen.levelmanager.SUMMONED_CREATURES.get(i).getX();
-                targetY = screen.levelmanager.SUMMONED_CREATURES.get(i).getY();
-            }
-        }
-
-        if(screen.hero.isEnemy(creature)
-                && !screen.hero.isHidden()
-                && ( screen.hero.getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM && screen.hero.getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM ))
-        { //&& screen.hero.getToughness() < creature.getToughness()) {
-            targetX = screen.hero.getX();
-            targetY = screen.hero.getY();
-        }
-
-
         //check for neighbors
         if(creature.getNeighbor() != null && creature.getNeighbor().isEnemy(creature)){
             targetX = creature.getNeighbor().getX();
             targetY = creature.getNeighbor().getY();
+
+        } else {
+
+        // look for creatures nearby
+        for (int i = 0; i < screen.levelmanager.CREATURES.size; i++) {
+            Creature mob = screen.levelmanager.CREATURES.get(i);
+            if (isVisible(mob)) {
+                listOfEnemies.add(mob);
+            }
         }
+
+        for (int i = 0; i < screen.levelmanager.SUMMONED_CREATURES.size; i++) {
+            Creature mob = screen.levelmanager.SUMMONED_CREATURES.get(i);
+            if (isVisible(mob)) {
+                listOfEnemies.add(mob);
+            }
+        }
+
+        if (isVisible(screen.hero)) { //&& screen.hero.getToughness() < creature.getToughness()) {
+            listOfEnemies.add(screen.hero);
+        }
+
+        //check all enemies
+        for (Creature mob : listOfEnemies) {
+            curDistanceToEnemy = getDistance(mob);
+            if (shortestDistanceToEnemy ==0 || curDistanceToEnemy < shortestDistanceToEnemy) {
+                shortestDistanceToEnemy = curDistanceToEnemy;
+                targetX = mob.getX();
+                targetY = mob.getY();
+            }
+        }
+    }
+
+
 
         // if target was found
         if(targetX != 0) {
@@ -105,23 +136,24 @@ public class AI {
             {
                 creature.directionRight = false;
                 creature.direction.set(-1, 0);
-                if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) // is reachable
-                if (targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM             // is close
-                        && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM) {
-                    result = CreatureAction.CLOSE_ATACK;
-                }
-                else
-                    result = CreatureAction.RANGE_ATACK;
+                if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) { // is reachable
+                    if (targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM             // is close
+                            && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM) {
+                        result = CreatureAction.CLOSE_ATACK;
+                    } else
+                        result = CreatureAction.RANGE_ATACK;
+                } else  result = CreatureAction.MOVE_LEFT;
             } else if (targetX > creature.getX()) {        //move/atack right
                 {
                     creature.directionRight = true;
                     creature.direction.set(1, 0);
-                    if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) // is reachable
-                    if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM             // is close
-                            && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
-                        result = CreatureAction.CLOSE_ATACK;
-                    else
-                        result = CreatureAction.RANGE_ATACK;
+                    if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {// is reachable
+                        if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM             // is close
+                                && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
+                            result = CreatureAction.CLOSE_ATACK;
+                        else
+                            result = CreatureAction.RANGE_ATACK;
+                    } else  result = CreatureAction.MOVE_RIGHT;
 
                 }
 
@@ -200,6 +232,9 @@ public class AI {
             }
 
     }
+
+
+
 
     public void setMoveLeft(boolean moveLeft) {
         this.moveLeft = moveLeft;

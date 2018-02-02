@@ -227,35 +227,35 @@ public class LevelManager implements Disposable{
 
 
         // set critical points
+//TODO specil points generation
 
-
-        shape = new PolygonShape();
-        shape.setAsBox(12 / PalidorGame.PPM, 8 / PalidorGame.PPM, new Vector2(-(rect.getWidth()/ 2 / PalidorGame.PPM), rect.getHeight() / PalidorGame.PPM), 0);
-
-        fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-
-        fixture = body.createFixture(fixtureDef);
-        fixture.setSensor(true);
-
-        filter = new Filter();
-            filter.categoryBits = PalidorGame.MOVE_RIGHT_POINT;
-        fixture.setFilterData(filter);
-
-
-
-        shape = new PolygonShape();
-        shape.setAsBox(12 / PalidorGame.PPM, 8 / PalidorGame.PPM, new Vector2(rect.getWidth()/ 2 / PalidorGame.PPM, rect.getHeight() / PalidorGame.PPM ), 0);
-
-        fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-
-        fixture = body.createFixture(fixtureDef);
-        fixture.setSensor(true);
-
-        filter = new Filter();
-            filter.categoryBits = PalidorGame.MOVE_LEFT_POINT;
-        fixture.setFilterData(filter);
+//        shape = new PolygonShape();
+//        shape.setAsBox(12 / PalidorGame.PPM, 8 / PalidorGame.PPM, new Vector2(-(rect.getWidth()/ 2 / PalidorGame.PPM), rect.getHeight() / PalidorGame.PPM), 0);
+//
+//        fixtureDef = new FixtureDef();
+//        fixtureDef.shape = shape;
+//
+//        fixture = body.createFixture(fixtureDef);
+//        fixture.setSensor(true);
+//
+//        filter = new Filter();
+//            filter.categoryBits = PalidorGame.MOVE_RIGHT_POINT;
+//        fixture.setFilterData(filter);
+//
+//
+//
+//        shape = new PolygonShape();
+//        shape.setAsBox(12 / PalidorGame.PPM, 8 / PalidorGame.PPM, new Vector2(rect.getWidth()/ 2 / PalidorGame.PPM, rect.getHeight() / PalidorGame.PPM ), 0);
+//
+//        fixtureDef = new FixtureDef();
+//        fixtureDef.shape = shape;
+//
+//        fixture = body.createFixture(fixtureDef);
+//        fixture.setSensor(true);
+//
+//        filter = new Filter();
+//            filter.categoryBits = PalidorGame.MOVE_LEFT_POINT;
+//        fixture.setFilterData(filter);
 
     }
 

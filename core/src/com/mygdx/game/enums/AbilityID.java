@@ -74,8 +74,10 @@ public enum AbilityID{
     READ_ANCIENT("Reading", "Allows to read Signs and Books using Ancient language \n Allows to talk with Ancient creatures" , "book", State.CASTING,AbilityType.BUFF, ActivityAreaType.SELF, 0.1f,1f),
 
 
-    SUMMON_MARK("Call Mark", "Allows to call Mark" , "hummer_blue", State.CASTING,AbilityType.BUFF, ActivityAreaType.SELF, 0.1f,1f);
+    SUMMON_MARK("Call Mark", "Allows to call Mark" , "hummer_blue", State.CASTING,AbilityType.BUFF, ActivityAreaType.SELF, 0.1f,1f),
 
+    //special abilities
+    ROLFS_TALK("Talk with Rolfs", "Allows to become a friend with a Rolf " , "icon_blank", State.CASTING,AbilityType.BUFF, ActivityAreaType.SELF, 0.1f,1f);
 
     private final com.mygdx.game.enums.AbilityType type;
     String value;
