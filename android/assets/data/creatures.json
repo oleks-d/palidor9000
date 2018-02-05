@@ -8,8 +8,8 @@
     "health" : "10",
     "speed" : "5",
     "jump": "5",
-    "spritesheetregion" : "rolf2",
-    "abilities" : "SWORD_SWING"
+    "spritesheetregion" : "animal_rolf",
+    "abilities" : "ANIMAL_PUNCH"
   },
 
   {
@@ -19,9 +19,8 @@
     "health" : "10",
     "speed" : "8",
     "jump": "10",
-    "spritesheetregion" : "rolf3",
-    "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH,LONGBOW_SHOT"
+    "spritesheetregion" : "animal_bolfir",
+    "abilities" : "ANIMAL_PUNCH,ACID_SHOT"
   },
 
   {
@@ -31,9 +30,8 @@
     "health" : "20",
     "speed" : "5",
     "jump": "8",
-    "spritesheetregion" : "rolf4",
-    "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH"
+    "spritesheetregion" : "animal_tordur",
+    "abilities" : "ANIMAL_PUNCH, ANIMAL_DASH"
   },
 
   {
@@ -43,10 +41,46 @@
     "health" : "20",
     "speed" : "10",
     "jump": "10",
-    "spritesheetregion" : "rolf",
-    "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH"
+    "spritesheetregion" : "animal_rager",
+    "abilities" : "ANIMAL_PUNCH, SPIKE_SHOT"
   },
+
+
+
+  {
+    "id" : "enemy_1",
+    "name" : "Enemy with axe",
+    "description": "Enemy",
+    "health" : "20",
+    "speed" : "5",
+    "jump" : "10",
+    "spritesheetregion" : "enemies1",
+    "abilities" : "SWORD_SWING",
+    "equipeditems" : "axe_2"
+  },
+  {
+    "id" : "enemy_2",
+    "name" : "Enemy with bow",
+    "description": "Enemy",
+    "health" : "5",
+    "speed" : "8",
+    "jump" : "10",
+    "spritesheetregion" : "enemies2",
+    "abilities" : "PUNCH,LONGBOW_SHOT",
+    "equipeditems" : "bow_1"
+  },
+  {
+    "id" : "demon_1",
+    "name" : "Enemy",
+    "description": "Enemy",
+    "health" : "20",
+    "speed" : "5",
+    "jump" : "10",
+    "spritesheetregion" : "demon1",
+    "abilities" : "HUMMER_SMASH,SWORD_SWING,LONGBOW_SHOT",
+    "equipeditems" : "axe_3,hummer_3"
+  },
+
 
   {
     "id" : "father",
@@ -160,6 +194,19 @@
     "jump": "10",
     "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
-  }
+  },
 
+
+
+  {
+    "id" : "example",
+    "name" : "nn",
+    "description": "Terrible rager",
+    "health" : "20",
+    "speed" : "10",
+    "jump": "10",
+    "spritesheetregion" : "rolf",
+    "effects" : "CUT_DAMAGE 1 1 0",
+    "abilities" : "PUNCH"
+  },
 ]}

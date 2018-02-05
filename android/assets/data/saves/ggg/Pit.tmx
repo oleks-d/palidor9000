@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="44">
- <tileset firstgid="1" source="Hunters.tsx"/>
+<tileset firstgid="1" source="../../../maps/Hunters.tsx"/>
  <layer name="background" width="30" height="20">
   <data encoding="base64">
    QwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAAQwAAAEMAAABDAAAA
@@ -66,56 +66,50 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="entities"/>
- <objectgroup name="creatures">
-  <object id="22" name="animal_rolf" x="803" y="212">
-   <properties>
-    <property name="condition" value="T:NEXT:0"/>
-    <property name="deathprocess" value="T:NEXT:1"/>
-    <property name="organization" value="2"/>
-   </properties>
-  </object>
-  <object id="23" name="animal_tordur" x="798" y="146">
-   <properties>
-    <property name="condition" value="T:NEXT:1"/>
-    <property name="deathprocess" value="T:NEXT:2"/>
-    <property name="organization" value="2"/>
-   </properties>
-  </object>
-  <object id="24" name="animal_bolfir" x="801" y="79">
+<objectgroup name="entities">
+</objectgroup>
+<objectgroup name="creatures">
+</objectgroup>
+<objectgroup name="objects">
+<object id="8000" name="spikes_down" x="325.5" y="607.0" width="108.0" height="15.0" >
    <properties>
     <property name="condition" value="T:NEXT:2"/>
-    <property name="deathprocess" value="T:FINAL:WIN"/>
-    <property name="organization" value="2"/>
-   </properties>
-  </object>
- </objectgroup>
- <objectgroup name="objects">
-  <object id="33" name="cavern_door" x="856" y="451" width="56" height="56">
-   <properties>
-    <property name="condition" value="T:NEXT:1"/>
-   </properties>
-  </object>
-  <object id="35" name="cavern_door" x="776" y="450" width="56" height="56">
-   <properties>
-    <property name="condition" value="T:NEXT:0"/>
-   </properties>
-  </object>
-  <object id="37" name="spikes_right" x="42" y="520" width="19" height="80">
-   <properties>
-    <property name="condition" value="T:NEXT:1"/>
-   </properties>
-  </object>
-  <object id="40" name="spikes_down" x="433.5" y="607" width="108" height="15">
-   <properties>
-    <property name="condition" value="T:NEXT:2"/>
+    <property name="items" value=""/>
     <property name="program" value="uuuudddd"/>
+    <property name="trigger" value=""/>
    </properties>
-  </object>
-  <object id="41" name="cavern_door" x="851" y="547" width="56" height="56">
+
+</object><object id="8001" name="cavern_door" x="794.99994" y="547.0" width="56.0" height="56.0" >
    <properties>
     <property name="condition" value="T:NEXT:2"/>
+    <property name="items" value=""/>
+    <property name="program" value=""/>
+    <property name="trigger" value=""/>
    </properties>
-  </object>
- </objectgroup>
+
+</object><object id="10000" name="cavern_door" x="800.00006" y="451.0" width="56.0" height="56.0" >
+   <properties>
+    <property name="condition" value="T:NEXT:1"/>
+    <property name="items" value=""/>
+    <property name="program" value=""/>
+    <property name="trigger" value=""/>
+   </properties>
+
+</object><object id="10001" name="spikes_right" x="23.0" y="520.0" width="19.0" height="80.0" >
+   <properties>
+    <property name="condition" value="T:NEXT:1"/>
+    <property name="items" value=""/>
+    <property name="program" value=""/>
+    <property name="trigger" value=""/>
+   </properties>
+
+</object><object id="10002" name="cavern_door" x="720.0" y="450.0" width="56.0" height="56.0" >
+   <properties>
+    <property name="condition" value="T:NEXT:0"/>
+    <property name="items" value=""/>
+    <property name="program" value=""/>
+    <property name="trigger" value=""/>
+   </properties>
+
+</object></objectgroup>
 </map>

@@ -20,7 +20,7 @@ public class TriggerHandler {
                         creature.screen.levelmanager.saveLevel(creature.screen.hero.currentLevel, creature.screen.hero.name);
                         creature.screen.levelmanager.loadNextLevel(trigger.getValue(), creature.screen.hero.name);
                         creature.screen.levelmanager.saveHero(creature.screen.hero);
-                        creature.screen.hero.addStatusMessage(creature.screen.hero.currentLevel, Fonts.GOOD);
+                        creature.screen.hero.addStatusMessage(creature.screen.hero.currentLevel, Fonts.HEADER);
                     } else
                         creature.screen.hero.addStatusMessage("You cannot leave this area so far", Fonts.INFO);
                 }
@@ -42,14 +42,14 @@ public class TriggerHandler {
                         if(trigger.getKey() != null && trigger.getValue() != null )
                             creature.screen.hero.changeGlobalState(trigger.getKey(), trigger.getValue());
                         ConditionProcessor.conditionProcess(creature.screen.hero, trigger.getProcess());
-                        creature.addStatusMessage(trigger.getDescription(),Fonts.IMPORTANT);
+                        creature.addStatusMessage(trigger.getDescription(),Fonts.HEADER);
                     }
                 }
                 break;
             case "label": // text labe
                 if(creature.equals(creature.screen.hero)) {
                     if(creature.screen.hero.skills.contains(Skill.INTELLIGENCE1, true))
-                        creature.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
+                        creature.addStatusMessage(trigger.getDescription(), Fonts.HEADER);
                     else
                         creature.addStatusMessage("You cannot read", Fonts.IMPORTANT);
                 }
@@ -57,7 +57,7 @@ public class TriggerHandler {
             case "ancient_label": //Ancient label
                 if(creature.equals(creature.screen.hero)) {
                     if(creature.screen.hero.skills.contains(Skill.INTELLIGENCE3, true))
-                        creature.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
+                        creature.addStatusMessage(trigger.getDescription(), Fonts.HEADER);
                     else
                         creature.addStatusMessage("You cannot read Ancient text", Fonts.IMPORTANT);
                 }
@@ -65,7 +65,7 @@ public class TriggerHandler {
             case "foreign_label": //foreign label
                 if(creature.equals(creature.screen.hero)) {
                     if(creature.screen.hero.skills.contains(Skill.INTELLIGENCE2, true))
-                        creature.addStatusMessage(trigger.getDescription(), Fonts.IMPORTANT);
+                        creature.addStatusMessage(trigger.getDescription(), Fonts.HEADER);
                     else
                         creature.addStatusMessage("You cannot read Foreign text", Fonts.IMPORTANT);
                 }

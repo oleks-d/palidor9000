@@ -6,12 +6,11 @@ package com.mygdx.game.enums;
 public enum CreatureAction {
     MOVE_RIGHT,
     MOVE_LEFT,
-    JUMP,
     STOP,
     HIDE,
     BLOCK,
     CLOSE_ATACK,
     BUFF,
     DEBUFF,
-    RANGE_ATACK, WALK;
+    RANGE_ATACK, WALK, JUMP_RIGHT, JUMP_LEFT;
 }

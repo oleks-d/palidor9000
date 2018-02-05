@@ -115,31 +115,31 @@
 <objectgroup name="entities">
 </objectgroup>
 <objectgroup name="creatures">
-<object id="4000" name="mark" x="2638.64" y="588.5002">
+<object id="4000" name="mark" x="2638.64" y="588.5075">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value="coin"/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value="105"/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4001" name="father" x="1313.36" y="459.50003">
+</object><object id="4001" name="father" x="1313.36" y="459.50043">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value="101, 102"/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4002" name="mather" x="1515.52" y="588.5">
+</object><object id="4002" name="mather" x="1512.67" y="588.5004">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value="103, 104"/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4003" name="erlok" x="1937.7" y="107.65454">
+</object><object id="4003" name="erlok" x="1937.7" y="107.69318">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value=""/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4004" name="arora" x="1804.38" y="459.5102">
+</object><object id="4004" name="arora" x="1804.38" y="459.5127">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
@@ -151,19 +151,19 @@
     <property name="items" value=""/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value=""/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4006" name="lina" x="2031.41" y="203.50519">
+</object><object id="4006" name="lina" x="2031.41" y="203.50647">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value=""/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4007" name="leok" x="1814.94" y="203.50006">
+</object><object id="4007" name="leok" x="1814.94" y="203.50174">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="deathprocess" value=""/>    <property name="organization" value="0"/>    <property name="dialogs" value=""/>    <property name="program" value=""/>   </properties>
 
-</object><object id="4008" name="logus" x="2345.56" y="492.5">
+</object><object id="4008" name="logus" x="2345.56" y="492.50043">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>
@@ -176,7 +176,7 @@
     <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="program" value=""/>
-    <property name="trigger" value="null"/>
+    <property name="trigger" value=""/>
    </properties>
 
 </object></objectgroup>

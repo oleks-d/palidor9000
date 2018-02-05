@@ -44,12 +44,12 @@
   <object id="53" name="up" x="500" y="598"/>
   <object id="56" name="up" x="1062" y="606"/>
   <object id="59" name="up" x="842" y="602"/>
-  <object id="72" name="no_right" x="550" y="603"/>
-  <object id="73" name="no_left" x="709" y="606"/>
-  <object id="74" name="no_right" x="1083" y="607"/>
-  <object id="75" name="no_left" x="1253" y="609"/>
-  <object id="76" name="no_right" x="1626" y="611"/>
-  <object id="78" name="no_left" x="1767" y="607"/>
+  <object id="72" name="ml" x="550" y="603"/>
+  <object id="73" name="mr" x="709" y="606"/>
+  <object id="74" name="ml" x="1083" y="607"/>
+  <object id="75" name="mr" x="1253" y="609"/>
+  <object id="76" name="ml" x="1626" y="611"/>
+  <object id="78" name="mr" x="1767" y="607"/>
   <object id="103" name="hero_Forest" x="80" y="596"/>
   <object id="64" name="hero_Underground" x="1519" y="498"/>
  </objectgroup>

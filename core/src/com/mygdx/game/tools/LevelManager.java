@@ -158,12 +158,13 @@ public class LevelManager implements Disposable{
     }
 
     public void createItemObject(com.mygdx.game.screens.GameScreen screen, MapObject object) {
+        Gdx.app.log("Loading", object.getName());
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            ITEMS.add(new GameItem(screen, rect.getX(), rect.getY(), ITEMS_DESCRIPTIONS.get(object.getName())));
+        ITEMS.add(new GameItem(screen, rect.getX(), rect.getY(), ITEMS_DESCRIPTIONS.get(object.getName())));
     }
 
     public void createCreature(GameScreen screen, MapObject object) {
-
+        Gdx.app.log("Loading", object.getName());
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
         String items = (String)object.getProperties().get("items");
         String deathProcess = (String)object.getProperties().get("deathprocess");
@@ -180,8 +181,8 @@ public class LevelManager implements Disposable{
 
     }
 
-    public void createSummonedCreature(GameScreen screen, float x, float y, String object) {
-            SUMMONED_CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , 0 , null, null));
+    public void createSummonedCreature(GameScreen screen, float x, float y, String object, int org) {
+            SUMMONED_CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null, null));
     }
 
     public void createCreature(GameScreen screen, float x, float y, String object, int org) {
@@ -189,7 +190,7 @@ public class LevelManager implements Disposable{
     }
 
     public void createInteractiveObject(GameScreen screen, MapObject object) {
-
+        Gdx.app.log("Loading", object.getName());
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
         String items = (String)object.getProperties().get("items");
         String condition = (String)object.getProperties().get("condition");
@@ -200,7 +201,7 @@ public class LevelManager implements Disposable{
                 return; //do not create if condition did not pass
         }
 
-        OBJECTS.add(new GameObject(screen, rect, OBJECT_DESCRIPTIONS.get(object.getName()), items, program, activationTrigger));
+        OBJECTS.add(new GameObject(screen, rect, OBJECT_DESCRIPTIONS.get(object.getName()),condition, items, program, activationTrigger));
 
     }
 
@@ -278,14 +279,18 @@ public class LevelManager implements Disposable{
         Fixture fixture = body.createFixture(fixtureDef);//.setUserData("ground");
 
         Filter filter = new Filter();
-        if(object.getName().equals("move_right"))
+        if(object.getName().equals("mr"))
             filter.categoryBits = PalidorGame.MOVE_RIGHT_POINT;
-        else if(object.getName().equals("move_left"))
+        else if(object.getName().equals("ml"))
             filter.categoryBits = PalidorGame.MOVE_LEFT_POINT;
-        else if(object.getName().equals("stand"))
+        else if(object.getName().equals("st"))
             filter.categoryBits = PalidorGame.STAND_POINT;
+        else if(object.getName().equals("jl"))
+            filter.categoryBits = PalidorGame.JUMP_LEFT;
+        else if(object.getName().equals("jr"))
+            filter.categoryBits = PalidorGame.JUMP_RIGHT;
         else
-            filter.categoryBits = PalidorGame.JUMP_POINT;
+            filter.categoryBits = PalidorGame.STAND_POINT;
 
         fixture.setFilterData(filter);
     }
@@ -477,7 +482,7 @@ public class LevelManager implements Disposable{
                     writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).originalRectangle.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).originalRectangle.y - OBJECTS.get(i).originalRectangle.height) + "\" width=\"" + OBJECTS.get(i).originalRectangle.width + "\" height=\"" + OBJECTS.get(i).originalRectangle.height + "\" >\n");
 
                 writer.write("   <properties>\n" +
-                        "    <property name=\"condition\" value=\"\"/>\n" +
+                        "    <property name=\"condition\" value=\""+ OBJECTS.get(i).getCondition() +"\"/>\n" +
                         "    <property name=\"items\" value=\"" + OBJECTS.get(i).getItems().toString().replaceAll("[\\[\\]]", "") + "\"/>\n" +
                         "    <property name=\"program\" value=\"" + OBJECTS.get(i).getProgram() + "\"/>\n" +
                         "    <property name=\"trigger\" value=\"" + OBJECTS.get(i).getTrigger() + "\"/>\n" +
@@ -487,7 +492,7 @@ public class LevelManager implements Disposable{
             }
 
             for (int i = 0; i < UNAVAILABLE_OBJECTS.size; i++) {
-                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + UNAVAILABLE_OBJECTS.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y) + "\" width=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getWidth() * PalidorGame.PPM + "\" height=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getHeight() * PalidorGame.PPM + "\" >\n");
+                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + (UNAVAILABLE_OBJECTS.get(i).rect.x- UNAVAILABLE_OBJECTS.get(i).rect.width / 2) + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y - UNAVAILABLE_OBJECTS.get(i).rect.height) + "\" width=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getWidth() + "\" height=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getHeight() + "\" >\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getCondition() + "\"/>\n" +
@@ -553,7 +558,7 @@ public class LevelManager implements Disposable{
         }
 
         public String getTrigger() {
-            return activationTrigger;
+            return activationTrigger==null?"":activationTrigger;
         }
     }
 

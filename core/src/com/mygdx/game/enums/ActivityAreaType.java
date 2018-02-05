@@ -7,8 +7,8 @@ import com.mygdx.game.PalidorGame;
  */
 public enum ActivityAreaType {
     ARROW(1f,32,32),
-    BOX(0.1f,96,48),
-    SPRAY(0.5f,192,48),
+    BOX(0.3f,64,64),
+    SPRAY(1f,64,48),
     SELF(0f),
     BIGBOX(0.1f),
     BOOM(1 );

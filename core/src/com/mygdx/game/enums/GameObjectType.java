@@ -7,5 +7,6 @@ public enum GameObjectType {
     DOOR,
     BLOCK,
     SPIKE,
-    CHEST
+    CHEST,
+    BACK
 }

@@ -16,7 +16,15 @@
   "exp":"0",
   "money" : "0",
 
-  "globalStates" : [{"key" : "MainStory", "value" : "NotStarted"}
+  "globalStates" : [
+    {"key" : "MainStory", "value" : "NotStarted"},
+
+    { "key" : "0", "value" : "249"},
+    { "key" : "1", "value" : "249"},
+    { "key" : "2", "value" : "01349"},
+    { "key" : "3", "value" : "249"},
+    { "key" : "4", "value" : "01239"},
+    { "key" : "9", "value" : "01234"}
   ],
 
   "previousLevel" : "Start",

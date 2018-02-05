@@ -5,23 +5,56 @@
     "type" : "DOOR"
   },
   {
+    "id":"cavern_door",
+    "image" : "cave",
+    "type" : "BACK"
+  },
+
+
+  {
     "id":"chest_1",
     "image" : "castbar",
     "type" : "CHEST"
   },
+
+
   {
-    "id":"box_1",
-    "image" : "castbar",
+    "id":"block_mountain",
+    "image" : "block_mountain",
     "type" : "BLOCK"
   },
+
   {
-    "id":"spike_1",
-    "image" : "healthbar",
+    "id":"block_forest",
+    "image" : "block_forest",
+    "type" : "BLOCK"
+  },
+
+  {
+    "id":"block_brick",
+    "image" : "block_brick",
+    "type" : "BLOCK"
+  },
+
+
+  {
+  "id":"spikes_down",
+  "image" : "spikes_down",
+  "type" : "SPIKE"
+  },
+  {
+    "id":"spikes_right",
+    "image" : "spikes_right",
     "type" : "SPIKE"
   },
   {
-  "id":"spike_down",
-  "image" : "spikes_down",
-  "type" : "SPIKE"
+    "id":"spikes_left",
+    "image" : "spikes_left",
+    "type" : "SPIKE"
+  },
+  {
+    "id":"spikes_up",
+    "image" : "spikes_up",
+    "type" : "SPIKE"
   }
 ]}

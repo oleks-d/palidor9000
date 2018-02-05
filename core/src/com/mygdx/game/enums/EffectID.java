@@ -61,7 +61,7 @@ public enum EffectID {
     MOVE_RIGHT("icon_blank", false),
 
     COVERED_BY_SHIELD("shield",false),
-    DODGE("boots", false),
+    DODGE("shield_yellow", false),
     COVERED_BY_FIRE_SHIELD("shield_red",false),
     INVISIBLE("icon_cross_blue",false),
 

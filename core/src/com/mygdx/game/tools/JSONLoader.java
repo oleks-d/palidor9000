@@ -244,7 +244,7 @@ public class JSONLoader {
                 "    \"jump\": \""  + hero.stats.jumphight.base + "\",\n" +
                 "    \"spritesheetregion\": \"" + hero.spritesheetRegion + "\",\n" +
                 "    \"abilities\": \"" + hero.getAbilities().toString(",") + "\",\n" +
-                "    \"org\": \"1\",\n" +
+                "    \"org\": \"0\",\n" +
                 "    \"equipeditems\": \"" + equipedItems + "\"\n" +
                 "  },\n" +
                 "\n" +

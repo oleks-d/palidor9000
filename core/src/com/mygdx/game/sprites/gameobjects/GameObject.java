@@ -31,6 +31,7 @@ public class GameObject extends Sprite {
     private String program;
     private String icon;
     public String id;
+    String condition;
 
     String activationTrigger = "";
 
@@ -46,7 +47,7 @@ public class GameObject extends Sprite {
     Vector2 direction;
     public Rectangle originalRectangle = null;
 
-    public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String items, String program, String activationTrigger) {
+    public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String condition, String items, String program, String activationTrigger) {
 
         super();
 
@@ -55,6 +56,7 @@ public class GameObject extends Sprite {
         this.icon = objectDescription.image;
         this.type = objectDescription.type;
         this.program = program;
+        this.condition = condition;
 
         if (type != GameObjectType.DOOR && type != GameObjectType.CHEST && program != null && !program.equals("")) {
             steps = program.toCharArray();
@@ -106,8 +108,11 @@ public class GameObject extends Sprite {
         fixtureDef.shape = shape;
 
         fixtureDef.isSensor = false;
+        if(type == GameObjectType.BACK)
+            fixtureDef.isSensor = true;
+
         fixtureDef.filter.categoryBits = PalidorGame.OBJECT_BIT;
-        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.ACTIVITY_BIT;
+        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.ACTIVITY_BIT | PalidorGame.CREATURE_BOTTOM;
 
 
         body.createFixture(fixtureDef).setUserData(this);
@@ -231,6 +236,10 @@ public class GameObject extends Sprite {
     }
 
     public String getTrigger() {
-        return activationTrigger;
+        return activationTrigger==null?"":activationTrigger;
+    }
+
+    public String getCondition() {
+        return condition==null?"":condition;
     }
 }

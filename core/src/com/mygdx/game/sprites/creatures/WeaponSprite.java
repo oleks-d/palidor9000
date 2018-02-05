@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
@@ -27,6 +28,8 @@ public class WeaponSprite extends Sprite {
     float partOfTrajectory;
     float trajectoryX;
     float trajectoryY;
+
+    int scale;
 
     float distortionX = 0;
     float distortionY;
@@ -93,51 +96,58 @@ public class WeaponSprite extends Sprite {
                         case SWORD_SWING:
                         case HUMMER_SWING:
                         case HUMMER_SMASH:
-
-                            if(partOfTrajectory<0.8) { //first part
-                                angle = partOfTrajectory * 180;
-                                trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
-                                trajectoryY = partOfTrajectory * owner.getHeight() / 2;
-                            }else{ //second part
-                                angle = 180 - partOfTrajectory * 180;
-                                trajectoryX = (owner.directionRight ? partOfTrajectory-1 : 1-partOfTrajectory) * owner.getWidth();
-                                trajectoryY = (1-partOfTrajectory) * owner.getHeight() / 2;
-                            }
+                            angle = partOfTrajectory * 160;
+                            trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
+                            trajectoryY = partOfTrajectory * owner.getHeight() / 2;
+//                            if (partOfTrajectory < 0.5) { //first part
+//                                angle = partOfTrajectory * 180;
+//                                trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
+//                                trajectoryY = partOfTrajectory * owner.getHeight() / 2;
+//                            } else { //second part
+//                                angle = 220 - partOfTrajectory * 180;
+//                                trajectoryX = (owner.directionRight ? partOfTrajectory - 1 : 1 - partOfTrajectory) * owner.getWidth();
+//                                trajectoryY = (1 - partOfTrajectory) * owner.getHeight() / 2;
+//
+//                            }
                             break;
 
                         case SWORD_SMASH:
-                                angle = 360-partOfTrajectory * 360;
-                                //trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
-                                //trajectoryY = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
+                            angle = 360 - partOfTrajectory * 360;
+                            //trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
+                            //trajectoryY = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
 
                             break;
                         case SLING_SHOT:
                         case LONGBOW_SHOT:
                         case TRIPLE_SHOT:
                         case DITRUCTING_SHOT:
-                            if(partOfTrajectory<0.7) { //first part
-                                angle = partOfTrajectory * 180;
+                            if (partOfTrajectory < 0.7) { //first part
+                                //angle = partOfTrajectory * 180;
                                 trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
                                 trajectoryY = partOfTrajectory * owner.getHeight() / 2;
-                            }else{ //second part
-                                angle = 180 - partOfTrajectory * 180;
-                                trajectoryX = (owner.directionRight ? partOfTrajectory-1 : 1-partOfTrajectory) * owner.getWidth();
-                                trajectoryY = (1-partOfTrajectory) * owner.getHeight() / 2;
+                            } else { //second part
+                                //angle = 180 - partOfTrajectory * 180;
+                                trajectoryX = (owner.directionRight ? partOfTrajectory - 1 : 1 - partOfTrajectory) * owner.getWidth();
+                                trajectoryY = (1 - partOfTrajectory) * owner.getHeight() / 2;
                             }
                             break;
                         case COVER:
-                            trajectoryX = (owner.directionRight ? partOfTrajectory : -partOfTrajectory) * owner.getWidth() / 2;
-                            trajectoryY = partOfTrajectory * owner.getHeight() / 2;
-                            holding=true;
+                            if (!isMain){
+                                //trajectoryX = (owner.directionRight ? partOfTrajectory : -partOfTrajectory) * owner.getWidth() / 2;
+                                trajectoryY = partOfTrajectory * owner.getHeight() / 2;
+                                scale = 2;
+                                holding = true;
+                            }
                             break;
                         default:
-                            partOfTrajectory = (((owner.timeSpentOnCast > 0 ? owner.timeSpentOnCast : owner.timeSpentOnCast) / (owner.abilityToCastExecutionTime > 0 ? owner.abilityToCastExecutionTime : owner.abilityToCastExecutionTime)));
+                            //partOfTrajectory = (((owner.timeSpentOnCast > 0 ? owner.timeSpentOnCast : owner.timeSpentOnCast) / (owner.abilityToCastExecutionTime > 0 ? owner.abilityToCastExecutionTime : owner.abilityToCastExecutionTime)));
                             angle = partOfTrajectory * 160;
                             trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
                             trajectoryY = partOfTrajectory * owner.getHeight() / 2;
                     }
                 } else {
                     if(!holding) {
+                        scale = 1;
                         angle = defaultAngle;
                         trajectoryX = 0;
                         trajectoryY = 0;
@@ -168,7 +178,8 @@ public class WeaponSprite extends Sprite {
     public void draw(Batch batch) {
         //super.draw(batch);
         //Gdx.app.log(this + " " + getX()+"", getY()+"");
-        batch.draw(picture, getX(), getY(), picture.getRegionWidth()/ PalidorGame.PPM/2,picture.getRegionHeight()/ PalidorGame.PPM/2, picture.getRegionWidth()/ PalidorGame.PPM, picture.getRegionHeight()/ PalidorGame.PPM, 1, 1, (owner.directionRight?1:-1)*angle);
+  //      batch.draw(picture, getX(), getY(), picture.getRegionWidth()/ PalidorGame.PPM/2,picture.getRegionHeight()/ PalidorGame.PPM/2, picture.getRegionWidth()/ PalidorGame.PPM, picture.getRegionHeight()/ PalidorGame.PPM, scale, scale, (owner.directionRight?1:-1)*angle);
+        batch.draw(picture, getX(), getY(), picture.getRegionWidth()/ PalidorGame.PPM/2,picture.getRegionHeight()/ PalidorGame.PPM/2, picture.getRegionWidth()/ PalidorGame.PPM, picture.getRegionHeight()/ PalidorGame.PPM, scale, scale, (owner.directionRight?1:-1)*angle);
         //batch.draw(icon, getX(), getY(),  icon.getRegionWidth()/PPM, icon.getRegionHeight()/PPM);
     }
 

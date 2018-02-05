@@ -109,6 +109,8 @@ public class ActivityWithEffect extends Sprite {
 
                 runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
 
+                body.applyLinearImpulse(direction, body.getWorldCenter(), true);
+
                 break;
             case SPRAY:
 
@@ -127,26 +129,11 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1, 2);
                 runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
 
-                break;
-            case BIGBOX:
-                shape = new CircleShape();
-                shape.setRadius(PalidorGame.TILE_SIZE * 3 / PalidorGame.PPM );
+                body.applyLinearImpulse(direction, body.getWorldCenter(), true);
 
-                fixtureDef = new FixtureDef();
-                fixtureDef.shape = shape;
-
-                fixtureDef.isSensor = true;
-
-                fixtureDef.filter.categoryBits = PalidorGame.ATTACK_BIT;
-                fixtureDef.filter.maskBits = PalidorGame.ACTIVITY_BIT |
-                        PalidorGame.GROUND_BIT |
-                        PalidorGame.CREATURE_BIT;
-
-                body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
                 break;
             case BOX:
                 box = new PolygonShape();
@@ -163,7 +150,7 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName,  type.getWidth(), type.getHigth(), 0.2f, 0, 1);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName,  type.getWidth(), type.getHigth(), 0.1f, 0, 1, 2);
                 runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
                 break;
             default:
@@ -183,9 +170,9 @@ public class ActivityWithEffect extends Sprite {
                 body.createFixture(fixtureDef).setUserData(this);
                 runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
                 runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
-        }
 
-        body.applyLinearImpulse(direction, body.getWorldCenter(), true);
+                body.applyLinearImpulse(direction, body.getWorldCenter(), true);
+        }
 
     }
 
@@ -229,15 +216,17 @@ public class ActivityWithEffect extends Sprite {
         return body;
     }
 
-    public void onHit() {
+    public void onHit(Creature target) {
         switch(type) {
             case ARROW:
-                destroyBody();
+                if(!target.equals(createdBy))
+                    destroyBody();
                 break;
             case SPRAY:
                 break;
             default:
-                destroyBody();
+                if(!target.equals(createdBy))
+                    destroyBody();
         }
     }
 

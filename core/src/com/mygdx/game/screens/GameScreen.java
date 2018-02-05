@@ -110,6 +110,7 @@ public class GameScreen implements Screen {
 
     boolean TO_RENDER = true;
     public RandomXS128 randomizer;
+    public Array<String> creaturesToCreate;
 
     public GameScreen(PalidorGame game, String heroName){
         this(game,heroName,null);
@@ -149,6 +150,8 @@ public class GameScreen implements Screen {
             hero = levelmanager.loadHero(heroName);
 
         levelmanager.loadLevel(hero.currentLevel, hero.name);
+
+        creaturesToCreate = new Array<String>();
 
         //penels
         dialogPanel = new DialogPanel(game.getBatch(), this);
@@ -233,6 +236,19 @@ public class GameScreen implements Screen {
             //update hero
             hero.update(delta);
 
+            //summon creature
+            if(creaturesToCreate.size > 0) {
+                for(String line : creaturesToCreate) {
+                    String typeOfCreature = line.split(":")[1];
+                    String conditionValue = line.split(":")[2];
+                    float newCreatureX = Float.valueOf(conditionValue.split(",")[0]);
+                    float newCreatureY = Float.valueOf(conditionValue.split(",")[1]);
+                    int newCreatureOrg = Integer.valueOf(conditionValue.split(",")[2]);
+                    hero.screen.levelmanager.createCreature(hero.screen, newCreatureX, newCreatureY, typeOfCreature, newCreatureOrg );
+                };
+                creaturesToCreate.clear();
+
+            }
 
             if (hero.getAbilityToCast() != AbilityID.NONE && hero.finishedCasting()) {
                 activity = hero.activateAbility(hero.getAbilityToCast());
@@ -265,7 +281,7 @@ public class GameScreen implements Screen {
             //update all summoned
             for (Creature creature : levelmanager.SUMMONED_CREATURES) {
                     creature.update(delta);
-                    creature.attackIfEnemyIsNear();
+                    //creature.attackIfEnemyIsNear();
 
                     if (creature.getAbilityToCast() != AbilityID.NONE && creature.finishedCasting()) {
                         activity = creature.activateAbility(creature.getAbilityToCast());
@@ -643,6 +659,8 @@ public class GameScreen implements Screen {
 
             //levelmanager.background.draw(game.getBatch()); // TODO background
 
+        hero.draw(game.getBatch());
+
             //render all items
             for (GameItem item : levelmanager.ITEMS) {
                 if (!item.isDestroyed())
@@ -679,7 +697,7 @@ public class GameScreen implements Screen {
 
             }
 
-            hero.draw(game.getBatch());
+
             //hero.weaponSprite.draw(game.getBatch());
             //if(hero.armorSprite.pictureName != null)
             //    hero.armorSprite.draw(game.getBatch());
@@ -720,10 +738,10 @@ public class GameScreen implements Screen {
                 game.setScreen(new GameOverScreen(game));
                 dispose();
             }
-            if (gameWin()) {
-                game.setScreen(new VictoryScreen(game));
-                dispose();
-            }
+//            if (gameWin()) {
+//                game.setScreen(new VictoryScreen(game));
+//                dispose();
+//            }
         if (STOP_GAME) {
             game.setScreen(new com.mygdx.game.screens.MainMenuScreen(game));
             dispose();
@@ -738,14 +756,18 @@ public class GameScreen implements Screen {
         return false;
     }
 
-    public boolean gameWin(){  // TODO extend
-        for(GameItem item : hero.getInventory()){
-            if(item.itemname.equals("Final Key")){
+    public boolean gameWin(String message){  // TODO extend
+//        for(GameItem item : hero.getInventory()){
+//            if(item.itemname.equals("Final Key")){
+//
+//            PalidorGame.gameDetails = "You found a Key!";
+//            return true;
+//            }
+//        }
+            PalidorGame.gameDetails = message;
+            game.setScreen(new VictoryScreen(game));
+            dispose();
 
-            PalidorGame.gameDetails = "You found a Key!";
-            return true;
-            }
-        }
         return false;
     }
 
@@ -802,9 +824,6 @@ public class GameScreen implements Screen {
         return font;
     }
 
-    public HashMap<Integer,String> getRivalOrganizations() {
-        return hero.getRivalOrganizations();
-    }
 
     public void shake(double length) {
         shakeTime = hero.existingTime + length;

@@ -43,7 +43,6 @@ public class WorldContactListener implements ContactListener {
                     target = ((Creature) fixB.getUserData());
                 }
 
-
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
                     if(target.shieldEffect == null) {// creature was covered
@@ -61,7 +60,7 @@ public class WorldContactListener implements ContactListener {
                         target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
                     }
 
-                    act.onHit();
+                    act.onHit(target);
                 }
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.ATTACK_BIT:
@@ -93,7 +92,7 @@ public class WorldContactListener implements ContactListener {
                         act.createdBy.applyEffect(target.shieldEffect); // stun if target was protected
                     }
                     //   act.addTargetToAlreadyProcessed(target);
-                    act.onHit();
+                    act.onHit(target);
                 }
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.ITEM_BIT:
@@ -108,11 +107,17 @@ public class WorldContactListener implements ContactListener {
                 else
                     ((Creature) fixB.getUserData()).touchObject(((GameObject) fixA.getUserData()));
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_POINT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_LEFT: // TODO make sure it is correct way
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
-                    ((Creature) fixA.getUserData()).setHasToJump(true);
+                    ((Creature) fixA.getUserData()).setHasToJump(false, true);
                 else
-                    ((Creature) fixB.getUserData()).setHasToJump(true);
+                    ((Creature) fixB.getUserData()).setHasToJump(false, true);
+                break;
+            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_RIGHT: // TODO make sure it is correct way
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
+                    ((Creature) fixA.getUserData()).setHasToJump(true, true);
+                else
+                    ((Creature) fixB.getUserData()).setHasToJump(true, true);
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: // TODO make sure it is correct way
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
@@ -151,6 +156,27 @@ public class WorldContactListener implements ContactListener {
                 //neighbor
                 ((Creature) fixA.getUserData()).setNeighbor(((Creature) fixB.getUserData()));
                 ((Creature) fixB.getUserData()).setNeighbor(((Creature) fixA.getUserData()));
+                break;
+            case PalidorGame.GROUND_BIT | PalidorGame.CREATURE_BOTTOM:
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
+                    ((Creature) fixA.getUserData()).onAGround(true);
+                } else {
+                    ((Creature) fixB.getUserData()).onAGround(true);
+                }
+                break;
+            case PalidorGame.OBJECT_BIT | PalidorGame.CREATURE_BOTTOM:
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
+                    ((Creature) fixA.getUserData()).onAGround(true);
+                } else {
+                    ((Creature) fixB.getUserData()).onAGround(true);
+                }
+                break;
+            case PalidorGame.CREATURE_BIT | PalidorGame.CREATURE_BOTTOM:
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
+                    ((Creature) fixA.getUserData()).moveUp();
+                } else {
+                    ((Creature) fixB.getUserData()).moveUp();
+                }
                 break;
 //            case PalidorGame.GROUND_BIT | PalidorGame.ACTIVITY_BIT:
 //                if (fixA.getFilterData().categoryBits == PalidorGame.GROUND_BIT){

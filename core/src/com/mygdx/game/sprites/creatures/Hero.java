@@ -1,5 +1,6 @@
 package com.mygdx.game.sprites.creatures;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
@@ -24,7 +25,7 @@ public class Hero extends Creature {
     public Array<AbilityID> summonAbilities = new Array<AbilityID> ();
 
     HashMap<String,String> GLOBAL_STATES;
-    HashMap<Integer, String> rivalOrganizations;
+    //HashMap<Integer, String> rivalOrganizations;
 
     public String currentLevel;
     public String previousLevel;
@@ -65,10 +66,10 @@ public class Hero extends Creature {
         this.experience= experience;
         this.money = money;
 
-        rivalOrganizations = new HashMap<Integer,String>();  // TODO detect rivals
-        rivalOrganizations.put(0,"1,2");
-        rivalOrganizations.put(1,"0,2");
-        rivalOrganizations.put(2,"0,1");
+//        rivalOrganizations = new HashMap<Integer,String>();  // TODO detect rivals
+//        rivalOrganizations.put(0,"1,2");
+//        rivalOrganizations.put(1,"0,2");
+//        rivalOrganizations.put(2,"0,1");
 
 //        weaponSprite = new WeaponSprite(this);
 //        armorSprite = new ArmorSprite(this);
@@ -100,7 +101,7 @@ public class Hero extends Creature {
     }
 
     public void selectAbility(AbilityID currentAbility) {
-        if(currentAbility.getType()!= AbilityType.BUFF){
+        if(currentAbility.getType()!= AbilityType.BUFF ){
                 if(!selectedAtackAbilities.contains(currentAbility, true) && selectedAtackAbilities.size<2)
                     selectedAtackAbilities.add(currentAbility);
                 else if(!selectedDefenseAbilities.contains(currentAbility, true) && selectedDefenseAbilities.size<2)
@@ -159,11 +160,14 @@ public class Hero extends Creature {
     }
 
     public void attack(boolean isAbility1, boolean isPower) {
+        //Gdx.app.log("" + isAbility1,""+isPower);
         if(isAbility1) {
             weaponSprite.isMoving = true;
             if (isPower) {
                 if (selectedAtackAbilities.size > 1)
                     useAbility(selectedAtackAbilities.get(1));
+                else
+                    useAbility(selectedAtackAbilities.get(0));
             } else {
                 if (selectedAtackAbilities.size > 0)
                     useAbility(selectedAtackAbilities.get(0));
@@ -173,6 +177,8 @@ public class Hero extends Creature {
             if (isPower) {
                 if (selectedDefenseAbilities.size > 1)
                     useAbility(selectedDefenseAbilities.get(1));
+                else
+                    useAbility(selectedDefenseAbilities.get(0));
             } else {
                 if (selectedDefenseAbilities.size > 0)
                     useAbility(selectedDefenseAbilities.get(0));
@@ -365,14 +371,14 @@ public class Hero extends Creature {
             case    WEAPON_SHIELD:
                 if(weapon1 != null && weapon1.equals(item)) {
                     weapon1 = null;
-                    weaponSprite.setPicture("hand");
+                    weaponSprite.setPicture("weapon_hand");
                     selectedAtackAbilities.clear();
                     if(abilities.contains(AbilityID.DODGE, true))
                         selectedAtackAbilities.add(AbilityID.DODGE);
                     inventory.add(item);
                 } else if (weapon2 != null && weapon2.equals(item)) {
                     weapon2 = null;
-                    weaponSprite2.setPicture("hand");
+                    weaponSprite2.setPicture("weapon_hand");
                     selectedDefenseAbilities.clear();
                     if(abilities.contains(AbilityID.DODGE, true))
                         selectedDefenseAbilities.add(AbilityID.DODGE);
@@ -426,27 +432,27 @@ public class Hero extends Creature {
             this.abilities.add(ability);
             this.cooldowns.put(ability,0d);
 
-            // special processing of skills
-            if(this.abilities.contains(AbilityID.DODGE, true)) {//TODO Add dodge
-                selectAbility(AbilityID.DODGE);
-                stats.jumphight.base = stats.jumphight.base + 1;
-                stats.jumphight.current = stats.jumphight.current + 1;
-            }
+//            // special processing of skills
+//            if(this.abilities.contains(AbilityID.DODGE, true)) {//TODO remove dodge
+//                selectAbility(AbilityID.DODGE);
+//                stats.jumphight.base = stats.jumphight.base + 1;
+//                stats.jumphight.current = stats.jumphight.current + 1;
+//            }
             if(this.abilities.contains(AbilityID.BARSKIN, true)) { //TODO Add health
                 stats.health.base = stats.health.base + 1;
                 stats.health.current = stats.health.current + 1;
             }
+
+            if(ability.getType() == AbilityType.SUMMON){
+                summonAbilities.add(ability);
+            }
+
         }
     }
 
     public Creature getNeighbor() {
         return closeNeighbor;
     }
-
-    public HashMap<Integer, String> getRivalOrganizations() {
-        return rivalOrganizations;
-    }
-
 
     public void removeMoney(String amount) {
         money = money - Integer.valueOf(amount);

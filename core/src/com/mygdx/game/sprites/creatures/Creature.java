@@ -38,6 +38,7 @@ public class Creature extends Sprite {
     public GameScreen screen;
 
     protected TextureRegion stand;
+    protected TextureRegion damaged;
     protected TextureRegion deadBody;
 
     TextureRegion region;
@@ -123,7 +124,9 @@ public class Creature extends Sprite {
     public Effect shieldEffect = null; // effect that will be applied to enemy who is trying to hit creature
     public String deathProcess = null;
     public TextureRegion icon;
+
     private boolean isHeavy = true;
+
     private boolean onAGround = false;
 
     private Animation cutAnimation;
@@ -136,11 +139,6 @@ public class Creature extends Sprite {
     Array<Float> animationStateTimers;
 
     public String program;
-
-
-    public CreatureStatus getStatusbar() {
-        return statusbar;
-    }
 
     public void resetTimeSpentOnCast() {
         this.timeSpentOnCast = 0;
@@ -247,23 +245,25 @@ public class Creature extends Sprite {
 
         if(description.id.contains("animal")) {
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
+            damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 7);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
             deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
             runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 1, 2);
             jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 3);
 
-            weaponSprite = new WeaponSprite(this, "paw", true);
-            weaponSprite2 = new WeaponSprite(this, "paw", false);
+            weaponSprite = new WeaponSprite(this, "weapon_paw", true);
+            weaponSprite2 = new WeaponSprite(this, "weapon_paw", false);
             armorSprite = new ArmorSprite(this);
         }else {
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
+            damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 7);
             deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
             runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 1, 2);
             jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 3);
 
-            weaponSprite = new WeaponSprite(this, "hand",true);
-            weaponSprite2 = new WeaponSprite(this, "hand", false);
+            weaponSprite = new WeaponSprite(this, "weapon_hand",true);
+            weaponSprite2 = new WeaponSprite(this, "weapon_hand", false);
             armorSprite = new ArmorSprite(this);
         }
 
@@ -359,11 +359,13 @@ public class Creature extends Sprite {
                 PalidorGame.ITEM_BIT |
                 PalidorGame.ACTIVITY_BIT |
                 PalidorGame.ATTACK_BIT|
-                PalidorGame.JUMP_POINT |
+                PalidorGame.JUMP_LEFT |
+                        PalidorGame.JUMP_RIGHT |
                 PalidorGame.MOVE_LEFT_POINT |
                 PalidorGame.MOVE_RIGHT_POINT|
                         PalidorGame.STAND_POINT|
                         PalidorGame.OBJECT_BIT|
+                        PalidorGame.CREATURE_BOTTOM|
                 PalidorGame.TRIGGER_POINT;
 
         body.createFixture(fixtureDef).setUserData(this);
@@ -377,11 +379,18 @@ public class Creature extends Sprite {
 //        //fixtureDef.filter.categoryBits = 1; can be collided anyone with this mask
 //        //fixtureDef.filter.maskBits = sda | asd | das - can collide with
 //
-//        EdgeShape arm = new EdgeShape();
-//        arm.set(new Vector2(-24 / PalidorGame.PPM, -24 / PalidorGame.PPM ), new Vector2(24 / PalidorGame.PPM, 24 / PalidorGame.PPM ));
-//        fixtureDef.shape = arm;
-//        fixtureDef.isSensor = true;
-//        body.createFixture(fixtureDef).setUserData(this);
+        EdgeShape bottom = new EdgeShape();
+        bottom.set(new Vector2(-10 / PalidorGame.PPM, -24 / PalidorGame.PPM ), new Vector2(10 / PalidorGame.PPM, -24 / PalidorGame.PPM ));
+        fixtureDef.shape = bottom;
+        fixtureDef.isSensor = true;
+
+        fixtureDef.filter.categoryBits = PalidorGame.CREATURE_BOTTOM;
+        fixtureDef.filter.maskBits =
+                PalidorGame.CREATURE_BIT|
+                        PalidorGame.GROUND_BIT |
+                        PalidorGame.OBJECT_BIT;
+
+        body.createFixture(fixtureDef).setUserData(this);
 
     }
 
@@ -468,30 +477,33 @@ public class Creature extends Sprite {
     public TextureRegion getFrame(float dt) {
         currentState = getState();
 
-        switch (currentState) {
+        if(!stuned) {
+            switch (currentState) {
 
-            case RUNNING:
-                region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
-                break;
-            case JUMPING:
-                region = (TextureRegion) jumpAnimation.getKeyFrame(stateTimer);
-                break;
-            case CASTING:
-                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, true);
-                //region = (TextureRegion) castAnimation.getKeyFrame(stateTimer, true);
-                break;
-            case KICKING:
-                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, false);
-                //region = (TextureRegion) kickAnimation.getKeyFrame(stateTimer, true);
-                break;
-            case SHOTING:
-                region = (TextureRegion)abilityToCastAnimation.getKeyFrame(stateTimer, false);
-                //region = (TextureRegion) shotAnimation.getKeyFrame(stateTimer, true);
-                break;
+                case RUNNING:
+                    region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, true);
+                    break;
+                case JUMPING:
+                    region = (TextureRegion) jumpAnimation.getKeyFrame(stateTimer);
+                    break;
+                case CASTING:
+                    region = (TextureRegion) abilityToCastAnimation.getKeyFrame(stateTimer, true);
+                    //region = (TextureRegion) castAnimation.getKeyFrame(stateTimer, true);
+                    break;
+                case KICKING:
+                    region = (TextureRegion) abilityToCastAnimation.getKeyFrame(stateTimer, false);
+                    //region = (TextureRegion) kickAnimation.getKeyFrame(stateTimer, true);
+                    break;
+                case SHOTING:
+                    region = (TextureRegion) abilityToCastAnimation.getKeyFrame(stateTimer, false);
+                    //region = (TextureRegion) shotAnimation.getKeyFrame(stateTimer, true);
+                    break;
 
-            default:
-                region = stand;
-        }
+                default:
+                    region = stand;
+            }
+        } else
+            region = damaged;
 
         //if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()){
         if (!directionRight && !region.isFlipX()){
@@ -612,8 +624,8 @@ public class Creature extends Sprite {
         this.brain.setMoveRight(b);
     }
 
-    public void setHasToJump(boolean hasToJump) {
-        this.brain.setHasToJump(hasToJump);
+    public void setHasToJump(boolean right, boolean hasToJump) {
+        this.brain.setHasToJump(right, hasToJump);
     }
 
     public void setStandStill(boolean b) {
@@ -630,8 +642,8 @@ public class Creature extends Sprite {
         return reputation;
     }
 
-    public boolean isEnemy(Creature creature) {
-        if(screen.getRivalOrganizations().get(this.organization).contains(String.valueOf(creature.getOrganization())))
+    public boolean isEnemy(Creature creature) {  // TODO isEnemy
+        if(screen.hero.getGlobalState(String.valueOf(this.organization)).contains(String.valueOf(creature.getOrganization())))
             return true;
         return false;
     }
@@ -651,11 +663,11 @@ public class Creature extends Sprite {
 //            body.getFixtureList().get(0).setDensity(10);
 //            body.resetMassData();
 
-            if ( currentState != State.JUMPING && currentState != State.FALLING && previousState != State.JUMPING && previousState != State.FALLING ) {
+            if ( onAGround ) {
                 //getBody().setLinearVelocity(0,0);
                 //getBody().applyLinearImpulse(new Vector2(directionRight?2*stats.speed.current:-2*stats.speed.current, (IN_BATTLE)?JUMP_BASE/2:JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
                 moveUp();
-                //onAGround(false);
+                onAGround(false);
             }
     }
 
@@ -674,7 +686,7 @@ public class Creature extends Sprite {
 //        if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING){
 //            resetTimeSpentOnCast();
 //        }
-        if(!stuned){
+        if(!stuned && abilityToCast == AbilityID.NONE){
             if(getBody().getLinearVelocity().y == 0){
             if(moveright && getBody().getLinearVelocity().x < 0.2 * stats.speed.current)
                 getBody().applyLinearImpulse(new Vector2( SPEED_BASE * stats.speed.current,0), getBody().getWorldCenter(), true);
@@ -700,6 +712,7 @@ public class Creature extends Sprite {
         if(!stuned)
         {
             if(checkCooldownExpired(ability)) {
+
                 abilityToCastExecutionTime = AbilityHandler.getAbilityCastTime(this, ability);
 
                 //if(abilityToCastExecutionTime > 0.2){
@@ -707,7 +720,7 @@ public class Creature extends Sprite {
                 //}
                 setAbilityToCast(ability);
             } else {
-                statusbar.addMessage( String.format("%s not ready: %.1f",ability.getName(),this.showWhenAbilityWillBeAvailable(ability)) , existingTime + 2d, Fonts.INFO);
+                statusbar.addMessage( String.format("%s not ready: %.1f",ability.getName(),this.showWhenAbilityWillBeAvailable(ability)) , existingTime + 1d, Fonts.INFO);
             }
         }
     }
@@ -984,11 +997,11 @@ public class Creature extends Sprite {
             case    WEAPON_SHIELD:
                 if(weapon1 != null) {
                     weapon1 = null;
-                    weaponSprite.setPicture("hand");
+                    weaponSprite.setPicture("weapon_hand");
             }
                 else if (weapon2 != null) {
                     weapon2 = null;
-                    weaponSprite2.setPicture("hand");
+                    weaponSprite2.setPicture("weapon_hand");
                 }
                 break;
             // TODO add all
@@ -1091,12 +1104,14 @@ public class Creature extends Sprite {
     // to status bar
     public void addStatusMessage(String message, Fonts font) {
         if(statusbar != null)
-            statusbar.addMessage(message, existingTime + 2f, font);
+            statusbar.addMessage(message, existingTime + 1f, font);
     }
 
     public void doDamage(int damageValue, EffectID damageType) {
         stats.health.current = stats.health.current - damageValue;
         addStatusMessage(String.valueOf(damageValue), Fonts.BAD);
+
+        //getBody().applyLinearImpulse(new Vector2(0,1), getBody().getWorldCenter(), true);
 
         switch (damageType){
             case CUT_DAMAGE:
@@ -1168,6 +1183,8 @@ public class Creature extends Sprite {
 
     public void removeShield() {
         shieldEffect = null;
+        weaponSprite.holding = false;
+        weaponSprite.resetState();
         weaponSprite2.holding = false;
         weaponSprite2.resetState();
     }
@@ -1184,7 +1201,7 @@ public class Creature extends Sprite {
         this.organization = organization;
     }
 
-//    public void onAGround(boolean val) {
-//        onAGround = val;
-//    }
+    public void onAGround(boolean val) {
+        onAGround = val;
+    }
 }

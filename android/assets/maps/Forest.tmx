@@ -43,12 +43,12 @@
  <objectgroup name="points">
   <object id="36" name="hero_Willage" x="56" y="592"/>
   <object id="37" name="hero_Seashore" x="3129" y="591"/>
-  <object id="53" name="move_left" x="449" y="585" width="29" height="23"/>
-  <object id="54" name="move_right" x="579" y="588" width="28" height="18"/>
-  <object id="55" name="move_left" x="1571" y="586" width="28" height="20"/>
-  <object id="56" name="move_right" x="1730" y="590" width="28" height="18"/>
-  <object id="57" name="move_left" x="2593" y="586" width="27" height="18"/>
-  <object id="58" name="move_right" x="2787" y="592" width="19" height="14"/>
+  <object id="53" name="ml" x="449" y="585" width="29" height="23"/>
+  <object id="54" name="mr" x="579" y="588" width="28" height="18"/>
+  <object id="55" name="ml" x="1571" y="586" width="28" height="20"/>
+  <object id="56" name="mr" x="1730" y="590" width="28" height="18"/>
+  <object id="57" name="ml" x="2593" y="586" width="27" height="18"/>
+  <object id="58" name="mr" x="2787" y="592" width="19" height="14"/>
  </objectgroup>
  <objectgroup name="triggers">
   <object id="34" name="route" x="3180" y="7" width="12" height="599">
@@ -56,7 +56,7 @@
     <property name="value" value="Seashore"/>
    </properties>
   </object>
-  <object id="35" name="route" x="5" y="4" width="3" height="584">
+  <object id="35" name="route" x="5" y="4" width="10" height="584">
    <properties>
     <property name="value" value="Willage"/>
    </properties>
@@ -69,13 +69,11 @@
  <objectgroup name="creatures">
   <object id="39" name="animal_bolfir" x="1408" y="143">
    <properties>
-    <property name="dialogs" value="106"/>
     <property name="organization" value="2"/>
    </properties>
   </object>
   <object id="40" name="animal_tordur" x="1267" y="395">
    <properties>
-    <property name="dialogs" value="106"/>
     <property name="organization" value="2"/>
    </properties>
   </object>

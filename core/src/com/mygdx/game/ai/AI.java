@@ -25,8 +25,12 @@ public class AI {
 
     private boolean moveLeft;
     private boolean moveRight;
-    private boolean standStill;
+
     boolean hasToJump;
+    boolean jumpRight;
+
+    private boolean standStill;
+
     boolean enemyIsNear = false;
     double timeToChangeDirection;
 
@@ -58,6 +62,7 @@ public class AI {
 
     private boolean isVisible(Creature mob) {
         return (mob.isEnemy(creature) //is enemy
+                && !mob.destroyed
                 && !mob.isHidden() // not hidden
           //      && ( mob.getBody().getPosition().x + creature.sight/PPM < creature.getBody().getPosition().x && mob.getBody().getPosition().x - creature.sight/PPM > creature.getBody().getPosition().x)); // visible
                 && ( mob.getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM && mob.getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM ));
@@ -161,9 +166,13 @@ public class AI {
                 result = CreatureAction.STOP;
 
 
-            if (isHasToJump() && targetY - 0.05 > creature.getY()) {
-                result = CreatureAction.JUMP;
-                setHasToJump(false);
+            if (isHasToJump() && targetY - 0.10 > creature.getY()) {
+                if(targetX > creature.getX() && jumpRight) { // on right
+                    result = CreatureAction.JUMP_RIGHT;
+                }else if(targetX < creature.getX() && !jumpRight) { //on left
+                    result = CreatureAction.JUMP_LEFT;
+                }
+                setHasToJump(false, false);
             }
 
             //reset program
@@ -191,7 +200,12 @@ public class AI {
                 if (!moveLeft)
                     creature.move(true);
                 break;
-            case JUMP:
+            case JUMP_LEFT:
+                creature.move(false);
+                creature.jump();
+                break;
+            case JUMP_RIGHT:
+                creature.move(true);
                 creature.jump();
                 break;
             case RANGE_ATACK:
@@ -251,7 +265,8 @@ public class AI {
     public boolean isHasToJump() {
         return hasToJump;
     }
-    public void setHasToJump(boolean hasToJump) {
+    public void setHasToJump(boolean right, boolean hasToJump) {
+        this.jumpRight = right;
         this.hasToJump = hasToJump;
     }
 
@@ -279,10 +294,14 @@ public class AI {
 
 
             if (currentStep == 'j') {
-                result = CreatureAction.JUMP;
+                result = CreatureAction.JUMP_LEFT;
                 timeForNextStep = creature.existingTime + timeMovementTakes;
             }
 
+            if (currentStep == 'i') {
+                result = CreatureAction.JUMP_RIGHT;
+                timeForNextStep = creature.existingTime + timeMovementTakes;
+            }
 
             if (currentStep == 'n') {//nothing
                 timeForNextStep = creature.existingTime + 1;

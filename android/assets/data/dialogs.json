@@ -45,7 +45,7 @@
     "replics": [
       {"id": 1 ,"text" : "Hi Son! \n Are you ready for final exam for STALKER?", "answers" : [ {"text":"What can you teach me?", "next":2}]},
       {"id": 2 ,"text" : "I may tell you about different ways \n to AVOID your enemies", "answers" :
-      [ {"text":"Teach me Agility (better jumps and running)", "next":3, "process":"S:AGILITY1;T:Mather:Lessons"},
+      [ {"text":"Teach me Agility (better jumps and run)", "next":3, "process":"S:AGILITY1;T:Mather:Lessons"},
         {"text":"Teach me Hide (hiding)", "next":3, "process":"S:MASK1;T:Mather:Lessons"},
         {"text":"Teach me Charisma (talk with others)", "next":3, "process":"S:CHARISMA1;T:Mather:Lessons"},
         {"text":"Teach me Inteligance (reading and using books)", "next":3, "process":"S:INTELLIGENCE1;IA:book_about_rolfs;T:Mather:Lessons"} ]},

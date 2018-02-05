@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="116">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="119">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="100" height="20">
   <data encoding="base64">
@@ -112,7 +112,10 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="entities"/>
+ <objectgroup name="entities">
+  <object id="116" name="axe_2" x="1454.59" y="351.109"/>
+  <object id="118" name="key_willage_1" x="3103.22" y="139.916"/>
+ </objectgroup>
  <objectgroup name="creatures">
   <object id="84" name="mark" x="2638.64" y="594.36">
    <properties>
@@ -138,6 +141,10 @@
   <object id="104" name="logus" x="2345.56" y="491.024"/>
  </objectgroup>
  <objectgroup name="objects">
-  <object id="98" name="door_willage_1" x="1382" y="323.39" width="19.7994" height="55.4382"/>
+  <object id="98" name="door_willage_1" x="1382" y="323.39" width="19.7994" height="55.4382">
+   <properties>
+    <property name="program" value="key_willage_1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -7,11 +7,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
  * Created by odiachuk on 1/16/18.
  */
 public enum Fonts {
-    INFO(Color.DARK_GRAY, 0.01f),
-    IMPORTANT(Color.BLACK, 0.01f),
+    INFO(Color.LIME, 0.01f),
+    IMPORTANT(Color.GOLD, 0.01f),
     BAD(Color.RED, 0.01f),
     GOOD(Color.GREEN, 0.01f),
-    NAMES(Color.GOLD, 0.01f);
+    NAMES(Color.GOLD, 0.01f),
+    HEADER(Color.GREEN, 0.02f );
     private BitmapFont font;
 
     Fonts(Color color, float scale) {

@@ -40,12 +40,15 @@ public class PalidorGame extends Game {
 	public static final short ITEM_BIT = 4;
 	public static final short CREATURE_BIT = 8;
 	public static final short ACTIVITY_BIT = 16;
-	public static final short JUMP_POINT = 32;
+	public static final short CREATURE_BOTTOM = 32;
 	public static final short TRIGGER_POINT = 64;
 	public static final short MOVE_RIGHT_POINT = 128;
 	public static final short MOVE_LEFT_POINT = 256;
 	public static final short STAND_POINT = 1024;
 	public static final short OBJECT_BIT = 512;
+	public static final short JUMP_RIGHT = 2048;
+	public static final short JUMP_LEFT = 4096;
+
 
 	@Override
 	public void create () {

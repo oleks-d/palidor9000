@@ -25,6 +25,14 @@
   },
 
   {
+    "id":"key_willage_1",
+    "name" : "Key from door",
+    "description" : "Key from some door",
+    "value" : "0",
+    "image" : "key1"
+  },
+
+  {
     "id":"coin",
     "name" : "Treasure",
     "description" : "Money,money,money...",
@@ -55,7 +63,7 @@
     "image" : "armor_green",
     "type" : "ARMOR",
     "effects": "MINUS_CUT_DAMAGE 0 1 0",
-    "picture" : "triangle_armor_red"
+    "picture" : "triangle_armor_gold"
   },
   {
     "id":"sword_of_ice",
@@ -68,21 +76,42 @@
   },
   {
     "id":"bow_1",
-    "name" : "Bow",
-    "description" : "Regular bow \n (Accuracy skill required)",
+    "name" : "Spear",
+    "description" : "Regular spear \n (Accuracy skill required)",
     "value" : "100",
     "image" : "bow",
-    "type" : "WEAPON_BOW"
-    "picture" : "spear_weapon",
+    "type" : "WEAPON_BOW",
+    "picture" : "weapon_spear"
   },
   {
     "id":"hummer_1",
     "name" : "Club",
     "description" : "Simple crushing weapon \n (Strenth skill required)",
     "value" : "100",
-    "image" : "hummer",
+    "image" : "hummer_blue",
     "type" : "WEAPON_HUMMER",
-    "picture" : "hummer_weapon",
+    "picture" : "weapon_hummer",
+    "effects": "PLUS_CRUSH_DAMAGE 0 1 0"
+  },
+  {
+    "id":"hummer_2",
+    "name" : "Club",
+    "description" : "Simple crushing weapon \n (Strenth skill required)",
+    "value" : "100",
+    "image" : "hummer_blue",
+    "type" : "WEAPON_HUMMER",
+    "picture" : "weapon_hummer2",
+    "effects": "PLUS_CRUSH_DAMAGE 0 2 0"
+  },
+  {
+    "id":"hummer_3",
+    "name" : "Club",
+    "description" : "Simple crushing weapon \n (Strenth skill required)",
+    "value" : "100",
+    "image" : "hummer_red",
+    "type" : "WEAPON_HUMMER",
+    "picture" : "weapon_hummer3",
+    "effects": "PLUS_CRUSH_DAMAGE 0 3 0"
   },
   {
     "id":"shield_1",
@@ -91,7 +120,7 @@
     "value" : "100",
     "image" : "shield",
     "type" : "WEAPON_SHIELD",
-    "picture" : "shield_weapon"
+    "picture" : "weapon_shield"
   },
   {
     "id":"axe_1",
@@ -99,7 +128,28 @@
     "description" : "Rusty axe \n (Strenth skill required)",
     "value" : "100",
     "image" : "axe",
-    "picture" : "axe_weapon",
+    "picture" : "weapon_axe",
+    "effects": "PLUS_CUT_DAMAGE 0 1 0",
+    "type" : "WEAPON_AXE"
+  },
+  {
+    "id":"axe_2",
+    "name" : "Good Axe",
+    "description" : "Good axe \n (Strenth skill required)",
+    "value" : "100",
+    "image" : "axe_blue",
+    "picture" : "weapon_axe2",
+    "effects": "PLUS_CUT_DAMAGE 0 2 0",
+    "type" : "WEAPON_AXE"
+  },
+  {
+    "id":"axe_3",
+    "name" : "Great Axe",
+    "description" : "Great axe \n (Strenth skill required)",
+    "value" : "100",
+    "image" : "axe_red",
+    "picture" : "weapon_axe3",
+    "effects": "PLUS_CUT_DAMAGE 0 3 0",
     "type" : "WEAPON_AXE"
   },
   {
@@ -109,8 +159,8 @@
     "value" : "100",
     "image" : "stuff_red",
     "type" : "WEAPON_MAGIC_FIRE",
-    "picture" : "fire_weapon",
-    "effects": ""
+    "picture" : "weapon_fire",
+    "effects": "PLUS_FIRE_DAMAGE 0 1 0"
   },
 
   {

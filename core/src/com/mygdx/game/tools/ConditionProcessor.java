@@ -1,6 +1,8 @@
 package com.mygdx.game.tools;
 
+import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.creatures.Hero;
@@ -139,6 +141,14 @@ public class ConditionProcessor {
 
                     case "SS": // SHAKE Earth
                         hero.screen.shake(Double.parseDouble(conditionKey));
+                        break;
+
+                    case "SC": // creature activate Creature
+                        hero.screen.creaturesToCreate.add(subcondition);
+                        break;
+
+                    case "WIN": // creature activate Creature
+                        hero.screen.gameWin(conditionKey);
                         break;
                 }
             }
