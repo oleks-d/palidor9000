@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
     double shakeTime = -4;
     boolean shakeRight = true;
 
-    boolean TO_RENDER = true;
+    boolean TO_RENDER = false;
     public RandomXS128 randomizer;
     public Array<String> creaturesToCreate;
 
@@ -659,19 +659,26 @@ public class GameScreen implements Screen {
 
             //levelmanager.background.draw(game.getBatch()); // TODO background
 
-        hero.draw(game.getBatch());
-
             //render all items
             for (GameItem item : levelmanager.ITEMS) {
                 if (!item.isDestroyed())
                     item.draw(game.getBatch());
             }
 
-            //render all enemies
-            for (Creature creature : levelmanager.CREATURES) {
-                creature.draw(game.getBatch());
-                //creature.weaponSprite.draw(game.getBatch());
-            }
+
+        //render all objects
+        for (GameObject object : levelmanager.OBJECTS) {
+            object.draw(game.getBatch());
+        }
+
+        //render hero
+        hero.draw(game.getBatch());
+
+        //render all enemies
+        for (Creature creature : levelmanager.CREATURES) {
+            creature.draw(game.getBatch());
+            //creature.weaponSprite.draw(game.getBatch());
+        }
 
         //render all summoned
         for (Creature creature : levelmanager.SUMMONED_CREATURES) {
@@ -679,10 +686,6 @@ public class GameScreen implements Screen {
             //creature.weaponSprite.draw(game.getBatch());
         }
 
-        //render all objects
-        for (GameObject object : levelmanager.OBJECTS) {
-            object.draw(game.getBatch());
-        }
             //render all activities
             for (ActivityWithEffect activity : levelmanager.ACTIVITIES) {
                 if (!activity.isDestroyed())
