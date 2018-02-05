@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
     double shakeTime = -4;
     boolean shakeRight = true;
 
-    boolean TO_RENDER = true;
+    boolean TO_RENDER = false;
     public RandomXS128 randomizer;
     public Array<String> creaturesToCreate;
 
@@ -731,6 +731,7 @@ public class GameScreen implements Screen {
 
             if (Gdx.app.getType() == Application.ApplicationType.Android)
                 controller.stage.draw();
+
         }
 
 
