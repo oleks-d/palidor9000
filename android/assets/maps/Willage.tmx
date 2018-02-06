@@ -121,24 +121,51 @@
    <properties>
     <property name="dialogs" value="105"/>
     <property name="items" value="coin"/>
+    <property name="organization" value="1"/>
    </properties>
   </object>
   <object id="96" name="father" x="1313.36" y="458.026">
    <properties>
     <property name="dialogs" value="101,102"/>
+    <property name="organization" value="1"/>
    </properties>
   </object>
   <object id="97" name="mather" x="1512.67" y="575.502">
    <properties>
     <property name="dialogs" value="103,104"/>
+    <property name="organization" value="1"/>
    </properties>
   </object>
-  <object id="99" name="erlok" x="1937.7" y="108.237"/>
-  <object id="100" name="arora" x="1804.38" y="461.985"/>
-  <object id="101" name="enika" x="1961.46" y="459.345"/>
-  <object id="102" name="lina" x="2031.41" y="208.553"/>
-  <object id="103" name="leok" x="1814.94" y="201.954"/>
-  <object id="104" name="logus" x="2345.56" y="491.024"/>
+  <object id="99" name="erlok" x="1937.7" y="108.237">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
+  <object id="100" name="arora" x="1804.38" y="461.985">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
+  <object id="101" name="enika" x="1961.46" y="459.345">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
+  <object id="102" name="lina" x="2031.41" y="208.553">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
+  <object id="103" name="leok" x="1814.94" y="201.954">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
+  <object id="104" name="logus" x="2345.56" y="491.024">
+   <properties>
+    <property name="organization" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="objects">
   <object id="98" name="door_willage_1" x="1382" y="323.39" width="19.7994" height="55.4382">

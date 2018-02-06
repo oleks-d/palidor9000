@@ -3,7 +3,7 @@
 
   {
     "id" : "animal_rolf",
-    "name" : "Belochka",
+    "name" : "Rolf",
     "description": "Regular rolf",
     "health" : "10",
     "speed" : "5",
@@ -14,7 +14,7 @@
 
   {
     "id" : "animal_bolfir",
-    "name" : "Zla lyudina",
+    "name" : "Bolfir",
     "description": "Fast bolfir",
     "health" : "10",
     "speed" : "8",
@@ -25,7 +25,7 @@
 
   {
     "id" : "animal_tordur",
-    "name" : "Bichok",
+    "name" : "Tordur",
     "description": "Strong tordur",
     "health" : "20",
     "speed" : "5",
@@ -49,8 +49,8 @@
 
   {
     "id" : "enemy_1",
-    "name" : "Testcase 1",
-    "description": "Enemy",
+    "name" : "Foreign soldier",
+    "description": "Foreign soldier",
     "health" : "20",
     "speed" : "5",
     "jump" : "10",
@@ -60,8 +60,8 @@
   },
   {
     "id" : "enemy_2",
-    "name" : "Testcase 2",
-    "description": "Enemy",
+    "name" : "Foreign spearsman",
+    "description": "Foreign spearsman",
     "health" : "5",
     "speed" : "8",
     "jump" : "10",
@@ -71,8 +71,8 @@
   },
   {
     "id" : "demon_1",
-    "name" : "BUGGG",
-    "description": "Enemy",
+    "name" : "Demon",
+    "description": "Demon",
     "health" : "20",
     "speed" : "5",
     "jump" : "10",

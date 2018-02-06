@@ -53,6 +53,10 @@ public class Hero extends Creature {
 
         this.selectedAtackAbilities = selectedAtackAbilities;
         this.selectedDefenseAbilities =selectedDefenseAbilities;
+        if(selectedAtackAbilities.size == 0)
+            selectedAtackAbilities.add(AbilityID.PUNCH);
+        if(selectedDefenseAbilities.size == 0)
+            selectedDefenseAbilities.add(AbilityID.PUNCH);
 
         this.summonAbilities = summonAbilities;
 
@@ -373,15 +377,17 @@ public class Hero extends Creature {
                     weapon1 = null;
                     weaponSprite.setPicture("weapon_hand");
                     selectedAtackAbilities.clear();
-                    if(abilities.contains(AbilityID.DODGE, true))
-                        selectedAtackAbilities.add(AbilityID.DODGE);
+                    selectedAtackAbilities.add(AbilityID.PUNCH);
+//                    if(abilities.contains(AbilityID.DODGE, true))
+//                        selectedAtackAbilities.add(AbilityID.DODGE);
                     inventory.add(item);
                 } else if (weapon2 != null && weapon2.equals(item)) {
                     weapon2 = null;
                     weaponSprite2.setPicture("weapon_hand");
                     selectedDefenseAbilities.clear();
-                    if(abilities.contains(AbilityID.DODGE, true))
-                        selectedDefenseAbilities.add(AbilityID.DODGE);
+                    selectedDefenseAbilities.add(AbilityID.PUNCH);
+//                    if(abilities.contains(AbilityID.DODGE, true))
+//                        selectedDefenseAbilities.add(AbilityID.DODGE);
                     inventory.add(item);
                 }
 

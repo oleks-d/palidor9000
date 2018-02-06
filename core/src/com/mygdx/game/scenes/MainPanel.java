@@ -65,7 +65,7 @@ public class MainPanel implements Disposable {
 
         stage = new Stage(viewport, sb);
 
-        gameTitle = new Label("Mighty Grisha", new Label.LabelStyle(Fonts.GAMEHEADER.getFont(), Color.GOLD));
+        gameTitle = new Label("YAG RPG", new Label.LabelStyle(Fonts.GAMEHEADER.getFont(), Color.GOLD));
 
         update();
     }
