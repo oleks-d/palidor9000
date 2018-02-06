@@ -392,8 +392,8 @@ public class ControllerPanel implements Disposable{
 //        tableAbilities = new Table();
 //        tableAbilities.right().bottom();
 //        tableAbilities.setFillParent(true);
-
-
+//
+//
 //        if(hero.selectedAtackAbilities.size>1) {
 //            ability1 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedAtackAbilities.get(0).getIcon()));
 //            ability1.addListener(new ClickListener() {
@@ -431,7 +431,7 @@ public class ControllerPanel implements Disposable{
 //                }
 //            });
 //        }
-//
+
 //        tableAbilities.row();
 //        tableAbilities.row().pad(10,10,10,10);
 //        tableAbilities.add();

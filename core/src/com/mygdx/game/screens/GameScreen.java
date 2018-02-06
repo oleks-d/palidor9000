@@ -754,6 +754,7 @@ public class GameScreen implements Screen {
 
             if (Gdx.app.getType() == Application.ApplicationType.Android)
                 controller.stage.draw();
+
         }
 
 
