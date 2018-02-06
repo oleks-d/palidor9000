@@ -56,8 +56,6 @@ public class PalidorGame extends Game {
 
 		batch = new SpriteBatch();
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-
 		setScreen(new MainMenuScreen(this));
 		//setScreen(new GameScreen(this, currentHero));
 	}

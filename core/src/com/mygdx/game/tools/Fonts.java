@@ -12,7 +12,8 @@ public enum Fonts {
     BAD(Color.RED, 0.01f),
     GOOD(Color.GREEN, 0.01f),
     NAMES(Color.GOLD, 0.01f),
-    HEADER(Color.GREEN, 0.02f );
+    HEADER(Color.GREEN, 0.02f ),
+    GAMEHEADER(Color.GREEN, 4f );
     private BitmapFont font;
 
     Fonts(Color color, float scale) {

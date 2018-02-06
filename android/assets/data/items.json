@@ -1,6 +1,15 @@
 {"items":[
 
   {
+    "id":"beer",
+    "name" : "Final Key",
+    "description" : "Final Key",
+    "value" : "0",
+    "image" : "red_bottle"
+  },
+
+
+  {
     "id":"key_99",
     "name" : "Final Key",
     "description" : "Final Key",

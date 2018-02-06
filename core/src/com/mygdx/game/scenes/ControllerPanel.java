@@ -216,7 +216,7 @@ public class ControllerPanel implements Disposable{
 
     private void updateDirections() {
 
-        controllerImage = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "controller.png"));
+        controllerImage = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "controller_small.png"));
         controllerImage.setSize(directionControllerSize, directionControllerSize);
 
         controllerImage.addListener(new InputListener(){
@@ -292,6 +292,20 @@ public class ControllerPanel implements Disposable{
             touchedRight = false;
             touchedLeft = false;
         }
+    }
+
+    private void checkDirectionsBasedOnCoords_old(float x, float y) {
+
+        if(x> 2*directionControllerSize3) {
+            touchedRight = true;
+            touchedLeft = false;
+        }else if(x< directionControllerSize3){
+            touchedRight = false;
+            touchedLeft = true;
+        } else {
+            touchedRight = false;
+            touchedLeft = false;
+        }
 
         if(y>2*directionControllerSize3){
             pressedUp = true;
@@ -322,6 +336,10 @@ public class ControllerPanel implements Disposable{
 
         if(y> directionControllerSize3 && y< 2*directionControllerSize3 && x> 2*directionControllerSize3 ) {
             touchedAbility2 = true;
+        }
+
+        if(x> directionControllerSize3 && x< 2*directionControllerSize3 && y<directionControllerSize3) {
+            touchedUse = true;
         }
 
     }
@@ -371,76 +389,76 @@ public class ControllerPanel implements Disposable{
         }
 
 
-        tableAbilities = new Table();
-        tableAbilities.right().bottom();
-        tableAbilities.setFillParent(true);
+//        tableAbilities = new Table();
+//        tableAbilities.right().bottom();
+//        tableAbilities.setFillParent(true);
 
 
-        if(hero.selectedAtackAbilities.size>1) {
-            ability1 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedAtackAbilities.get(0).getIcon()));
-            ability1.addListener(new ClickListener() {
-
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    pressedAbility1 = true;
-                    touchedAbility1 = true;
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    touchedAbility1 = false;
-                    pressedAbility1 = false;
-                }
-            });
-        }
-
-        if(hero.selectedDefenseAbilities.size>1) {
-            ability2 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedDefenseAbilities.get(0).getIcon()));
-            ability2.addListener(new ClickListener() {
-
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    pressedAbility2 = true;
-                    touchedAbility2 = true;
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    touchedAbility2 = false;
-                    pressedAbility2 = false;
-                }
-            });
-        }
-
-        tableAbilities.row();
-        tableAbilities.row().pad(10,10,10,10);
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.add(jumpImage);
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.row().pad(10,10,10,10);
-        if(ability1 != null)
-        tableAbilities.add(ability1);
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.add();
-        if(ability2 != null)
-        tableAbilities.add(ability2);
-        tableAbilities.row().pad(10,10,10,10);
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.add(useImage);
-        tableAbilities.add();
-        tableAbilities.add();
-        tableAbilities.row();
-        tableAbilities.row().pad(10,10,10,10);
-        tableAbilities.add();
+//        if(hero.selectedAtackAbilities.size>1) {
+//            ability1 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedAtackAbilities.get(0).getIcon()));
+//            ability1.addListener(new ClickListener() {
+//
+//                @Override
+//                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+//                    pressedAbility1 = true;
+//                    touchedAbility1 = true;
+//                    return true;
+//                }
+//
+//                @Override
+//                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+//                    touchedAbility1 = false;
+//                    pressedAbility1 = false;
+//                }
+//            });
+//        }
+//
+//        if(hero.selectedDefenseAbilities.size>1) {
+//            ability2 = new Image(animhelper.getTextureRegionByIDAndIndex(hero.selectedDefenseAbilities.get(0).getIcon()));
+//            ability2.addListener(new ClickListener() {
+//
+//                @Override
+//                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+//                    pressedAbility2 = true;
+//                    touchedAbility2 = true;
+//                    return true;
+//                }
+//
+//                @Override
+//                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+//                    touchedAbility2 = false;
+//                    pressedAbility2 = false;
+//                }
+//            });
+//        }
+//
+//        tableAbilities.row();
+//        tableAbilities.row().pad(10,10,10,10);
+//        tableAbilities.add();
+//        tableAbilities.add();
+//        tableAbilities.add(jumpImage);
+//        tableAbilities.add();
+//        tableAbilities.add();
+//        tableAbilities.row().pad(10,10,10,10);
+//        if(ability1 != null)
+//        tableAbilities.add(ability1);
+//        tableAbilities.add();
+//        tableAbilities.add();
+//        tableAbilities.add();
+//        if(ability2 != null)
+//        tableAbilities.add(ability2);
+//        tableAbilities.row().pad(10,10,10,10);
+//        tableAbilities.add();
+//        tableAbilities.add();
+//        tableAbilities.add(useImage);
+//        tableAbilities.add();
+//        tableAbilities.add();
+//        tableAbilities.row();
+//        tableAbilities.row().pad(10,10,10,10);
+//        tableAbilities.add();
 
         stage.addActor(tableButtons);
-        stage.addActor(tableAbilities);
+        //stage.addActor(tableAbilities);
         stage.addActor(tableController);
 
         stage.addActor(tableSummon);

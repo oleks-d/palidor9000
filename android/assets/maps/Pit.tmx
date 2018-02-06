@@ -106,10 +106,10 @@
     <property name="condition" value="T:NEXT:1"/>
    </properties>
   </object>
-  <object id="40" name="spikes_down" x="433.5" y="607" width="108" height="15">
+  <object id="40" name="spikes_down" x="434.5" y="627" width="108" height="9">
    <properties>
     <property name="condition" value="T:NEXT:2"/>
-    <property name="program" value="uuuudddd"/>
+    <property name="program" value="uuudddd"/>
    </properties>
   </object>
   <object id="41" name="cavern_door" x="851" y="547" width="56" height="56">

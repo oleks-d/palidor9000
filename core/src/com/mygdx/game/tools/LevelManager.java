@@ -157,10 +157,14 @@ public class LevelManager implements Disposable{
         }
     }
 
-    public void createItemObject(com.mygdx.game.screens.GameScreen screen, MapObject object) {
+    public void createItemObject(GameScreen screen, MapObject object) {
         Gdx.app.log("Loading", object.getName());
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
         ITEMS.add(new GameItem(screen, rect.getX(), rect.getY(), ITEMS_DESCRIPTIONS.get(object.getName())));
+    }
+
+    public void createItemObject(GameScreen screen, float x, float y, String object) {
+        ITEMS.add(new GameItem(screen, x,y, ITEMS_DESCRIPTIONS.get(object)));
     }
 
     public void createCreature(GameScreen screen, MapObject object) {

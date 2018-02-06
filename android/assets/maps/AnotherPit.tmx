@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="83">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="87">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="30" height="20">
   <data encoding="base64">
@@ -33,17 +33,24 @@
   <object id="27" name="hero_Pit" x="127" y="536"/>
   <object id="42" name="mr" x="548" y="577" width="36" height="25"/>
   <object id="43" name="ml" x="344" y="578" width="39" height="26"/>
-  <object id="81" name="jl" x="595" y="590" width="28" height="10"/>
-  <object id="79" name="jr" x="318" y="589" width="34" height="11"/>
+  <object id="81" name="jl" x="559" y="590" width="64" height="10"/>
+  <object id="79" name="jr" x="318" y="589" width="53" height="11"/>
  </objectgroup>
  <objectgroup name="triggers">
   <object id="57" name="step" x="43.5" y="257.5" width="339" height="19">
    <properties>
     <property name="condition" value="NT:FINAL:BOSS"/>
     <property name="key" value="FINAL"/>
-    <property name="process" value="SS:2;SC:demon_1:500,300,9"/>
+    <property name="process" value="SS:2;SC:demon_1:496,500,9;SI:beer:496,590"/>
     <property name="text" value="Ground are shaking"/>
     <property name="value" value="BOSS"/>
+   </properties>
+  </object>
+  <object id="85" name="step" x="470" y="99" width="57" height="14">
+   <properties>
+    <property name="condition" value="I:beer"/>
+    <property name="process">WIN:You found a key! 
+ HAPPY BIRTHDAY MIGHTY GRISHA</property>
    </properties>
   </object>
  </objectgroup>

@@ -1,5 +1,6 @@
 package com.mygdx.game.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.math.Rectangle;
@@ -73,8 +74,6 @@ public class MainMenuScreen implements Screen {
         //set camera to center
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
-
-
     }
 
 
@@ -106,13 +105,15 @@ public class MainMenuScreen implements Screen {
     @Override
     public void render(float delta) {
 
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         camera.update();
         game.getBatch().setProjectionMatrix(mainPanel.stage.getCamera().combined);
         mainPanel.stage.draw();
         //mainPanel.stage.act();
 
-//        Gdx.gl.glClearColor(0, 0, 0, 1);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 //
 //        game.getBatch().setProjectionMatrix(camera.combined);
 //        game.getBatch().begin();

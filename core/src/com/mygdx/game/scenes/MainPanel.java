@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.tools.Fonts;
 import com.mygdx.game.tools.LevelManager;
 
 import java.io.File;
@@ -35,10 +36,13 @@ public class MainPanel implements Disposable {
     Table table;
     Table savedHeroes;
     Table heroTypes;
+    Table titleTable;
 
     Array<Label> heroNames;
 
     TextField usernameTextField;
+
+    Label gameTitle;
 
     Image start;
     Image background;
@@ -61,10 +65,19 @@ public class MainPanel implements Disposable {
 
         stage = new Stage(viewport, sb);
 
+        gameTitle = new Label("Mighty Grisha", new Label.LabelStyle(Fonts.GAMEHEADER.getFont(), Color.GOLD));
+
         update();
     }
 
     void update() {
+
+        titleTable = new Table();
+        titleTable.setFillParent(true);
+        titleTable.top();
+        titleTable.row().pad(10,200,10,10);
+        titleTable.add(gameTitle);
+
 
         table = new Table();
         table.setFillParent(true);
@@ -89,7 +102,7 @@ public class MainPanel implements Disposable {
         heroName = "";
 
 
-        newHero = new Label("New hero", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        newHero = new Label("Set New hero name and click Start", new Label.LabelStyle(new BitmapFont(), Color.RED));
 
 
         selectHero = new Label("Select hero", new Label.LabelStyle(new BitmapFont(), Color.RED));
@@ -151,6 +164,8 @@ public class MainPanel implements Disposable {
             savedHeroes.add();
         }
 
+
+
         heroTypes.row().pad(10,100,10,10);
         heroTypes.add(newHero);
         heroTypes.row();
@@ -188,6 +203,7 @@ public class MainPanel implements Disposable {
 
         stage.addActor(background);
         stage.addActor(heroTypes);
+        stage.addActor(titleTable);
         stage.addActor(savedHeroes);
         stage.addActor(table);
 

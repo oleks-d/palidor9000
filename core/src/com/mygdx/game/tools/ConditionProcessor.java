@@ -147,6 +147,10 @@ public class ConditionProcessor {
                         hero.screen.creaturesToCreate.add(subcondition);
                         break;
 
+                    case "SI": // creature activate Creature
+                        hero.screen.itemsToCreate.add(subcondition);
+                        break;
+
                     case "WIN": // creature activate Creature
                         hero.screen.gameWin(conditionKey);
                         break;

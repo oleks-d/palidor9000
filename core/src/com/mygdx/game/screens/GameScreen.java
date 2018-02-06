@@ -45,6 +45,8 @@ public class GameScreen implements Screen {
 
     public Hero hero;
 
+    boolean GAME_FINISHED = false;
+
     public World world;
 
     OrthographicCamera camera;
@@ -110,7 +112,10 @@ public class GameScreen implements Screen {
 
     boolean TO_RENDER = false;
     public RandomXS128 randomizer;
+
+
     public Array<String> creaturesToCreate;
+    public Array<String> itemsToCreate;
 
     public GameScreen(PalidorGame game, String heroName){
         this(game,heroName,null);
@@ -152,6 +157,7 @@ public class GameScreen implements Screen {
         levelmanager.loadLevel(hero.currentLevel, hero.name);
 
         creaturesToCreate = new Array<String>();
+        itemsToCreate = new Array<String>();
 
         //penels
         dialogPanel = new DialogPanel(game.getBatch(), this);
@@ -192,14 +198,14 @@ public class GameScreen implements Screen {
 
         // handle camera after hero position update // TODO check for upper corner
 
-            if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 )
+//            if (hero.getBody().getPosition().x > viewport.getWorldWidth() / 2 )
                 camera.position.x = (hero.getBody().getPosition().x );
-            else
-                camera.position.x = viewport.getWorldWidth() / 2;
-            if (hero.getBody().getPosition().y > viewport.getWorldHeight() / 2)
+//            else
+//                camera.position.x = viewport.getWorldWidth() / 2;
+//            if (hero.getBody().getPosition().y > viewport.getWorldHeight() / 2)
                 camera.position.y = (hero.getBody().getPosition().y );
-            else
-                camera.position.y = viewport.getWorldHeight() / 2;
+//            else
+//                camera.position.y = viewport.getWorldHeight() / 2;
 
         if(shakeTime > hero.existingTime)
             if(shakeRight) {
@@ -247,6 +253,20 @@ public class GameScreen implements Screen {
                     hero.screen.levelmanager.createCreature(hero.screen, newCreatureX, newCreatureY, typeOfCreature, newCreatureOrg );
                 };
                 creaturesToCreate.clear();
+
+            }
+
+
+            //summon item
+            if(itemsToCreate.size > 0) {
+                for(String line : itemsToCreate) {
+                    String typeOfItem = line.split(":")[1];
+                    String conditionValue = line.split(":")[2];
+                    float newItemX = Float.valueOf(conditionValue.split(",")[0]);
+                    float newItemY = Float.valueOf(conditionValue.split(",")[1]);
+                    hero.screen.levelmanager.createItemObject(hero.screen, newItemX, newItemY, typeOfItem );
+                };
+                itemsToCreate.clear();
 
             }
 
@@ -647,8 +667,8 @@ public class GameScreen implements Screen {
 
         update(delta);
 
-            Gdx.gl.glClearColor(0, 0, 1, 0);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
             //maprenderer.render(); // show map
         maprenderer.render(layersToRender);
@@ -741,10 +761,10 @@ public class GameScreen implements Screen {
                 game.setScreen(new GameOverScreen(game));
                 dispose();
             }
-//            if (gameWin()) {
-//                game.setScreen(new VictoryScreen(game));
-//                dispose();
-//            }
+            if (GAME_FINISHED) {
+                game.setScreen(new VictoryScreen(game));
+                dispose();
+            }
         if (STOP_GAME) {
             game.setScreen(new com.mygdx.game.screens.MainMenuScreen(game));
             dispose();
@@ -768,10 +788,10 @@ public class GameScreen implements Screen {
 //            }
 //        }
             PalidorGame.gameDetails = message;
-            game.setScreen(new VictoryScreen(game));
-            dispose();
+            GAME_FINISHED = true;
 
-        return false;
+
+        return true;
     }
 
     @Override
