@@ -38,6 +38,7 @@ public class Creature extends Sprite {
     public GameScreen screen;
 
     protected TextureRegion stand;
+    protected TextureRegion hideStand;
     protected TextureRegion damaged;
     protected TextureRegion deadBody;
 
@@ -84,6 +85,7 @@ public class Creature extends Sprite {
     public double existingTime;
     public boolean stuned;
     public boolean hidden;
+    double wasHidden;
     public boolean IN_BATTLE;
     public String id;
 
@@ -245,6 +247,7 @@ public class Creature extends Sprite {
 
         if(description.id.contains("animal")) {
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
+            hideStand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 8);
             damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 7);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
             deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
@@ -256,6 +259,7 @@ public class Creature extends Sprite {
             armorSprite = new ArmorSprite(this);
         }else {
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
+            hideStand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 8);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
             damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 7);
             deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 6);
@@ -505,6 +509,9 @@ public class Creature extends Sprite {
         } else
             region = damaged;
 
+        if(hidden)
+            region =  hideStand;
+
         //if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()){
         if (!directionRight && !region.isFlipX()){
             region.flip(true, false);
@@ -678,6 +685,7 @@ public class Creature extends Sprite {
 
     public void moveUp() {
         getBody().applyLinearImpulse(new Vector2(0, JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
+        //Gdx.app.log("","'"+stats.jumphight.current);
         //currentState = State.JUMPING;
     }
 
@@ -755,13 +763,16 @@ public class Creature extends Sprite {
     }
 
     public boolean isHidden() {
+        if(!hidden && wasHidden + 0.5 > existingTime) // 0.5 sec added to avaid Instance detection
+            return true;
         return hidden;
     }
 
     public void setInvisible(boolean b) {
-        if(!b) {
+        if(hidden && !b) {
+            wasHidden = existingTime;
             removeEffectByID(EffectID.INVISIBLE);
-            lockAbility(AbilityID.MASK);
+            //lockAbility(AbilityID.MASK);
         }
         hidden = b;
     }
@@ -852,8 +863,8 @@ public class Creature extends Sprite {
 
         //check if effect is still active
         for(int i = 0; i < activeEffects.size; i++){
-            if(effect.equals(activeEffects.get(i)) ){
-                activeEffects.removeIndex(i);
+            if(effect.equals(activeEffects.get(i).id) ){
+                activeEffects.get(i).removeTime = existingTime;
                 break;
             }
         }
@@ -938,6 +949,7 @@ public class Creature extends Sprite {
             case ARMOR:
                 armor = item;
                 armorSprite.setPicture(item.getPicture());
+                this.stats.jumphight.current = this.stats.jumphight.current - 1;
                 break;
             // TODO add all
             case WEAPON_MAGIC_ICE:
@@ -983,6 +995,7 @@ public class Creature extends Sprite {
             case ARMOR:
                 armor = null;
                 armorSprite.setPicture(null);
+                this.stats.jumphight.current = this.stats.jumphight.current + 1;
                 break;
             case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:

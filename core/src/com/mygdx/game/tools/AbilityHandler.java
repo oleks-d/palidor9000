@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.enums.ActivityAreaType;
 import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
@@ -261,22 +262,34 @@ public class AbilityHandler {
                 results.add(result);
                 screen.shake(2);
                 break;
-            case SHOUT:
-                creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 15f, 1f, 0f));
-                creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 15f, 1f, 0f));
-                break;
-            case POWER_SHOUT: //TODO
-                creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 30f, 1f, 0f));
-                creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 30f, 1f, 0f));
-                break;
+//            case SHOUT:
+//                creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 15f, 1f, 0f));
+//                creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 15f, 1f, 0f));
+//                break;
+//            case POWER_SHOUT: //TODO
+//                creature.applyEffect(new Effect(EffectID.PLUS_CRUSH_DAMAGE, 30f, 1f, 0f));
+//                creature.applyEffect(new Effect(EffectID.PLUS_CUT_DAMAGE, 30f, 1f, 0f));
+//                break;
             case COVER:
                 creature.applyEffect(new Effect(EffectID.COVERED_BY_SHIELD, 1f, 1f, 0f));
                 creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
                 break;
-            case DODGE:
-                creature.applyEffect(new Effect(EffectID.DODGE, 1f, 1f, 0f));
-                //creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
+            case BARSKIN:
+                creature.applyEffect(new Effect(EffectID.MINUS_CRUSH_DAMAGE, 15f, 3f, 0f));
+                creature.applyEffect(new Effect(EffectID.MINUS_CUT_DAMAGE, 15f, 3f, 0f));
+                creature.applyEffect(new Effect(EffectID.MINUS_FIRE_DAMAGE, 15f, 3f, 0f));
+                creature.applyEffect(new Effect(EffectID.MINUS_ICE_DAMAGE, 15f, 3f, 0f));
                 break;
+            case FULLPROTECTION:
+                creature.applyEffect(new Effect(EffectID.MINUS_CRUSH_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.MINUS_CUT_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.MINUS_FIRE_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.MINUS_ICE_DAMAGE, 15f, 6f, 0f));
+                break;
+//            case DODGE: // TODO not used
+//                creature.applyEffect(new Effect(EffectID.DODGE, 1f, 1f, 0f));
+//                //creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
+//                break;
 
             case ANIMAL_DASH:
             case DASH:
@@ -305,7 +318,7 @@ public class AbilityHandler {
 
                 break;
             case HASTE:
-                creature.applyEffect(new Effect(EffectID.FAST, 15f, 2f, 0f));
+                creature.applyEffect(new Effect(EffectID.FAST, 15f, 10f, 0f));
                 break;
             case LONGBOW_SHOT:
 
@@ -483,7 +496,7 @@ public class AbilityHandler {
                 activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
                 activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
 
-                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
+                direction = new Vector2((creature.direction.x * 2f), creature.direction.y * 2f );
 
                 result = new ActivityWithEffect(
                         screen,
@@ -501,8 +514,14 @@ public class AbilityHandler {
                 creature.applyEffect(new Effect(EffectID.COVERED_BY_FIRE_SHIELD, 1f, 1f, 0f));
                 creature.shieldEffect = new Effect (EffectID.FIRE_DAMAGE, 3,3,0);
                 break;
-            case MASK:
-                creature.applyEffect(new Effect(EffectID.INVISIBLE, 0f, 0f, 0f));
+            case MASK1:
+                creature.applyEffect(new Effect(EffectID.INVISIBLE, 5f, 0f, 0f));
+                break;
+            case MASK2:
+                creature.applyEffect(new Effect(EffectID.INVISIBLE, 10f, 0f, 0f));
+                break;
+            case MASK3:
+                creature.applyEffect(new Effect(EffectID.INVISIBLE, 15f, 0f, 0f));
                 break;
             case PICKPOCKET:
 
@@ -740,5 +759,169 @@ public class AbilityHandler {
                 //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
                 return screen.animationHelper.getAnimationByID(spritesheetRegion, abilityToCast.getCastTime()/4, 4, 4, 4, 5);
         }
+    }
+
+    public static void explosion(GameScreen screen, Creature creature, float x, float y) {
+
+        Array<ActivityWithEffect> results = new Array<ActivityWithEffect>();
+        ActivityWithEffect result = null;
+
+        Array<Effect> activeEffects = new Array<Effect>();
+        Vector2 direction;
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(3f,0f);
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(3,3);
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(3,-3);
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(0,3);
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(0,-3 );
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(-3, 3);
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(-3, 0);
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+
+        direction = new Vector2(-3, -3 );
+
+        result = new ActivityWithEffect(
+                screen,
+                x + creature.direction.x* PalidorGame.TILE_SIZE,
+                y + creature.direction.y* PalidorGame.TILE_SIZE,
+                activeEffects,
+                ActivityAreaType.ARROW,
+                direction,
+                "firewall", false); //TODO anim
+
+        result.setCreatedBy(creature);
+        results.add(result);
+
+
+        screen.activitiesToCreate.addAll(results);
     }
 }

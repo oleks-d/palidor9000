@@ -3,6 +3,8 @@ package com.mygdx.game.tools;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.EffectID;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
@@ -83,6 +85,10 @@ public class WorldContactListener implements ContactListener {
                                     target.setIN_BATTLE(true);
                                 }
                             }
+                            //backstub  TODO fix
+                            if(act.createdBy.getAbilities().contains(AbilityID.BACKSTUB, false) && ((target.directionRight && act.createdBy.directionRight) || (!target.directionRight && !act.createdBy.directionRight)))
+                                target.applyEffect( new Effect(EffectID.POISON, 0.01f, 5f, 0f) );
+
                         } else {
                             target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
                         }
@@ -95,6 +101,15 @@ public class WorldContactListener implements ContactListener {
                     act.onHit(target);
                 }
                 break;
+
+            case PalidorGame.GROUND_BIT | PalidorGame.ACTIVITY_BIT:
+                if (fixA.getFilterData().categoryBits == PalidorGame.ACTIVITY_BIT) {
+                    ((ActivityWithEffect) fixA.getUserData()).onHit();
+                } else {
+                   ((ActivityWithEffect) fixB.getUserData()).onHit();
+                }
+                break;
+
             case PalidorGame.CREATURE_BIT | PalidorGame.ITEM_BIT:
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).addToInventory(((GameItem) fixB.getUserData()));

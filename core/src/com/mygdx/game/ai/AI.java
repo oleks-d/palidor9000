@@ -1,5 +1,6 @@
 package com.mygdx.game.ai;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -128,6 +129,7 @@ public class AI {
                 shortestDistanceToEnemy = curDistanceToEnemy;
                 targetX = mob.getX();
                 targetY = mob.getY();
+                mob.setIN_BATTLE(true);
             }
         }
     }
@@ -245,6 +247,7 @@ public class AI {
                 break;
             }
 
+           //Gdx.app.log(creature.directionRight + "", result.toString());
     }
 
 

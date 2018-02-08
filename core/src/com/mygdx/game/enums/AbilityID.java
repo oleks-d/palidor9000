@@ -8,19 +8,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 public enum AbilityID{
     NONE("Nope", "None", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0f, 0f),
-
     PUNCH("Punch",  "Melee strike", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 1f, 1f ),
 
 
-    DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.1f , 10f),
-
-
-//    PUSH("Push","Push forward","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.BOX, 0.1f , 60f),
-//    PULL("Pull","Pull to me","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.ARROW, 0.1f , 60f),
-
     HUMMER_SWING("Smash",  "Melee strike \n (crush damage)", "hummer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 0.5f ),
 //    AXE_SWING("Axe swing",  "Melee strike", "axe", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
-    SWORD_SWING("Swing",  "Melee strike \n (cut damage)", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.3f, 0.5f ),
+    SWORD_SWING("Swing",  "Melee strike \n (cut damageexplosion)", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.3f, 0.5f ),
+
+    DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.1f , 10f),
 
     HUMMER_SMASH("Total SMASH",  "Stunning Melee strike (use Smash twice) \n (stun 3 sec)", "hummer_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 1f, 10f ),
 //    AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
@@ -44,27 +39,29 @@ public enum AbilityID{
     BARSKIN("Barskin", "Add protectoin against any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
     FULLPROTECTION("Fullprotection", "Immune to any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
 
-    //TODO shouts should depend on weapon in hands
-    SHOUT("Shout", "Makes you stronger" , "icon_cross", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 0.1f, 30f),
-    POWER_SHOUT("Power shout", "Makes you muuuch stronger", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.BIGBOX, 0.1f, 60f),
-    TRADE("Trade", "Sell item on a full price", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
+//    //TODO shouts should depend on weapon in hands
+//    SHOUT("Shout", "Makes you stronger" , "icon_cross", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 0.1f, 30f),
+//    POWER_SHOUT("Power shout", "Makes you muuuch stronger", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.BIGBOX, 0.1f, 60f),
+//    TRADE("Trade", "Sell item on a full price", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
 
     FIREWALL("Firewall", "Wall of fire in specified direction \n (fire damage)", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 1f, 1f),
     ICEWALL("Icewall", "Ice", "ice_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.SPRAY, 0.1f, 0.1f),
-    FIRESHIELD("Fireshield", "Shield of fire \n Enemy that will atack you will get fire damage", "shield_red", State.CASTING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.SELF, 0.1f, 3f),
-    ICESHIELD("Iceshield", "Iceshield", "shield", State.CASTING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.SELF, 0.1f, 3f),
+    FIRESHIELD("Fireshield", "Shield of fire \n Enemy that will atack you will get fire damage", "shield_red", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 3f),
+    ICESHIELD("Iceshield", "Shield of ice \n Enemy that will atack you will became slower", "shield", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 3f),
     FIREBALL("Fireball", "Explosion", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.BOOM, 0.1f, 0.1f),
     ICESTORM("Icestorm", "Icestorm", "fire_icon", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.BOOM, 0.1f, 0.1f),
 
 
-    MASK("Hide", "Hide from everyone (DOUBLE CLICK USE)\n (touch to other creature or usage of any ability will remove Hide)", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    MASK1("Hide", "Hide from everyone (DOUBLE CLICK USE)\n (touch to other creature or usage of any ability will remove Hide)", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    MASK2("Greater Hide", "Hide from everyone (DOUBLE CLICK USE)\n (touch to other creature or usage of any ability will remove Hide)", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    MASK3("Master of shadows", "Hide from everyone (DOUBLE CLICK USE)\n (touch to other creature or usage of any ability will remove Hide)", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
     PICKPOCKET("Pickpocket", "Steal item from creature (DOUBLE CLICK USE in Hidden mode)\n", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
-    SILENT_STRIKE("Silent strike", "Double damage from behind", "sword", State.KICKING, AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 60f),
+//    SILENT_STRIKE("Silent strike", "Double damage from behind", "sword", State.KICKING, AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 60f),
 
-    JUMP_BACK("Jump back","Run backward","icon_blank", State.STANDING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
-    FLY("Fly","Falling slower","icon_blank", State.CASTING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
-    INVISIBILITY("Invisibility", "Hide from everyone", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 10f),
-    TIMESTOP("Timestop", "You are moving toooo fast", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
+//    JUMP_BACK("Jump back","Run backward","icon_blank", State.STANDING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
+//    FLY("Fly","Falling slower","icon_blank", State.CASTING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
+//    INVISIBILITY("Invisibility", "Hide from everyone", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 10f),
+//    TIMESTOP("Timestop", "You are moving toooo fast", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
     //TELEPORT("Teleport", "Move to ", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
 
 
@@ -83,7 +80,26 @@ public enum AbilityID{
     ANIMAL_SHIELD("Covering wit shell", "Cover with shell", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.BOX, 0.1f, 3f),
     ACID_SHOT("Splash", "Acid arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.4f, 0.5f ),
     SPIKE_SHOT("Showing spikes", "Spike arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.3f, 0.5f ),
-    ANIMAL_DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.7f , 10f);
+    ANIMAL_DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.7f , 10f),
+
+    BACKSTUB("Backstub", "Damage made in a back" , "sword_red" , State.KICKING , AbilityType.BUFF ,ActivityAreaType.BOX, 1f , 1f),
+    DISAPPEAR("Disappear", "Hide from everyone in combat", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+
+
+    SEEING_DETAILS("Seeing details", "See strength and weeknesses of creature" , "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    DIALOG_FEAR("Intimidate", "Intimidate in dialogs" , "icon_blank" , State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    DIALOG_USE_WISDOM("Wisdm", "Share wisdom in dialogs" , "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    DIALOG_MAKE_COME("Soothe", "Show support in dialogs" ,"icon_blank" , State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    DIALOG_LYING("Lying", "Lie in dialogs" ,"icon_blank" ,  State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    DIALOG_TRADE("Trading", "Trade in dialogs" , "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+
+    LEADERSHIP("Leadersip", "Allows to have a followers" , "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    GREAT_LEADERSHIP("Great leadersip", "Allows to have strong followers", "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    GREATEST_LEADERSHIP("Greater leadersip", "Allows to have  strongest followers", "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+
+    BETTER_JUMP("Better jump", "Jump higher" , "icon_blank" , State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
+    POWERPUNCH ("Powerpush","Push forward","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.BOX, 0.1f , 60f);
+
 
 
     private final com.mygdx.game.enums.AbilityType type;

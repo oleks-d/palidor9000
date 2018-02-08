@@ -29,6 +29,7 @@ import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.LevelManager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import static com.mygdx.game.PalidorGame.PPM;
@@ -116,6 +117,7 @@ public class GameScreen implements Screen {
 
     public Array<String> creaturesToCreate;
     public Array<String> itemsToCreate;
+    public Array<ActivityWithEffect> activitiesToCreate;
 
     public GameScreen(PalidorGame game, String heroName){
         this(game,heroName,null);
@@ -158,6 +160,7 @@ public class GameScreen implements Screen {
 
         creaturesToCreate = new Array<String>();
         itemsToCreate = new Array<String>();
+        activitiesToCreate = new Array<ActivityWithEffect>();
 
         //penels
         dialogPanel = new DialogPanel(game.getBatch(), this);
@@ -268,6 +271,15 @@ public class GameScreen implements Screen {
                 };
                 itemsToCreate.clear();
 
+            }
+
+            //start activities
+            if(activitiesToCreate.size > 0) {
+                for(ActivityWithEffect act : activitiesToCreate){
+                    act.createBody();
+                }
+                    hero.screen.levelmanager.ACTIVITIES.addAll(activitiesToCreate);
+                activitiesToCreate.clear();
             }
 
             if (hero.getAbilityToCast() != AbilityID.NONE && hero.finishedCasting()) {
@@ -513,7 +525,7 @@ public class GameScreen implements Screen {
                     //holdingTimeJUMP = holdingTimeJUMP + delta;
 
                     if (whenJumpWasJustPressed + 0.5 > hero.existingTime) {
-                        hero.powerjump();
+                        hero.haste();
                     } else
                     if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
                         hero.dash();
@@ -670,68 +682,6 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            //maprenderer.render(); // show map
-        maprenderer.render(layersToRender);
-
-
-            game.getBatch().setProjectionMatrix(camera.combined);
-            game.getBatch().begin();
-
-            //levelmanager.background.draw(game.getBatch()); // TODO background
-
-            //render all items
-            for (GameItem item : levelmanager.ITEMS) {
-                if (!item.isDestroyed())
-                    item.draw(game.getBatch());
-            }
-
-
-        //render all objects
-        for (GameObject object : levelmanager.OBJECTS) {
-            object.draw(game.getBatch());
-        }
-
-        //render hero
-        hero.draw(game.getBatch());
-
-        //render all enemies
-        for (Creature creature : levelmanager.CREATURES) {
-            creature.draw(game.getBatch());
-            //creature.weaponSprite.draw(game.getBatch());
-        }
-
-        //render all summoned
-        for (Creature creature : levelmanager.SUMMONED_CREATURES) {
-            creature.draw(game.getBatch());
-            //creature.weaponSprite.draw(game.getBatch());
-        }
-
-            //render all activities
-            for (ActivityWithEffect activity : levelmanager.ACTIVITIES) {
-                if (!activity.isDestroyed())
-                    //try {
-                    //TODO fix
-                        //game.getBatch().draw(activity.region, activity.getX(), activity.getY(), activity.region.getRegionWidth() / PPM / 2, activity.region.getRegionHeight() / PPM / 2, activity.region.getRegionWidth() / PPM, activity.region.getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
-                    //}catch(Exception e){
-                        activity.draw(game.getBatch());
-                    //}
-                //activity.draw(game.getBatch());
-                    //game.getBatch().draw(activity.getFrame(delta), activity.getX(), activity.getY(), activity.getFrame(delta).getRegionWidth() / PPM / 2, activity.getFrame(delta).getRegionHeight() / PPM / 2, activity.getFrame(delta).getRegionWidth() / PPM, activity.getFrame(delta).getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
-
-            }
-
-
-            //hero.weaponSprite.draw(game.getBatch());
-            //if(hero.armorSprite.pictureName != null)
-            //    hero.armorSprite.draw(game.getBatch());
-            //hero.creatureAim.draw(game.getBatch()); //todo aiming
-
-            game.getBatch().end();
-
-            //render boxes
-        if(TO_RENDER)
-            debugRenderer.render(world, camera.combined); // render boxes from World
-
         if(PAUSE) {
             if (onInventoryScreen){
                 //show info panel
@@ -747,6 +697,71 @@ public class GameScreen implements Screen {
             }
 
         } else {
+
+
+
+            //maprenderer.render(); // show map
+            maprenderer.render(layersToRender);
+
+
+            game.getBatch().setProjectionMatrix(camera.combined);
+            game.getBatch().begin();
+
+            //levelmanager.background.draw(game.getBatch()); // TODO background
+
+            //render all items
+            for (GameItem item : levelmanager.ITEMS) {
+                if (!item.isDestroyed())
+                    item.draw(game.getBatch());
+            }
+
+
+            //render all objects
+            for (GameObject object : levelmanager.OBJECTS) {
+                object.draw(game.getBatch());
+            }
+
+            //render hero
+            hero.draw(game.getBatch());
+
+            //render all enemies
+            for (Creature creature : levelmanager.CREATURES) {
+                creature.draw(game.getBatch());
+                //creature.weaponSprite.draw(game.getBatch());
+            }
+
+            //render all summoned
+            for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+                creature.draw(game.getBatch());
+                //creature.weaponSprite.draw(game.getBatch());
+            }
+
+            //render all activities
+            for (ActivityWithEffect activity : levelmanager.ACTIVITIES) {
+                if (!activity.isDestroyed())
+                    //try {
+                    //TODO fix
+                    //game.getBatch().draw(activity.region, activity.getX(), activity.getY(), activity.region.getRegionWidth() / PPM / 2, activity.region.getRegionHeight() / PPM / 2, activity.region.getRegionWidth() / PPM, activity.region.getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
+                    //}catch(Exception e){
+                    activity.draw(game.getBatch());
+                //}
+                //activity.draw(game.getBatch());
+                //game.getBatch().draw(activity.getFrame(delta), activity.getX(), activity.getY(), activity.getFrame(delta).getRegionWidth() / PPM / 2, activity.getFrame(delta).getRegionHeight() / PPM / 2, activity.getFrame(delta).getRegionWidth() / PPM, activity.getFrame(delta).getRegionHeight() / PPM, 1, 1, (activity.direction.angle()));
+
+            }
+
+
+            //hero.weaponSprite.draw(game.getBatch());
+            //if(hero.armorSprite.pictureName != null)
+            //    hero.armorSprite.draw(game.getBatch());
+            //hero.creatureAim.draw(game.getBatch()); //todo aiming
+
+            game.getBatch().end();
+
+            //render boxes
+            if(TO_RENDER)
+                debugRenderer.render(world, camera.combined); // render boxes from World
+
 
 //            //show info panel
 //            game.getBatch().setProjectionMatrix(dialogPanel.stage.getCamera().combined);

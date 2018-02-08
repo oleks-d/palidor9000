@@ -8,10 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.ActivityAreaType;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.stuctures.Effect;
+import com.mygdx.game.tools.AbilityHandler;
 
 import static com.mygdx.game.PalidorGame.PPM;
 
@@ -48,6 +50,38 @@ public class ActivityWithEffect extends Sprite {
     public TextureRegion region;
     String spriteRegionName;
 
+    public ActivityWithEffect(GameScreen screen, float x, float y, Array<Effect> activeEffects, ActivityAreaType type, Vector2 direction, String spriteRegionName, boolean createBody) {
+        super(screen.animationHelper.getAtlas().findRegion(spriteRegionName));
+        //setBounds(0, 0, PalidorGame.TILE_SIZE/ PalidorGame.PPM, PalidorGame.TILE_SIZE/ PalidorGame.PPM);
+        setBounds(0, 0, type.getWidth() / PalidorGame.PPM, type.getHigth() / PalidorGame.PPM);
+        this.screen = screen;
+        world = screen.world;
+
+        this.spriteRegionName = spriteRegionName;
+
+        appliedTo = new Array<Creature>();
+
+        this.activeEffects = activeEffects;
+        this.type = type;
+        this.direction = direction;
+
+        setPosition(x, y);
+
+        directionRight = false;
+        stateTimer = 0f;
+
+
+        liveTime = type.getLiveTime();
+
+
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+
+        region = new TextureRegion();
+
+        if(createBody)
+            createBody();
+    }
+
     public ActivityWithEffect(com.mygdx.game.screens.GameScreen screen, float x, float y, Array<Effect> activeEffects, ActivityAreaType type, Vector2 direction, String spriteRegionName){
         super(screen.animationHelper.getAtlas().findRegion(spriteRegionName));
         //setBounds(0, 0, PalidorGame.TILE_SIZE/ PalidorGame.PPM, PalidorGame.TILE_SIZE/ PalidorGame.PPM);
@@ -64,7 +98,6 @@ public class ActivityWithEffect extends Sprite {
         this.direction = direction;
 
         setPosition(x, y);
-        createBody();
 
         directionRight = false;
         stateTimer = 0f;
@@ -76,9 +109,11 @@ public class ActivityWithEffect extends Sprite {
         Array<TextureRegion> frames = new Array<TextureRegion>();
 
         region = new TextureRegion();
+
+        createBody();
     }
 
-    void createBody(){
+    public void createBody(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / PalidorGame.PPM, getY()/ PalidorGame.PPM );
@@ -153,6 +188,27 @@ public class ActivityWithEffect extends Sprite {
                 runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName,  type.getWidth(), type.getHigth(), 0.1f, 0, 1, 2);
                 runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
                 break;
+            case BOOM:
+                shape = new CircleShape();
+                shape.setRadius(PalidorGame.TILE_SIZE / 4 / PalidorGame.PPM );
+
+                fixtureDef= new FixtureDef();
+                fixtureDef.shape = shape;
+
+                fixtureDef.isSensor = true;
+
+                fixtureDef.filter.categoryBits = PalidorGame.ACTIVITY_BIT;
+                fixtureDef.filter.maskBits = PalidorGame.GROUND_BIT |
+                        PalidorGame.ACTIVITY_BIT|
+                        PalidorGame.CREATURE_BIT;
+
+                body.createFixture(fixtureDef).setUserData(this);
+
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName, type.getWidth(), type.getHigth(), 0.2f, 0, 1);
+
+                body.applyLinearImpulse(direction, body.getWorldCenter(), true);
+
+                break;
             default:
                 box = new PolygonShape();
                 box.setAsBox(getWidth()/2,getHeight()/2);
@@ -178,7 +234,9 @@ public class ActivityWithEffect extends Sprite {
 
     public void update(float dt){
         if (stateTimer >= liveTime)
-            destroyBody();
+            onHit();
+            //destroyBody();
+
         if(!toDestroy && !destroyed)
             updatePosition(dt);
 
@@ -219,15 +277,40 @@ public class ActivityWithEffect extends Sprite {
     public void onHit(Creature target) {
         switch(type) {
             case ARROW:
-                if(!target.equals(createdBy))
+                if(target.getOrganization() != createdBy.getOrganization())
                     destroyBody();
                 break;
             case SPRAY:
                 break;
+            case BOOM:
+                if(target.getOrganization() != createdBy.getOrganization()) {
+                    AbilityHandler.explosion(screen, createdBy, getBody().getPosition().x * PPM, getBody().getPosition().y * PPM);
+                    destroyBody();
+                }
+                break;
             default:
-                if(!target.equals(createdBy))
+                if(target.getOrganization() != createdBy.getOrganization())
                     destroyBody();
         }
+    }
+
+    public void onHit() {
+        switch(type) {
+            case ARROW:
+                    destroyBody();
+                break;
+            case SPRAY:
+                break;
+            case BOOM:
+                    AbilityHandler.explosion(screen, createdBy, getBody().getPosition().x * PPM, getBody().getPosition().y * PPM);
+                    destroyBody();
+                break;
+            default:
+                    destroyBody();
+        }
+    }
+
+    private void explosion() {
     }
 
     @Override

@@ -13,9 +13,10 @@ public enum Skill {
                     AbilityID.SWORD_SWING,
                     AbilityID.HUMMER_SWING
             } , 100,0),
-    STRENGTH2(11, "Advanced Close combat", "Using special weapon strikes",
+    STRENGTH2(11, "Advanced Close combat", "Using Dash ability. \n +1 Crush, +1 Cut damage",
             new AbilityID[]{
-                    AbilityID.DASH
+                    AbilityID.DASH,
+                    AbilityID.DIALOG_FEAR
             } , 100,1),
     STRENGTH3(21, "Master Close combat", "Mastering in close combat weapon",
             new AbilityID[]{
@@ -30,9 +31,9 @@ public enum Skill {
                     AbilityID.SLING_SHOT,
                     AbilityID.LONGBOW_SHOT,
             } , 100,0),
-    ACCURACY2(12, "Advanced Range combat", "Using range combat weapon",
+    ACCURACY2(12, "Advanced Range combat", "Seeing details",
             new AbilityID[]{
-                    AbilityID.JUMP_BACK,
+                    AbilityID.SEEING_DETAILS,
             }, 100 ,2),
     ACCURACY3(22, "Master Range combat", "Mastering in range combat weapon",
             new AbilityID[]{
@@ -44,14 +45,18 @@ public enum Skill {
     WILL1(3, "Magical fire", "Using Fire in combat",
             new AbilityID[]{
                     AbilityID.FIREWALL,
+                    AbilityID.ICEWALL,
             } , 100,0),
     WILL2(13, "Advanced Magical fire", "Using Fire shield in combat",
             new AbilityID[]{
+                    AbilityID.DIALOG_USE_WISDOM,
                     AbilityID.FIRESHIELD,
+                    AbilityID.ICESHIELD
             }, 100 ,3),
     WILL3(23, "Master Magical fire", "Using Fireball in combat",
             new AbilityID[]{
-                    AbilityID.FIREBALL
+                    AbilityID.FIREBALL,
+                    AbilityID.ICESTORM
             } , 100,13),
 
 
@@ -61,7 +66,8 @@ public enum Skill {
             } , 100,0),
     ENDURANCE2(15, "Advanced Shield", "Barskin : " + AbilityID.BARSKIN.getDescription(),
             new AbilityID[]{
-                    AbilityID.BARSKIN
+                    AbilityID.BARSKIN,
+                    AbilityID.DIALOG_MAKE_COME
             }, 100 ,5),
     ENDURANCE3(25, "Master Shield", "Fullprotection ability: " + AbilityID.FULLPROTECTION.getDescription(),
             new AbilityID[]{
@@ -73,61 +79,52 @@ public enum Skill {
 
     MASK1(7, "Stealth", "Hiding and silent movements",
             new AbilityID[]{
-                    AbilityID.MASK
+                    AbilityID.MASK1
             }, 100 ,0),
     MASK2(17, "Advanced Stealth", "Pickpocketing",
             new AbilityID[]{
-                    AbilityID.PICKPOCKET
+                    AbilityID.MASK2,
+                    AbilityID.BACKSTUB,
+                    AbilityID.PICKPOCKET,
+                    AbilityID.DIALOG_LYING
             }, 100 ,7),
 
     MASK3(27, "Master Stealth", "Atack from hide makes more damage",
             new AbilityID[]{
-                    AbilityID.SILENT_STRIKE
+                    AbilityID.MASK3,
+                    AbilityID.DISAPPEAR
             }, 100 ,17),
 
-//    MAGIC1(8, "Magic", "Using magic powers",
-//            new AbilityID[]{
-//                    AbilityID.FLY
-//            } , 100,0),
-//    MAGIC2(18, "Advanced Magic", "Using magic powers",
-//            new AbilityID[]{
-//                    AbilityID.INVISIBILITY,
-//            } , 100,8),
-//    MAGIC3(28, "Master Magic", "Using magic powers to teleport",
-//            new AbilityID[]{
-//                    AbilityID.TELEPORT
-//            } , 100,18),
 
-
-    CHARISMA1(9, "Shouts", "Using charisma to make you stronger",
+    CHARISMA1(9, "Leadership", "Using charisma to make you stronger",
             new AbilityID[]{
-                    AbilityID.SHOUT
+                    AbilityID.LEADERSHIP
             } , 100,0),
-    CHARISMA2(19, "Advanced Shouts", "Using charisma to trade",
+    CHARISMA2(19, "Advanced Leadership", "Using charisma to trade",
             new AbilityID[]{
-                    AbilityID.TRADE
+                    AbilityID.GREAT_LEADERSHIP,
+                    AbilityID.DIALOG_TRADE,
             } , 100,9),
-    CHARISMA3(29, "Master Shouts", "Using charisma to make you stronger",
+    CHARISMA3(29, "Master Leadership", "Using charisma to command stronger creatures",
             new AbilityID[]{
-                    AbilityID.POWER_SHOUT
+                    AbilityID.GREATEST_LEADERSHIP
             } , 100,19),
 
 
 
-    AGILITY1(6, "Dodge", "Using reflexes and speed in combat",
+    AGILITY1(6, "Advanced Jump", "Jump height",
             new AbilityID[]{
-                    AbilityID.DODGE
+                    AbilityID.BETTER_JUMP
             }, 100 ,0),
-    AGILITY2(16, "Advanced Dodge", "Using reflexes and speed in combat",
+    AGILITY2(16, "Advanced Punch", "Powerpunch (Push enemy)",
             new AbilityID[]{
-                    AbilityID.POWERJUMP
+                    AbilityID.POWERPUNCH
+                    //AbilityID.POWERJUMP
             } , 100,6),
-    AGILITY3(26, "Master Dodge", "Using reflexes and speed in combat",
+    AGILITY3(26, "Master Haste", "Using reflexes and speed in combat",
             new AbilityID[]{
                     AbilityID.HASTE
             } , 100,16),
-
-
 
 
     INTELLIGENCE1(31, "Intelligance" , "Reading of text", new AbilityID[]{AbilityID.READ_BASIC}, 100, 0),

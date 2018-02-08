@@ -60,7 +60,7 @@ public class CreatureStatus extends Sprite {
 
         healthbar = owner.screen.animationHelper.getTextureRegionByIDAndIndex("castbar2");
 
-        hiddenMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
+        hiddenMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog1");
 
         battleMark = owner.screen.animationHelper.getTextureRegionByIDAndIndex("dialog2");
 

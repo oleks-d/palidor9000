@@ -10,8 +10,7 @@ public enum ActivityAreaType {
     BOX(0.3f,64,64),
     SPRAY(1f,64,48),
     SELF(0f),
-    BIGBOX(0.1f),
-    BOOM(1 );
+    BOOM(1 ,64,48);
     private String aimIcon;
     private float liveTime;
     private int width;

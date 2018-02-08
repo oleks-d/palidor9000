@@ -8,6 +8,10 @@ import com.mygdx.game.sprites.creatures.Creature;
 public class EffectsHandler {
     public static void applyEffect(Creature creature, EffectID id, float magnitude){
         switch (id){
+            case POISON:
+                //int damageValue = Math.round(magnitude);
+                creature.doDamage( Math.round(magnitude),EffectID.POISON);
+                break;
             case CUT_DAMAGE:
                 if(creature.getEffect(EffectID.IMMUNE_CUT_DAMAGE) == null)
                     if(creature.getEffect(EffectID.HAS_SHIELD_AGAINST_CUT_DAMAGE) == null) {  // if has no shield

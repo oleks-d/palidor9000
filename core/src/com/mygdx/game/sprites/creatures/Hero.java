@@ -114,43 +114,59 @@ public class Hero extends Creature {
     }
 
 
-    public void shout() {
-        if(abilities.contains(AbilityID.SHOUT, false))
-            useAbility(AbilityID.SHOUT);
-        else
-            statusbar.addMessage("You can not shout", existingTime + 1f, Fonts.INFO);
-    }
-
-    public void poweshout() {
-        if(abilities.contains(AbilityID.POWER_SHOUT, false))
-            useAbility(AbilityID.POWER_SHOUT);
-        else
-            statusbar.addMessage("You can not Power shout", existingTime + 1f, Fonts.INFO);
-    }
+//    public void shout() {
+//        if(abilities.contains(AbilityID.SHOUT, false))
+//            useAbility(AbilityID.SHOUT);
+//        else
+//            statusbar.addMessage("You can not shout", existingTime + 1f, Fonts.INFO);
+//    }
+//
+//    public void poweshout() {
+//        if(abilities.contains(AbilityID.POWER_SHOUT, false))
+//            useAbility(AbilityID.POWER_SHOUT);
+//        else
+//            statusbar.addMessage("You can not Power shout", existingTime + 1f, Fonts.INFO);
+//    }
 
     public void hide() {
-        if(abilities.contains(AbilityID.MASK, false))
-            useAbility(AbilityID.MASK);
+        if(abilities.contains(AbilityID.MASK3, false)) {
+            if (!IN_BATTLE || abilities.contains(AbilityID.DISAPPEAR, false))
+                useAbility(AbilityID.MASK3);
+            else
+                statusbar.addMessage("You can not hide in battle", existingTime + 1f, Fonts.INFO);
+        } else if(abilities.contains(AbilityID.MASK2, false)) {
+            if (!IN_BATTLE || abilities.contains(AbilityID.DISAPPEAR, false))
+                useAbility(AbilityID.MASK2);
+            else
+                statusbar.addMessage("You can not hide in battle", existingTime + 1f, Fonts.INFO);
+        } else  if(abilities.contains(AbilityID.MASK1, false)) {
+            if (!IN_BATTLE || abilities.contains(AbilityID.DISAPPEAR, false))
+                useAbility(AbilityID.MASK1);
+            else
+                statusbar.addMessage("You can not hide in battle", existingTime + 1f, Fonts.INFO);
+        }
+    }
+
+//    public void fly() {
+//        if(abilities.contains(AbilityID.FLY, false))
+//            useAbility(AbilityID.FLY);
+//    }
+//
+//    public void jumpBack() {
+//        if(abilities.contains(AbilityID.JUMP_BACK, false))
+//            useAbility(AbilityID.JUMP_BACK);
+//    }
+
+//    public void powerjump() {
+//        if(abilities.contains(AbilityID.POWERJUMP, false))
+//            useAbility(AbilityID.POWERJUMP);
 //        else
-//            statusbar.addMessage("You can not hide", existingTime + 1f, Fonts.INFO);
-        //useAbility(AbilityID.MASK);
-    }
+//            jump();
+//    }
 
-    public void fly() {
-        if(abilities.contains(AbilityID.FLY, false))
-            useAbility(AbilityID.FLY);
-    }
-
-    public void jumpBack() {
-        if(abilities.contains(AbilityID.JUMP_BACK, false))
-            useAbility(AbilityID.JUMP_BACK);
-    }
-
-    public void powerjump() {
-        if(abilities.contains(AbilityID.POWERJUMP, false))
-            useAbility(AbilityID.POWERJUMP);
-        else
-            jump();
+        public void haste() {
+        if(abilities.contains(AbilityID.HASTE, false))
+            useAbility(AbilityID.HASTE);
     }
 
     public void dash() {
@@ -205,6 +221,7 @@ public class Hero extends Creature {
             case ARMOR:
                 armor = item;
                 armorSprite.setPicture(item.getPicture());
+                this.stats.jumphight.current = this.stats.jumphight.current - 1;
                 break;
             //case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:
@@ -361,6 +378,7 @@ public class Hero extends Creature {
                 armor = null;
                 inventory.add(item);
                 armorSprite.setPicture(null);
+                this.stats.jumphight.current = this.stats.jumphight.current + 1;
                 break;
             case WEAPON_MAGIC_ICE:
             case WEAPON_MAGIC_FIRE:
@@ -438,13 +456,12 @@ public class Hero extends Creature {
             this.abilities.add(ability);
             this.cooldowns.put(ability,0d);
 
-//            // special processing of skills
-//            if(this.abilities.contains(AbilityID.DODGE, true)) {//TODO remove dodge
-//                selectAbility(AbilityID.DODGE);
-//                stats.jumphight.base = stats.jumphight.base + 1;
-//                stats.jumphight.current = stats.jumphight.current + 1;
-//            }
-            if(this.abilities.contains(AbilityID.BARSKIN, true)) { //TODO Add health
+            // special processing of skills
+            if(this.abilities.contains(AbilityID.BETTER_JUMP, true)) {
+                stats.jumphight.base = stats.jumphight.base + 1;
+                stats.jumphight.current = stats.jumphight.current + 1;
+            }
+            if(this.abilities.contains(AbilityID.BARSKIN, true)) {
                 stats.health.base = stats.health.base + 1;
                 stats.health.current = stats.health.current + 1;
             }
@@ -496,4 +513,6 @@ public class Hero extends Creature {
     public Array<Skill> getSkills() {
         return skills;
     }
+
+
 }
