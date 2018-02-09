@@ -239,13 +239,13 @@ public class Hero extends Creature {
                         weapon2 = item;
                         weaponSprite2.setPicture(item.getPicture());
                         selectedDefenseAbilities.clear();
-                        if (abilities.contains(AbilityID.FIRESHIELD, true))
-                            selectedDefenseAbilities.add(AbilityID.FIRESHIELD);
-                        else {
+//                        if (abilities.contains(AbilityID.FIRESHIELD, true))
+//                            selectedDefenseAbilities.add(AbilityID.FIRESHIELD);
+//                        else {
                             selectedDefenseAbilities.add(AbilityID.FIREWALL);
                             if (abilities.contains(AbilityID.FIREBALL, true))
                                 selectedAtackAbilities.add(AbilityID.FIREBALL);
-                        }
+                        //}
 
                     } else  return "Item does not fit any slot (remove equiped item)";
                 } else return "NO REQUIRED SKILL (WILL)";;
@@ -395,7 +395,13 @@ public class Hero extends Creature {
                     weapon1 = null;
                     weaponSprite.setPicture("weapon_hand");
                     selectedAtackAbilities.clear();
-                    selectedAtackAbilities.add(AbilityID.PUNCH);
+                    if(abilities.contains(AbilityID.POWERPUNCH, true)) {
+                        selectedAtackAbilities.add(AbilityID.POWERPUNCH);
+                        if (abilities.contains(AbilityID.APPERPUNCH, true))
+                            selectedAtackAbilities.add(AbilityID.APPERPUNCH);
+                    } else {
+                        selectedAtackAbilities.add(AbilityID.PUNCH);
+                    }
 //                    if(abilities.contains(AbilityID.DODGE, true))
 //                        selectedAtackAbilities.add(AbilityID.DODGE);
                     inventory.add(item);
@@ -403,7 +409,13 @@ public class Hero extends Creature {
                     weapon2 = null;
                     weaponSprite2.setPicture("weapon_hand");
                     selectedDefenseAbilities.clear();
-                    selectedDefenseAbilities.add(AbilityID.PUNCH);
+                    if(abilities.contains(AbilityID.POWERPUNCH, true)) {
+                        selectedDefenseAbilities.add(AbilityID.POWERPUNCH);
+                        if (abilities.contains(AbilityID.APPERPUNCH, true))
+                            selectedDefenseAbilities.add(AbilityID.APPERPUNCH);
+                    } else {
+                        selectedDefenseAbilities.add(AbilityID.PUNCH);
+                    }
 //                    if(abilities.contains(AbilityID.DODGE, true))
 //                        selectedDefenseAbilities.add(AbilityID.DODGE);
                     inventory.add(item);

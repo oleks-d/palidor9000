@@ -176,11 +176,11 @@ public class GameObject extends Sprite {
             createBody(originalRectangle);
             timeForNextStep = existingTime;
         }
-        if(currentStep =='n') {//reset
+        if(currentStep =='n') {//stop
             timeForNextStep = existingTime + 1;
             direction.set(0, 0.01f);
         }
-        if(currentStep =='t') {//reset
+        if(currentStep =='t') {//trigger
             if(!ConditionProcessor.conditionSatisfied(screen.hero, activationTrigger)) {
                 timeForNextStep = existingTime + 0.5;
                 direction.set(0, 0.01f);

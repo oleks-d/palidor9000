@@ -108,8 +108,12 @@ public class EffectsHandler {
                 break;
 
             case STUNED:
-                creature.addStatusMessage("Stuned", Fonts.BAD);
-                creature.setStun(true);
+                if(magnitude > 0.3) {
+                    creature.addStatusMessage("Stuned", Fonts.BAD);
+                    creature.setStun(true, true);
+                } else {
+                    creature.setStun(true, false);
+                }
                 break;
 
             case MOVE_LEFT:
@@ -138,8 +142,10 @@ public class EffectsHandler {
                 break;
 
             case STUNED:
-                creature.addStatusMessage("Active (not in stun)", Fonts.IMPORTANT);
-                creature.setStun(false);
+                //if(creature.getNumberOfEffects(EffectID.STUNED) == 1) {
+                    creature.addStatusMessage("Active (not in stun)", Fonts.IMPORTANT);
+                    creature.setStun(false, false);
+                //}
                 break;
             case COVERED_BY_FIRE_SHIELD:
             case COVERED_BY_SHIELD:

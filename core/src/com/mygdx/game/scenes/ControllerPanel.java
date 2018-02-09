@@ -1,8 +1,10 @@
 package com.mygdx.game.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.tools.AnimationHelper;
 
@@ -56,6 +59,13 @@ public class ControllerPanel implements Disposable{
     Table tableSummon;
     Table tableMenu;
 
+
+    Table tableAbilitiesAtack;
+    Table tableAbilitiesDefense;
+
+    Image image0;
+    Label abilitytimeout;
+
     Image menuImage;
     Image inventoryImage;
     Image abilitiesImage;
@@ -86,9 +96,8 @@ public class ControllerPanel implements Disposable{
     public boolean abilitiesToched;
     private Hero hero;
     public boolean touchedSummon0;
-    public boolean touchedSummon1;
-    public boolean touchedSummon2;
-    public boolean touchedSummon3;
+
+    public int currentSummonCreatureIndex = -1;
 
     public ControllerPanel(SpriteBatch sb, AnimationHelper animhelper){
 
@@ -240,8 +249,6 @@ public class ControllerPanel implements Disposable{
                 touchedLeft = false;
             }
 
-
-
         });
 
         tableController = new Table();
@@ -358,13 +365,20 @@ public class ControllerPanel implements Disposable{
 
         Gdx.input.setInputProcessor(stage);
 
+        if(currentSummonCreatureIndex == -1){
+            if(hero.summonAbilities.size > 0 )
+                currentSummonCreatureIndex = 0;
+            else
+                currentSummonCreatureIndex = -1;
+            }
+
+
         tableSummon = new Table();
-        tableSummon.left();
+        tableSummon.bottom();
         tableSummon.setFillParent(true);
 
-        for (int i = 0; i < hero.summonAbilities.size; i++){
-            final int index = i;
-            Image imageOfCreature = new Image(animhelper.getTextureRegionByIDAndIndex(hero.summonAbilities.get(i).getIcon()));
+        if(hero.summonAbilities.size > 0){
+            Image imageOfCreature = new Image(animhelper.getTextureRegionByIDAndIndex(hero.summonAbilities.get(currentSummonCreatureIndex).getIcon()));
             imageOfCreature.addListener(new ClickListener() {
 
                 @Override
@@ -379,15 +393,11 @@ public class ControllerPanel implements Disposable{
                 }
             });
             tableSummon.row().pad(10,10,10,10);
+            tableSummon.add();
             tableSummon.add(imageOfCreature);
-            tableSummon.row().pad(10,10,10,10);
-            tableSummon.add(imageOfCreature);
-            tableSummon.row().pad(10,10,10,10);
-            tableSummon.add(imageOfCreature);
-            tableSummon.row().pad(10,10,10,10);
-            tableSummon.add(imageOfCreature);
+            tableSummon.add();
         }
-
+        tableSummon.row().pad(10,10,10,10);
 
 //        tableAbilities = new Table();
 //        tableAbilities.right().bottom();
@@ -467,25 +477,24 @@ public class ControllerPanel implements Disposable{
 //        defenseabilities = new LinkedList<Image>();
 //        helpabilities = new LinkedList<Image>();
 //
-//        atackalabels = new LinkedList<Label>();
-//        defenselabels = new LinkedList<Label>();
+        atackalabels = new LinkedList<Label>();
+        defenselabels = new LinkedList<Label>();
 //        helpalabels = new LinkedList<Label>();
 //
 //        tableAbilitiesAtack = new Table();
-//        tableAbilitiesAtack.right().top();
+//        tableAbilitiesAtack.bottom();
 //        tableAbilitiesAtack.setFillParent(true);
 //        tableAbilitiesAtack.row();
-//
-//        for(int i = 0; i < hero.selectedAtackAbilities.size; i++) {
-//            AbilityID ability = hero.selectedAtackAbilities.get(i);
-//            final int index = i;
-//            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
-//            image0.setSize(40, 40);
-//            titemout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-//
-//            atackabilities.add(image0);
-//            atackalabels.add(titemout);
-//
+
+        for(int i = 0; i < hero.selectedAtackAbilities.size; i++) {
+            AbilityID ability = hero.selectedAtackAbilities.get(i);
+            final int index = i;
+            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
+            image0.setSize(30, 30);
+            abilitytimeout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+            atackalabels.add(abilitytimeout);
+
 //            image0.addListener(new ClickListener() {
 //
 //                @Override
@@ -499,26 +508,27 @@ public class ControllerPanel implements Disposable{
 //                    touched0 = true;
 //                }
 //            });
-//
-//            tableAbilitiesAtack.add(image0).size(image0.getWidth(), image0.getHeight());
-//            tableAbilitiesAtack.add(titemout);
-//        }
-//
-//
+
+            tableSummon.add(image0).size(image0.getWidth(), image0.getHeight());
+            tableSummon.add(abilitytimeout);
+            tableSummon.add();
+        }
+        tableSummon.row().pad(10,10,10,10);
+
+
 //        tableAbilitiesDefense = new Table();
-//        tableAbilitiesDefense.right();
+//        tableAbilitiesDefense.bottom();
 //        tableAbilitiesDefense.setFillParent(true);
-//
-//        for(int i = 0; i < hero.selectedDefenseAbilities.size; i++) {
-//            AbilityID ability = hero.selectedDefenseAbilities.get(i);
-//            final int index = i;
-//            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
-//            image0.setSize(40, 40);
-//            titemout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-//
-//            defenseabilities.add(image0);
-//            defenselabels.add(titemout);
-//
+
+        for(int i = 0; i < hero.selectedDefenseAbilities.size; i++) {
+            AbilityID ability = hero.selectedDefenseAbilities.get(i);
+            final int index = i;
+            image0 = new Image(animhelper.getTextureRegionByIDAndIndex(ability.getIcon()));
+            image0.setSize(30, 30);
+            abilitytimeout = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+            defenselabels.add(abilitytimeout);
+
 //            image0.addListener(new InputListener() {
 //
 //                @Override
@@ -532,11 +542,12 @@ public class ControllerPanel implements Disposable{
 //                    touched1 = true;
 //                }
 //            });
-//
-//            tableAbilitiesDefense.add(image0).size(image0.getWidth(), image0.getHeight());
-//            tableAbilitiesDefense.add(titemout);
-//        }
-//
+
+            tableSummon.add(image0).size(image0.getWidth(), image0.getHeight());
+            tableSummon.add(abilitytimeout);
+            tableSummon.add();
+        }
+
 //
 //        tableAbilitiesBuff = new Table();
 //        tableAbilitiesBuff.left().top();
@@ -583,13 +594,26 @@ public class ControllerPanel implements Disposable{
 
     public void updateLabels(Hero hero) {
 
-//        for(int i=0;i<hero.selectedAtackAbilities.size;i++)
-//            atackalabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedAtackAbilities.get(i))));
-//        for(int i=0;i<hero.selectedDefenseAbilities.size;i++)
-//            defenselabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedDefenseAbilities.get(i))));
-//        for(int i=0;i<hero.selectedHelpAbilities.size;i++)
+        for(int i=0;i<hero.selectedAtackAbilities.size;i++) {
+            if(hero.showWhenAbilityWillBeAvailable(hero.selectedAtackAbilities.get(i)) == 0){
+                atackalabels.get(i).setText("+");
+                atackalabels.get(i).setColor(Color.GREEN);
+            } else {
+                atackalabels.get(i).setText(String.format("%.1f", hero.showWhenAbilityWillBeAvailable(hero.selectedAtackAbilities.get(i))));
+                atackalabels.get(i).setColor(Color.RED);
+            }
+        }
+        for(int i=0;i<hero.selectedDefenseAbilities.size;i++) {
+            if(hero.showWhenAbilityWillBeAvailable(hero.selectedDefenseAbilities.get(i)) == 0){
+                defenselabels.get(i).setText("+");
+                defenselabels.get(i).setColor(Color.GREEN);
+            }else{
+                defenselabels.get(i).setText(String.format("%.1f", hero.showWhenAbilityWillBeAvailable(hero.selectedDefenseAbilities.get(i))));
+                defenselabels.get(i).setColor(Color.RED);
+            }
+        }
+        //        for(int i=0;i<hero.selectedHelpAbilities.size;i++)
 //            helpalabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedHelpAbilities.get(i))));
-
     }
 
 //   public  void makeAtackIconActive(int i){

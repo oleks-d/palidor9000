@@ -22,6 +22,19 @@ import static com.mygdx.game.PalidorGame.PPM;
  * Created by odiachuk on 12/26/17.
  */
 public class AI {
+
+//    static int STATE_STAND = 0;
+//    static int STATE_EXECUTEPROGRAM = 1;
+//    static int STATE_ATTACK = 2;
+//    static int STATE_RUNAWAY =3;
+//    static int STATE_SLEEP = 4;
+
+    private final BehaviourPattern pattern;
+    //int state = STATE_STAND;
+    int currentActionStepNumber = 0;
+    int maxNumberOfActionSteps = 0;
+
+
     private final Array<Creature> listOfEnemies;
 
     private boolean moveLeft;
@@ -47,17 +60,31 @@ public class AI {
     Creature creature;
     String program;
 
-    public AI(Creature creature, GameScreen screen, String program){
+    String DEFAULT_PROGRAM = "lrn";
+
+    public AI(Creature creature, GameScreen screen, String program, BehaviourPattern pattern){
         this.screen = screen;
         this.creature = creature;
         this.program = program;
+        this.pattern =  pattern;
 
         currentStepNumber = 0;
+
+        if(pattern == null){
+            currentActionStepNumber = 0;
+            maxNumberOfActionSteps = 0;
+        } else {
+            currentActionStepNumber = 0;
+            maxNumberOfActionSteps = pattern.steps.length;
+        }
 
         listOfEnemies = new Array<Creature>();
 
         if(program != null && !program.equals("")) {
+            //state = STATE_EXECUTEPROGRAM;
             steps = program.toCharArray();
+        } else {
+            steps = DEFAULT_PROGRAM.toCharArray();
         }
     }
 
@@ -100,6 +127,8 @@ public class AI {
         if(creature.getNeighbor() != null && creature.getNeighbor().isEnemy(creature)){
             targetX = creature.getNeighbor().getX();
             targetY = creature.getNeighbor().getY();
+            //state = STATE_ATTACK;
+            creature.getNeighbor().setIN_BATTLE(true);
 
         } else {
 
@@ -129,6 +158,7 @@ public class AI {
                 shortestDistanceToEnemy = curDistanceToEnemy;
                 targetX = mob.getX();
                 targetY = mob.getY();
+                //state = STATE_ATTACK;
                 mob.setIN_BATTLE(true);
             }
         }
@@ -137,7 +167,7 @@ public class AI {
 
 
         // if target was found
-        if(targetX != 0) {
+        if (targetX != 0) {
 
             if (targetX < creature.getX())    //move/atack left
             {
@@ -149,29 +179,29 @@ public class AI {
                         result = CreatureAction.CLOSE_ATACK;
                     } else
                         result = CreatureAction.RANGE_ATACK;
-                } else  result = CreatureAction.MOVE_LEFT;
+                } else result = CreatureAction.MOVE_LEFT;
             } else if (targetX > creature.getX()) {        //move/atack right
                 {
                     creature.directionRight = true;
                     creature.direction.set(1, 0);
-                    if(targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {// is reachable
+                    if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {// is reachable
                         if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM             // is close
                                 && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
                             result = CreatureAction.CLOSE_ATACK;
                         else
                             result = CreatureAction.RANGE_ATACK;
-                    } else  result = CreatureAction.MOVE_RIGHT;
+                    } else result = CreatureAction.MOVE_RIGHT;
 
                 }
 
-            }else
+            } else
                 result = CreatureAction.STOP;
 
 
             if (isHasToJump() && targetY - 0.10 > creature.getY()) {
-                if(targetX > creature.getX() && jumpRight) { // on right
+                if (targetX > creature.getX() && jumpRight) { // on right
                     result = CreatureAction.JUMP_RIGHT;
-                }else if(targetX < creature.getX() && !jumpRight) { //on left
+                } else if (targetX < creature.getX() && !jumpRight) { //on left
                     result = CreatureAction.JUMP_LEFT;
                 }
                 setHasToJump(false, false);
@@ -179,75 +209,132 @@ public class AI {
 
             //reset program
 
-            program = null;
-            steps = null;
+            resetProgram();
 
 
         } else // follow program (if any)
-            if(program != null && !"".equals(program)) {
+            if (program != null && !"".equals(program)) {
                 result = nextStepByProgram(delta);
 
             }
 
-        if(creature.abilityToCast == AbilityID.NONE)
-        switch (result) {
-            case STOP:
-                creature.stop();
-                break;
-            case MOVE_LEFT:
-                if (!moveRight)
-                    creature.move(false);
-                break;
-            case MOVE_RIGHT:
-                if (!moveLeft)
-                    creature.move(true);
-                break;
-            case JUMP_LEFT:
-                creature.move(false);
-                creature.jump();
-                break;
-            case JUMP_RIGHT:
-                creature.move(true);
-                creature.jump();
-                break;
-            case RANGE_ATACK:
-                if (creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
-                    creature.useAbility(creature.findAbility(AbilityType.LONG_RANGE_ATACK));
-                    creature.weaponSprite.isMoving = true;
-                } else if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
-                    if (creature.directionRight) {
-                        if (!moveLeft)
-                            creature.move(creature.directionRight);
-                    } else {
-                        if (!moveRight)
-                            creature.move(creature.directionRight);
-                    }
-                }
+//        if("".equals(pattern)) {
 
-                break;
-            case CLOSE_ATACK:
-                if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
-                    creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
-                    creature.weaponSprite.isMoving = true;
-                } else //move to enemy
-                    if (creature.directionRight) {
-                        if (!moveLeft)
-                            creature.move(creature.directionRight);
-                    } else {
-                        if (!moveRight)
-                            creature.move(creature.directionRight);
+        if (creature.abilityToCast == AbilityID.NONE)
+            switch (result) {
+                case STOP:
+                    creature.stop();
+                    break;
+                case MOVE_LEFT:
+                    if (!moveRight)
+                        creature.move(false);
+                    break;
+                case MOVE_RIGHT:
+                    if (!moveLeft)
+                        creature.move(true);
+                    break;
+                case JUMP_LEFT:
+                    creature.move(false);
+                    creature.jump();
+                    break;
+                case JUMP_RIGHT:
+                    creature.move(true);
+                    creature.jump();
+                    break;
+                case RANGE_ATACK:
+//                if(pattern!=null) {
+//                    if( pattern.getSteps()[currentActionStepNumber].getCondition().equals("D")) {
+//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//
+//                    } else {
+//
+//                        if (creature.directionRight) {
+//                            if (!moveLeft)
+//                                creature.move(creature.directionRight);
+//                        } else {
+//                            if (!moveRight)
+//                                creature.move(creature.directionRight);
+//                        }
+//                    }
+//                    currentActionStepNumber++;
+//                    if (currentActionStepNumber == maxNumberOfActionSteps)
+//                        currentActionStepNumber = 0;
+//
+//                } else {
+
+                    if (creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                        creature.useAbility(creature.findAbility(AbilityType.LONG_RANGE_ATACK));
+                        creature.weaponSprite.isMoving = true;
+                    } else if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
+                        if (creature.directionRight) {
+                            if (!moveLeft)
+                                creature.move(creature.directionRight);
+                        } else {
+                            if (!moveRight)
+                                creature.move(creature.directionRight);
+                        }
                     }
-                break;
-            case WALK:
-                if (creature.existingTime > timeToChangeDirection) {
-                    creature.directionRight = (new Random().nextBoolean());
-                    timeToChangeDirection = creature.existingTime + 2f;
-                }
-                creature.move(creature.directionRight);
-                break;
+//                }
+
+                    break;
+                case CLOSE_ATACK:
+//                if(pattern!=null) {
+//                    if( pattern.getSteps()[currentActionStepNumber].getCondition().equals("")) {
+//
+//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                    }
+//                    currentActionStepNumber++;
+//                    if(currentActionStepNumber == maxNumberOfActionSteps)
+//                        currentActionStepNumber = 0;
+//
+//                } else {
+                    if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
+                        creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
+                        creature.weaponSprite.isMoving = true;
+                    } else //move to enemy
+                        if (creature.directionRight) {
+                            if (!moveLeft)
+                                creature.move(creature.directionRight);
+                        } else {
+                            if (!moveRight)
+                                creature.move(creature.directionRight);
+                        }
+//                }
+                    break;
+                case ALMOST_DEAD:
+//                if(pattern!=null) {
+//                    if (pattern.getSteps()[currentActionStepNumber].getCondition().equals("HP")) {
+//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                    }
+//                    currentActionStepNumber++;
+//                    if (currentActionStepNumber == maxNumberOfActionSteps)
+//                        currentActionStepNumber = 0;
+//                }
+                    break;
+                case WALK:
+                    if (creature.existingTime > timeToChangeDirection) {
+                        creature.directionRight = (new Random().nextBoolean());
+                        timeToChangeDirection = creature.existingTime + 2f;
+                    }
+                    creature.move(creature.directionRight);
+                    break;
             }
 
-           //Gdx.app.log(creature.directionRight + "", result.toString());
+//        //Gdx.app.log(creature.directionRight + "", result.toString());
+//        } else {
+//
+//            if(pattern.getSteps()[currentActionStepNumber].getCondition().equals("HP")) {
+//                if(creature.stats.health.current<creature.stats.health.base/4)
+//                    if(creature.checkCooldownExpired(pattern.getSteps()[currentActionStepNumber].ability)) ;
+//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//            }else
+//                if(creature.checkCooldownExpired(pattern.getSteps()[currentActionStepNumber].ability)) ;
+//                    creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//
+//            currentActionStepNumber++;
+//                    if (currentActionStepNumber == maxNumberOfActionSteps)
+//                        currentActionStepNumber = 0;
+//        }
     }
 
 
@@ -324,4 +411,8 @@ public class AI {
         return result;
     }
 
+    public void resetProgram() {
+        program = DEFAULT_PROGRAM;
+        steps = DEFAULT_PROGRAM.toCharArray();
+    }
 }

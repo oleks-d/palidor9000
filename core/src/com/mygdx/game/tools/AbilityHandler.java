@@ -46,10 +46,34 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
 
                 result.setCreatedBy(creature);
                     results.add(result);
+
+                break;
+            case POWERPUNCH:
+
+                if(creature.directionRight)
+                    activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 3f, 0f));
+                else
+                    activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 3f, 0f));
+                activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 1f  + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE), 0f));
+
+                direction = new Vector2((creature.direction.x * 1f), creature.direction.y * 1f );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "soundwall");
+
+                result.setCreatedBy(creature);
+                results.add(result);
 
                 break;
             case ANIMAL_PUNCH:
@@ -70,7 +94,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -91,7 +115,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 break;
@@ -111,7 +135,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 direction = new Vector2(-3,0);
@@ -122,7 +146,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
 //                direction = new Vector2(1,-1);
@@ -133,7 +157,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //                result.setCreatedBy(creature);
 //                results.add(result);
 //                direction = new Vector2(-1,-1);
@@ -144,7 +168,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //                result.setCreatedBy(creature);
 //                results.add(result);
 //                direction = new Vector2(1,1);
@@ -155,7 +179,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //                result.setCreatedBy(creature);
 //                results.add(result);
 //                direction = new Vector2(-1,1);
@@ -166,7 +190,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 direction = new Vector2(0,3);
@@ -177,7 +201,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 direction = new Vector2(0,-3);
@@ -188,7 +212,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 break;
@@ -203,7 +227,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //                result.setCreatedBy(creature);
 //                results.add(result);
 //                break;
@@ -218,7 +242,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //                result.setCreatedBy(creature);
 //                results.add(result);
 //                screen.shake();
@@ -238,7 +262,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 break;
@@ -257,7 +281,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
                 result.setCreatedBy(creature);
                 results.add(result);
                 screen.shake(2);
@@ -272,7 +296,7 @@ public class AbilityHandler {
 //                break;
             case COVER:
                 creature.applyEffect(new Effect(EffectID.COVERED_BY_SHIELD, 1f, 1f, 0f));
-                creature.shieldEffect = new Effect (EffectID.STUNED, 3,0,0);
+                creature.shieldEffect = new Effect (EffectID.STUNED, 2,0,0);
                 break;
             case BARSKIN:
                 creature.applyEffect(new Effect(EffectID.MINUS_CRUSH_DAMAGE, 15f, 3f, 0f));
@@ -308,7 +332,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -338,7 +362,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow"); //TODO anim
+                        "arrow"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -362,7 +386,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow_rock"); //TODO anim
+                        "arrow_rock"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -386,7 +410,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow_acid"); //TODO anim
+                        "arrow_acid"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -410,7 +434,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow_spike"); //TODO anim
+                        "arrow_spike"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -433,7 +457,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow"); //TODO anim
+                        "arrow"); 
                 result.setCreatedBy(creature);
                 results.add(result);
 
@@ -445,7 +469,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow"); //TODO anim
+                        "arrow"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -458,7 +482,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "arrow"); //TODO anim
+                        "arrow"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -484,7 +508,7 @@ public class AbilityHandler {
                             activeEffects,
                             id.getActivityAreaType(),
                             direction,
-                            "firewall"); //TODO anim
+                            "firewall"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -493,19 +517,19 @@ public class AbilityHandler {
             case FIREBALL:
 
                 activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-                activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+                //activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
+                //activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
 
                 direction = new Vector2((creature.direction.x * 2f), creature.direction.y * 2f );
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM,
-                        creature.getBody().getPosition().y * PalidorGame.PPM,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x* PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "firewall"); //TODO anim
+                        "firewall"); 
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -536,7 +560,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall"); //TODO anim
+                        "soundwall"); 
 
                 result.setCreatedBy(creature);
                 creature.applyEffect(new Effect(EffectID.INVISIBLE, 0f, 0f, 0f));
@@ -548,7 +572,14 @@ public class AbilityHandler {
                     screen.levelmanager.createSummonedCreature(screen, creature.getX()*PalidorGame.PPM, creature.getY()*PalidorGame.PPM, "mark", 0);
 
                 break;
+            case SUMMON_ROLF:
+                screen.levelmanager.createSummonedCreature(screen, creature.getX()*PalidorGame.PPM, creature.getY()*PalidorGame.PPM, "animal_rolf", 0);
 
+                break;
+            case SUMMON_DEMON:
+                screen.levelmanager.createSummonedCreature(screen, creature.getX()*PalidorGame.PPM, creature.getY()*PalidorGame.PPM, "demon_1", 0);
+
+                break;
 
 //            case ICEWALL:
 //                Gdx.app.log("Ability", "Icewall");
@@ -568,7 +599,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "icewall"); //TODO anim
+//                        "icewall"); 
 //
 //                result.setCreatedBy(creature);
 //
@@ -593,7 +624,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //
 //                result.setCreatedBy(creature);
 //
@@ -613,7 +644,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "arrow"); //TODO anim
+//                        "arrow"); 
 //
 //                result.setCreatedBy(creature);
 //                break;
@@ -635,7 +666,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //
 //                result.setCreatedBy(creature);
 //
@@ -657,7 +688,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //
 //                result.setCreatedBy(creature);
 //
@@ -678,7 +709,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //
 //                result.setCreatedBy(creature);
 //
@@ -703,7 +734,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //
 //                result.setCreatedBy(creature);
 //                break;
@@ -723,7 +754,7 @@ public class AbilityHandler {
 //                        activeEffects,
 //                        id.getActivityAreaType(),
 //                        direction,
-//                        "soundwall"); //TODO anim
+//                        "soundwall"); 
 //
 //                result.setCreatedBy(creature);
 //                break;
@@ -770,9 +801,9 @@ public class AbilityHandler {
         Vector2 direction;
 
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(3f,0f);
 
@@ -783,15 +814,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
+        activeEffects = new Array<Effect>();
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(3,3);
 
@@ -802,15 +834,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
+        activeEffects = new Array<Effect>();
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(3,-3);
 
@@ -821,15 +854,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
+        activeEffects = new Array<Effect>();
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(0,3);
 
@@ -840,15 +874,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
+        activeEffects = new Array<Effect>();
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(0,-3 );
 
@@ -859,15 +894,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
+        activeEffects = new Array<Effect>();
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(-3, 3);
 
@@ -878,15 +914,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
+        activeEffects = new Array<Effect>();
         activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(-3, 0);
 
@@ -897,15 +934,16 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);
 
-        activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
-        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
-        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 5f, 0f));
-        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 3f, 5f, 0f));
+        activeEffects = new Array<Effect>();
+        activeEffects.add(new Effect(EffectID.STUNED, 0.2f, 0.1f, 0f));
+        activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 3f, 0f));
+        activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.1f, 5f, 0f));
+        activeEffects.add(new Effect(EffectID.FIRE_DAMAGE, 0.1f, 5f, 0f));
 
         direction = new Vector2(-3, -3 );
 
@@ -916,7 +954,7 @@ public class AbilityHandler {
                 activeEffects,
                 ActivityAreaType.ARROW,
                 direction,
-                "firewall", false); //TODO anim
+                "firewall", false); 
 
         result.setCreatedBy(creature);
         results.add(result);

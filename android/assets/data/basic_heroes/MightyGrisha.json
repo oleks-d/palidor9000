@@ -32,7 +32,7 @@
 
   "selectedAtackAbilities" : "",
   "selectedDefenseAbilities": "",
-  "summon": "",
+  "summon": "SUMMON_MARK",
 
   "skills": ""
 

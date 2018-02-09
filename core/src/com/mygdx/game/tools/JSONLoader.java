@@ -44,8 +44,8 @@ public class JSONLoader {
                             //Integer.valueOf(component.getString("org")),
                             tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                             tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
-                            //tryToGetValue(component, "dialogs") != null ? component.getString("dialogs") : ""
+                            tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : "",
+                            tryToGetValue(component, "pattern") != null ? component.getString("pattern") : ""
                             ));
             //System.out.println(component.get("asset").getString("relativePath"));
         }
@@ -171,7 +171,8 @@ public class JSONLoader {
                     //Integer.valueOf(component.getString("org")),
                     tryToGetValue(component, "abilities") != null ? component.getString("abilities") : "",
                     tryToGetValue(component, "effects") != null ? component.getString("effects") : "",
-                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : ""
+                    tryToGetValue(component, "equipeditems") != null ? component.getString("equipeditems") : "",
+                    ""
                     //"" // no dialogs for hero
             );
 

@@ -118,7 +118,8 @@ public enum Skill {
             }, 100 ,0),
     AGILITY2(16, "Advanced Punch", "Powerpunch (Push enemy)",
             new AbilityID[]{
-                    AbilityID.POWERPUNCH
+                    AbilityID.POWERPUNCH,
+                    AbilityID.APPERPUNCH,
                     //AbilityID.POWERJUMP
             } , 100,6),
     AGILITY3(26, "Master Haste", "Using reflexes and speed in combat",

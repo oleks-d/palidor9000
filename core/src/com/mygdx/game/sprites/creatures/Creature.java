@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.ai.AI;
+import com.mygdx.game.ai.BehaviourPattern;
 import com.mygdx.game.enums.*;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
@@ -31,7 +32,8 @@ import java.util.Set;
 public class Creature extends Sprite {
 
 
-    public final boolean isHero;
+    public boolean isHero;
+    private BehaviourPattern pattern;
     private CreatureDescription description;
     protected World world;
     private Body body;
@@ -171,6 +173,7 @@ public class Creature extends Sprite {
             timeInBattle = existingTime + 5;
         else {
             timeInBattle = 0;
+            brain.resetProgram();
         };
         this.IN_BATTLE = IN_BATTLE;
     }
@@ -188,6 +191,7 @@ public class Creature extends Sprite {
         this.id = description.id;
         this.name = description.name;
         this.creatureDescription = description.description;
+        this.pattern = description.pattern;
 
         this.stats = new Characteristics(description.stats);
 
@@ -220,7 +224,7 @@ public class Creature extends Sprite {
 
         isActive = false;
 
-        this.brain = new AI(this,screen,program);
+        this.brain = new AI(this,screen,program,pattern);
 
         for(Effect effect: description.effects){
             applyEffect(effect);
@@ -593,8 +597,10 @@ public class Creature extends Sprite {
                 //       statusbar.draw(batch);
             }
             //creatureAim.draw(batch);
-        }else
-            batch.draw(deadBody, getX(),getY(),getWidth(),getHeight());
+        }else {
+            batch.draw(deadBody, getX(), getY(), getWidth(), getHeight());
+            statusbar.draw(batch);
+        }
     }
 
     ///// AI
@@ -640,7 +646,7 @@ public class Creature extends Sprite {
     }
 
 
-    public int getToughness() {
+    public int getToughness() { //TODO
         int result = stats.health.current + getReputation();
         return result;
     }
@@ -753,7 +759,7 @@ public class Creature extends Sprite {
             //Gdx.app.log("Creature", "Locked " + ability);
     }
 
-    private boolean checkCooldownExpired(AbilityID ability){
+    public boolean checkCooldownExpired(AbilityID ability){
         return cooldowns.get(ability) <= existingTime;
     }
 
@@ -779,10 +785,10 @@ public class Creature extends Sprite {
 
 
 
-    public void setStun(boolean stuned) {
+    public void setStun(boolean stuned, boolean severe) {
         this.stuned = stuned;
         //resetTimeSpentOnCast();
-        if(stuned) lockAbility(abilityToCast);
+        if(severe && stuned) lockAbility(abilityToCast);
     }
 
 
@@ -817,8 +823,8 @@ public class Creature extends Sprite {
             effect = activeEffects.get(i);
             if (effect.duration != 0) {//not constant effect
                 if (effect.removeTime <= existingTime) {
-                    com.mygdx.game.tools.EffectsHandler.resetEffect(this, effect.id, effect.magnitude);
                     effectsToRemove.add(i);
+                    EffectsHandler.resetEffect(this, effect.id, effect.magnitude);
                 }
             };
             if (effect.dotDuration > 0 && effect.refreshTime <= existingTime) { // tick DoT
@@ -842,8 +848,9 @@ public class Creature extends Sprite {
         //check if effect is still active
         for(int i = 0; i < activeEffects.size; i++){
             if(effect.equals(activeEffects.get(i)) ){
-                com.mygdx.game.tools.EffectsHandler.resetEffect(this, effect.id, effect.magnitude);
                 effectsToRemove.add(i);
+                EffectsHandler.resetEffect(this, effect.id, effect.magnitude);
+
             }
         }
 
@@ -880,6 +887,17 @@ public class Creature extends Sprite {
             }
         }
         return null;
+    }
+
+    // get number of effect of a type
+    public int getNumberOfEffects(EffectID id) {
+        int res = 0;
+        for(int i = activeEffects.size-1;i>=0;i--){
+            if(activeEffects.get(i).id == id){
+                res++;
+            }
+        }
+        return res;
     }
 
     //check effect
@@ -1105,6 +1123,8 @@ public class Creature extends Sprite {
         int inventorySize = getInventory().size;
         for(int i =0; i<inventorySize;i++)
             throwFromInventory(getInventory().get(0));
+
+        //screen.slowDown(1);
     }
 
 

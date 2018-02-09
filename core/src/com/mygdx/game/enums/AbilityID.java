@@ -39,7 +39,7 @@ public enum AbilityID{
     BARSKIN("Barskin", "Add protectoin against any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
     FULLPROTECTION("Fullprotection", "Immune to any damage", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
 
-//    //TODO shouts should depend on weapon in hands
+//    // shouts should depend on weapon in hands
 //    SHOUT("Shout", "Makes you stronger" , "icon_cross", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 0.1f, 30f),
 //    POWER_SHOUT("Power shout", "Makes you muuuch stronger", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.BIGBOX, 0.1f, 60f),
 //    TRADE("Trade", "Sell item on a full price", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 5f),
@@ -71,6 +71,9 @@ public enum AbilityID{
 
 
     SUMMON_MARK("Call Mark", "Allows to call Mark" , "hummer_blue", State.CASTING,AbilityType.SUMMON, ActivityAreaType.SELF, 0.1f,1f),
+    SUMMON_ROLF("Call Rolf", "Allows to call Mark" , "axe", State.CASTING,AbilityType.SUMMON, ActivityAreaType.SELF, 0.1f,1f),
+    SUMMON_DEMON("Call Demon", "Allows to call Mark" , "hummer_red", State.CASTING,AbilityType.SUMMON, ActivityAreaType.SELF, 0.1f,1f),
+
 
     //special abilities
     ROLFS_TALK("Talk with Rolfs", "Allows to become a friend with a Rolf " , "icon_blank", State.CASTING,AbilityType.BUFF, ActivityAreaType.SELF, 0.1f,1f),
@@ -98,11 +101,15 @@ public enum AbilityID{
     GREATEST_LEADERSHIP("Greater leadersip", "Allows to have  strongest followers", "icon_blank", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
 
     BETTER_JUMP("Better jump", "Jump higher" , "icon_blank" , State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 5f),
-    POWERPUNCH ("Powerpush","Push forward","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.BOX, 0.1f , 60f);
+    POWERPUNCH ("Powerpush","Push forward","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.BOX, 0.1f , 0.5f),
+    APPERPUNCH ("Powerpunch","Appercote","icon_blank",State.KICKING,AbilityType.LONG_RANGE_DEFENSE , ActivityAreaType.BOX, 0.1f , 0.5f),
 
 
+    RAGE("Rage", "Makes you stronger" , "icon_cross", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 1f, 5f),
 
-    private final com.mygdx.game.enums.AbilityType type;
+    HEAL("Heal", "Healing" , "icon_cross", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 1f, 5f);
+
+    private final AbilityType type;
     String value;
     String description;
     String icon;

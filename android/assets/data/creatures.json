@@ -9,7 +9,8 @@
     "speed" : "5",
     "jump": "5",
     "spritesheetregion" : "animal_rolf",
-    "abilities" : "ANIMAL_PUNCH"
+    "abilities" : "ANIMAL_PUNCH",
+    "pattern" : "ANIMAL_ROLF"
   },
 
   {
@@ -20,7 +21,8 @@
     "speed" : "8",
     "jump": "10",
     "spritesheetregion" : "animal_bolfir",
-    "abilities" : "ANIMAL_PUNCH,ACID_SHOT"
+    "abilities" : "ANIMAL_PUNCH,ACID_SHOT",
+    "pattern" : "ANIMAL_BOLFIR"
   },
 
   {
@@ -31,7 +33,8 @@
     "speed" : "5",
     "jump": "8",
     "spritesheetregion" : "animal_tordur",
-    "abilities" : "ANIMAL_PUNCH, ANIMAL_DASH"
+    "abilities" : "ANIMAL_PUNCH, ANIMAL_DASH, RAGE",
+    "pattern" : "ANIMAL_TORDUR"
   },
 
   {
@@ -42,7 +45,8 @@
     "speed" : "10",
     "jump": "10",
     "spritesheetregion" : "animal_rager",
-    "abilities" : "ANIMAL_PUNCH, SPIKE_SHOT"
+    "abilities" : "ANIMAL_PUNCH, SPIKE_SHOT",
+    "pattern" : "ANIMAL_RAGER"
   },
 
 
@@ -51,24 +55,39 @@
     "id" : "enemy_1",
     "name" : "Foreign soldier",
     "description": "Foreign soldier",
-    "health" : "20",
+    "health" : "15",
     "speed" : "5",
     "jump" : "10",
     "spritesheetregion" : "enemies1",
     "abilities" : "SWORD_SWING",
-    "equipeditems" : "axe_2"
+    "equipeditems" : "axe_2",
+    "pattern" : "ENEMY_1"
   },
   {
     "id" : "enemy_2",
     "name" : "Foreign spearsman",
     "description": "Foreign spearsman",
-    "health" : "5",
+    "health" : "10",
     "speed" : "8",
     "jump" : "10",
     "spritesheetregion" : "enemies2",
     "abilities" : "PUNCH,LONGBOW_SHOT",
-    "equipeditems" : "bow_1"
+    "equipeditems" : "bow_1",
+    "pattern" : "ENEMY_2"
   },
+  {
+    "id" : "enemy_3",
+    "name" : "Foreign mage",
+    "description": "Foreign mage",
+    "health" : "10",
+    "speed" : "8",
+    "jump" : "10",
+    "spritesheetregion" : "enemies2",
+    "abilities" : "PUNCH,LONGBOW_SHOT",
+    "equipeditems" : "fire_1",
+    "pattern" : "ENEMY_3"
+  },
+
   {
     "id" : "demon_1",
     "name" : "Demon",
@@ -78,9 +97,22 @@
     "jump" : "10",
     "spritesheetregion" : "demon1",
     "abilities" : "HUMMER_SMASH,SWORD_SWING,LONGBOW_SHOT",
-    "equipeditems" : "axe_3,hummer_3"
+    "equipeditems" : "axe_3,hummer_3",
+    "pattern" : "DEMON_1"
   },
 
+  {
+    "id" : "demon_2",
+    "name" : "Demon",
+    "description": "Demon",
+    "health" : "20",
+    "speed" : "5",
+    "jump" : "10",
+    "spritesheetregion" : "demon1",
+    "abilities" : "HUMMER_SMASH,SWORD_SWING,LONGBOW_SHOT",
+    "equipeditems" : "axe_3,hummer_3",
+    "pattern" : "DEMON_2"
+  },
 
   {
     "id" : "father",

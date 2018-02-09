@@ -122,31 +122,31 @@ public class WorldContactListener implements ContactListener {
                 else
                     ((Creature) fixB.getUserData()).touchObject(((GameObject) fixA.getUserData()));
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_LEFT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_LEFT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setHasToJump(false, true);
                 else
                     ((Creature) fixB.getUserData()).setHasToJump(false, true);
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_RIGHT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_RIGHT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setHasToJump(true, true);
                 else
                     ((Creature) fixB.getUserData()).setHasToJump(true, true);
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setStandStill(true);
                 else
                     ((Creature) fixB.getUserData()).setStandStill(true);
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_RIGHT_POINT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_RIGHT_POINT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setMoveRight(true);
                 else
                     ((Creature) fixB.getUserData()).setMoveRight(true);
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_LEFT_POINT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_LEFT_POINT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setMoveLeft(true);
                 else
@@ -227,25 +227,25 @@ public class WorldContactListener implements ContactListener {
                 ((Creature) fixB.getUserData()).setNeighbor(null);
                 break;
 
-            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_LEFT_POINT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_LEFT_POINT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setMoveLeft(false);
                 else
                     ((Creature) fixB.getUserData()).setMoveLeft(false);
                 break;
-            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_RIGHT_POINT: // TODO make sure it is correct way
+            case PalidorGame.CREATURE_BIT | PalidorGame.MOVE_RIGHT_POINT: 
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
                     ((Creature) fixA.getUserData()).setMoveRight(false);
                 else
                     ((Creature) fixB.getUserData()).setMoveRight(false);
                 break;
-//            case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: // TODO make sure it is correct way
+//            case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: 
 //                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
 //                    ((Creature) fixA.getUserData()).setStandStill(false);
 //                else
 //                    ((Creature) fixB.getUserData()).setStandStill(false);
 //                break;
-//            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_POINT: // TODO make sure it is correct way
+//            case PalidorGame.CREATURE_BIT | PalidorGame.JUMP_POINT: 
 //                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)
 //                    ((Creature) fixA.getUserData()).setHasToJump(false);
 //                else

@@ -1,6 +1,7 @@
 package com.mygdx.game.stuctures.descriptions;
 
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.ai.BehaviourPattern;
 import com.mygdx.game.dialogs.GameDialog;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.stuctures.Characteristics;
@@ -23,6 +24,7 @@ public class CreatureDescription {
     public Array<String> equiped;
 //    public int organization;
 //    public Array<Integer> dialogs;
+    public BehaviourPattern pattern;
 
 
     public CreatureDescription(
@@ -35,8 +37,9 @@ public class CreatureDescription {
             String abilities,
             String effects,
             //String inventory,
-            String equiped
+            String equiped,
      //       String dialogs
+            String pattern
     ) {
 
         this.id = id;
@@ -49,11 +52,12 @@ public class CreatureDescription {
         //this.inventory = new Array<String>();
         this.equiped = new Array<String>();
         //this.dialogs = new Array<Integer>();
+        this.pattern = null;
 
         if(!abilities.equals("")) {
             for (String curAbiility : abilities.split(",")) {
                 //this.abilities.add(AbilityID.getIDByName(curAbiility));
-                this.abilities.add(com.mygdx.game.enums.AbilityID.valueOf(curAbiility.trim()));
+                this.abilities.add(AbilityID.valueOf(curAbiility.trim()));
             }
         }
         if(!effects.equals("")) {
@@ -74,6 +78,12 @@ public class CreatureDescription {
                 if(!curItem.equals(""))
                     this.equiped.add(curItem.trim());
             }
+        }
+
+        if(!pattern.equals("")) {
+            this.pattern = BehaviourPattern.valueOf(pattern);
+            } else {
+                this.pattern = null;
         }
 
 //        if(!dialogs.equals("")) {
