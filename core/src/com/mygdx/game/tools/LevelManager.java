@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.dialogs.GameDialog;
+import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.State;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
@@ -185,12 +186,20 @@ public class LevelManager implements Disposable{
 
     }
 
-    public void createSummonedCreature(GameScreen screen, float x, float y, String object, int org) {
-            SUMMONED_CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null, null));
+    public void createSummonedCreature(GameScreen screen, float x, float y, String object, Creature owner) {
+            Creature mob = new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , owner.getOrganization() , null, null);
+            mob.setOwner(owner);
+            mob.setUniqueID(SUMMONED_CREATURES.size + 1000 + 2);
+
+            mob.useAbility(AbilityID.APPEAR);
+
+            SUMMONED_CREATURES.add(mob);
     }
 
     public void createCreature(GameScreen screen, float x, float y, String object, int org) {
-        CREATURES.add(new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null, null));
+        Creature mob = new Creature(screen, x, y, CREATURE_DESCRIPTIONS.get(object), null, null , org , null, null);
+        mob.setUniqueID(CREATURES.size + 2);
+        CREATURES.add(mob);
     }
 
     public void createInteractiveObject(GameScreen screen, MapObject object) {

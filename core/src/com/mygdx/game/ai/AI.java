@@ -169,24 +169,24 @@ public class AI {
         // if target was found
         if (targetX != 0) {
 
-            if (targetX < creature.getX())    //move/atack left
+            if (targetX < creature.getX() -0.1)    //move/atack left
             {
                 creature.directionRight = false;
                 creature.direction.set(-1, 0);
                 if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) { // is reachable
-                    if (targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM             // is close
-                            && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM) {
+                    if (targetX > creature.getX() - 1.5* PalidorGame.TILE_SIZE / PPM             // is close
+                            && targetX > creature.getX() - 1.5* PalidorGame.TILE_SIZE / PPM) {
                         result = CreatureAction.CLOSE_ATACK;
                     } else
                         result = CreatureAction.RANGE_ATACK;
                 } else result = CreatureAction.MOVE_LEFT;
-            } else if (targetX > creature.getX()) {        //move/atack right
+            } else if (targetX > creature.getX() +0.1 ) {        //move/atack right
                 {
                     creature.directionRight = true;
                     creature.direction.set(1, 0);
                     if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {// is reachable
-                        if (targetX < creature.getX() + PalidorGame.TILE_SIZE / PPM             // is close
-                                && targetX > creature.getX() - PalidorGame.TILE_SIZE / PPM)
+                        if (targetX < creature.getX() + 1.5* PalidorGame.TILE_SIZE / PPM             // is close
+                                && targetX > creature.getX() - 1.5* PalidorGame.TILE_SIZE / PPM)
                             result = CreatureAction.CLOSE_ATACK;
                         else
                             result = CreatureAction.RANGE_ATACK;
@@ -195,7 +195,7 @@ public class AI {
                 }
 
             } else
-                result = CreatureAction.STOP;
+                result = CreatureAction.WALK;
 
 
             if (isHasToJump() && targetY - 0.10 > creature.getY()) {
@@ -206,6 +206,7 @@ public class AI {
                 }
                 setHasToJump(false, false);
             }
+
 
             //reset program
 
@@ -219,6 +220,9 @@ public class AI {
             }
 
 //        if("".equals(pattern)) {
+
+        if(creature.stats.health.current < creature.stats.health.base/3)
+            result = CreatureAction.ALMOST_DEAD;
 
         if (creature.abilityToCast == AbilityID.NONE)
             switch (result) {
@@ -291,17 +295,29 @@ public class AI {
                     if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
                         creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
                         creature.weaponSprite.isMoving = true;
-                    } else //move to enemy
-                        if (creature.directionRight) {
+                    }
+//                    else //move to enemy
+//                        if (creature.directionRight) {
+//                            if (!moveLeft)
+//                                creature.move(creature.directionRight);
+//                        } else {
+//                            if (!moveRight)
+//                                creature.move(creature.directionRight);
+//                        }
+//                }
+                    break;
+                case ALMOST_DEAD:
+                    if (creature.findAbility(AbilityType.BUFF) != null) {
+                        creature.useAbility(creature.findAbility(AbilityType.BUFF));
+                        creature.weaponSprite.isMoving = true;
+                    } else //move from enemy
+                        if (!creature.directionRight) {
                             if (!moveLeft)
                                 creature.move(creature.directionRight);
                         } else {
                             if (!moveRight)
                                 creature.move(creature.directionRight);
                         }
-//                }
-                    break;
-                case ALMOST_DEAD:
 //                if(pattern!=null) {
 //                    if (pattern.getSteps()[currentActionStepNumber].getCondition().equals("HP")) {
 //                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);

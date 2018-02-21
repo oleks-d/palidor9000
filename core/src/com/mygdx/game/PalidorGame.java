@@ -26,6 +26,10 @@ public class PalidorGame extends Game {
 	public static String gameDetails;
 	public static boolean EXIT_FLAG = false;
 
+
+	public static final float MIN_FRAME_LENGTH = 0.03f;
+//	private float timeSinceLastRender;
+
 	public String currentHero;
 
 	public SpriteBatch getBatch() {
@@ -58,6 +62,10 @@ public class PalidorGame extends Game {
 
 		setScreen(new MainMenuScreen(this));
 		//setScreen(new GameScreen(this, currentHero));
+
+//		Gdx.graphics.setContinuousRendering(false);
+//		Gdx.graphics.requestRendering();
+
 	}
 
 	@Override

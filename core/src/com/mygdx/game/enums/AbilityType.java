@@ -9,5 +9,5 @@ public enum AbilityType {
     CLOSE_RANGE_DEFENSE,
     LONG_RANGE_DEFENSE,
     BUFF,
-    DEBUFF, SUMMON;
+    DEBUFF, SUMMON, FLAG;
 }

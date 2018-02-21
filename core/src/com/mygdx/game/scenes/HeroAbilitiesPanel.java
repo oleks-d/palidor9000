@@ -156,7 +156,7 @@ public class HeroAbilitiesPanel implements Disposable {
         Table detailstable = new Table();
         detailstable.right().top();
         detailstable.setFillParent(true);
-        detailstable.row();
+        detailstable.row().pad(10,10,10,10);
         detailstable.add(detailsHeader);
 
         // inventory tableController update
@@ -170,7 +170,7 @@ public class HeroAbilitiesPanel implements Disposable {
         Image takeButton;
 
 
-        skillsTable.row();
+        skillsTable.row().pad(8,8,8,8);
 
         for(int i=0; i<Skill.values().length; i++) {
             final Skill skill = Skill.values()[i];
@@ -225,7 +225,7 @@ public class HeroAbilitiesPanel implements Disposable {
             skillsTable.add(takeButton);
 
 
-            if(((i+1)%3)==0) skillsTable.row();
+            if(((i+1)%3)==0)  skillsTable.row().pad(8,8,8,8);
         }
 
         // show all abilities

@@ -7,7 +7,7 @@ import com.mygdx.game.enums.AbilityID;
  */
 public enum BehaviourPatternStep {
     ANIMAL_PUNCH(1, "" , AbilityID.ANIMAL_PUNCH),
-    ANIMAL_BOOM(2, "" , AbilityID.APPERPUNCH),
+    ANIMAL_BOOM(2, "" , AbilityID.UPPERPUNCH),
     ANIMAL_DASH(3, "D" , AbilityID.ANIMAL_DASH),
     ANIMAL_SPIKE(4, "D" , AbilityID.SPIKE_SHOT),
     ANIMAL_ACID(5, "D" , AbilityID.ACID_SHOT),

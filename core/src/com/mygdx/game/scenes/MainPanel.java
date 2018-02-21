@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
+import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.Fonts;
 import com.mygdx.game.tools.LevelManager;
 
@@ -47,7 +48,7 @@ public class MainPanel implements Disposable {
     Image start;
     Image background;
 
-    com.mygdx.game.tools.AnimationHelper animhelper;
+    AnimationHelper animhelper;
 
     Skin skin;
 
@@ -72,14 +73,24 @@ public class MainPanel implements Disposable {
 
     void update() {
 
+        newHero = new Label("Start new Story as ", new Label.LabelStyle(Fonts.GAMEMENUHEADER.getFont(), Color.BLUE));
+
+        selectHero = new Label("Resume old Story as ", new Label.LabelStyle(Fonts.GAMEMENUHEADER.getFont(), Color.BLUE));
+
         titleTable = new Table();
         titleTable.setFillParent(true);
         titleTable.top();
-        titleTable.row().pad(10,200,10,10);
+        titleTable.row().pad(10,10,10,10);
+        titleTable.add();
         titleTable.add(gameTitle);
+        titleTable.add();
 
+        titleTable.row().pad(10, 10, 10, 10);
+        titleTable.add(newHero);
+        titleTable.add();
 
         table = new Table();
+        table.center();
         table.setFillParent(true);
 
         usernameTextField = new TextField("", skin);
@@ -101,14 +112,7 @@ public class MainPanel implements Disposable {
 
         heroName = "";
 
-
-        newHero = new Label("Set New hero name and click Start", new Label.LabelStyle(new BitmapFont(), Color.RED));
-
-
-        selectHero = new Label("Select hero", new Label.LabelStyle(new BitmapFont(), Color.RED));
-        ;
-
-        exit = new Label("Exit", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        exit = new Label("Exit", new Label.LabelStyle(Fonts.GAMEMENUHEADER.getFont(), Color.BLUE));
         exit.addListener(new InputListener() {
 
             @Override
@@ -128,15 +132,16 @@ public class MainPanel implements Disposable {
 
         ArrayList<String> listOfHeroes = LevelManager.getListOfSaveHeros();
         if(listOfHeroes.size()>0) {
-            savedHeroes.row().pad(10, 10, 10, 100);
-            savedHeroes.add(selectHero);
+            titleTable.add(selectHero);
+        } else {
+            titleTable.add();
         }
 
         for (String savedHero : listOfHeroes) {
 
             final String savedHeroLabel = savedHero;
 
-            labelForHeroName = new Label(savedHero, new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+            labelForHeroName = new Label(savedHero, new Label.LabelStyle(Fonts.GAMEMENUITEM.getFont(), Color.BLACK));
             labelForHeroName.addListener(new InputListener() {
 
                 @Override
@@ -158,26 +163,20 @@ public class MainPanel implements Disposable {
                 }
             });
 
-            savedHeroes.row().pad(10,10,10,20);
+            savedHeroes.row().pad(10,10,10,10);
             savedHeroes.add(labelForHeroName);
             savedHeroes.add(removeSaveButton);
             savedHeroes.add();
         }
 
 
-
         heroTypes.row().pad(10,100,10,10);
-        heroTypes.add(newHero);
-        heroTypes.row();
-        heroTypes.row().pad(10,100,10,10);
-        heroTypes.add(usernameTextField);
-        heroTypes.row();
         heroTypes.row();
         for (String heroType : LevelManager.getListOfHeroTypes()) {
 
             final String newheroType = heroType;
 
-            labelForHeroName = new Label(heroType, new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+            labelForHeroName = new Label(heroType, new Label.LabelStyle(Fonts.GAMEMENUHEADER.getFont(), Color.BLACK));
             labelForHeroName.addListener(new InputListener() {
 
                 @Override
@@ -186,7 +185,10 @@ public class MainPanel implements Disposable {
                     if (newheroType != null && heroName.matches("[\\w ]+")) {
                         createHeroWithType = newheroType;
                         createNewFlag = true;
-                    } else createNewFlag = false;
+                    } else {
+                        createNewFlag = false;
+                        usernameTextField.setText(generateName());
+                    }
 
                     return true;
                 }
@@ -195,18 +197,26 @@ public class MainPanel implements Disposable {
             heroTypes.row().pad(10,100,10,10);
             heroTypes.add(labelForHeroName);
         }
+        heroTypes.row().pad(10,100,10,10);
+        heroTypes.add(usernameTextField);
+        heroTypes.row();
 
+        //table.bottom();
+        table.row();
+        table.addActor(titleTable);
+        table.row().pad(10,10,10,10);
+        table.addActor(heroTypes);
+        table.addActor(savedHeroes);
+        table.row().pad(30,30,30,30);
         table.bottom();
-        table.row().pad(10,10,100,10);
         table.add(exit);
         table.row();
 
         stage.addActor(background);
-        stage.addActor(heroTypes);
-        stage.addActor(titleTable);
-        stage.addActor(savedHeroes);
+        //stage.addActor(heroTypes);
+        //stage.addActor(titleTable);
+       // stage.addActor(savedHeroes);
         stage.addActor(table);
-
 
         Gdx.input.setInputProcessor(stage);
 
@@ -216,6 +226,14 @@ public class MainPanel implements Disposable {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+
+    public String generateName(){
+        String[] names = {"",""};
+
+        String name = "Unknown Hero";
+        return name;
     }
 
 }

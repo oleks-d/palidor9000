@@ -93,6 +93,15 @@
     "picture" : "weapon_spear"
   },
   {
+    "id":"sling_1",
+    "name" : "Rock",
+    "description" : "Regular sling \n (Accuracy skill required)",
+    "value" : "100",
+    "image" : "sling",
+    "type" : "WEAPON_SLING",
+    "picture" : "bola_weapon"
+  },
+  {
     "id":"hummer_1",
     "name" : "Club",
     "description" : "Simple crushing weapon \n (Strenth skill required)",
@@ -170,6 +179,16 @@
     "type" : "WEAPON_MAGIC_FIRE",
     "picture" : "weapon_fire",
     "effects": "PLUS_FIRE_DAMAGE 0 1 0"
+  },
+  {
+    "id":"ice_1",
+    "name" : "Ice stuff",
+    "description" : "Stuff of ice. Simple magic weapon. \n (Will skill required)",
+    "value" : "100",
+    "image" : "stuff_blue",
+    "type" : "WEAPON_MAGIC_ICE",
+    "picture" : "weapon_fire",
+    "effects": "PLUS_ICE_DAMAGE 0 1 0"
   },
 
   {

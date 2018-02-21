@@ -42,6 +42,7 @@ public class ControllerPanel implements Disposable{
     public boolean touchedAbility1;
     public boolean touchedAbility2;
     public boolean showMenuTouched;
+    public boolean helpTouched;
 
     public boolean pressedUp;
     public boolean pressedDown;
@@ -70,6 +71,7 @@ public class ControllerPanel implements Disposable{
     Image inventoryImage;
     Image abilitiesImage;
     Image escapeImage;
+    Image helpImage;
 
     Image jumpImage;
     Image useImage;
@@ -84,13 +86,15 @@ public class ControllerPanel implements Disposable{
     LinkedList<Label> defenselabels;
     LinkedList<Label> helpalabels;
 
+    Label summonLabel;
+
     AnimationHelper animhelper;
 
     private Vector2 lastTouch;
     Vector2 newTouch;
 
-    int directionControllerSize = 180;
-    int directionControllerSize3 = 60;
+    int directionControllerSize = 210;
+    int directionControllerSize3 = 70;
     public boolean escapeTouched;
     public boolean inventoryToched;
     public boolean abilitiesToched;
@@ -146,7 +150,8 @@ public class ControllerPanel implements Disposable{
             });
 
 
-        menuImage  = new Image(animhelper.getTextureRegionByIDAndIndex("dialog1")) ;
+        menuImage  = new Image(animhelper.getTextureRegionByIDAndIndex("dialog2")) ;
+        menuImage.setSize(30, 30);
         menuImage.addListener(new ClickListener() {
 
             @Override
@@ -158,6 +163,7 @@ public class ControllerPanel implements Disposable{
         });
 
         inventoryImage  = new Image(animhelper.getTextureRegionByIDAndIndex("hummer")) ;
+        inventoryImage.setSize(30, 30);
         inventoryImage.addListener(new ClickListener() {
 
             @Override
@@ -173,6 +179,7 @@ public class ControllerPanel implements Disposable{
         });
 
         abilitiesImage = new Image(animhelper.getTextureRegionByIDAndIndex("red_bottle")) ;
+        abilitiesImage.setSize(30, 30);
         abilitiesImage.addListener(new ClickListener() {
 
             @Override
@@ -187,7 +194,8 @@ public class ControllerPanel implements Disposable{
             }
         });
 
-        escapeImage  = new Image(animhelper.getTextureRegionByIDAndIndex("healthbar")) ;
+        escapeImage  = new Image(animhelper.getTextureRegionByIDAndIndex("close_button")) ;
+        escapeImage.setSize(30, 30);
         escapeImage.addListener(new ClickListener() {
 
             @Override
@@ -197,6 +205,17 @@ public class ControllerPanel implements Disposable{
             }
         });
 
+
+        helpImage  = new Image(animhelper.getTextureRegionByIDAndIndex("dialog1")) ;
+        helpImage.setSize(30, 30);
+        helpImage.addListener(new ClickListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                helpTouched = true;
+                return true;
+            }
+        });
         updateMenuTabel();
 
         updateDirections();
@@ -208,14 +227,14 @@ public class ControllerPanel implements Disposable{
         tableMenu.left().top();
         tableMenu.setFillParent(true);
 
-        tableMenu.row(); //.pad(10,10,10,10);
+        tableMenu.row().pad(10,10,10,10);
         tableMenu.add(menuImage);
+        tableMenu.add(inventoryImage);
+        tableMenu.add(abilitiesImage);
 
         if(showMenuTouched){
-            tableMenu.row().pad(10,10,10,10);;
-            tableMenu.add(inventoryImage);
             tableMenu.row().pad(10,10,10,10);
-            tableMenu.add(abilitiesImage);
+            tableMenu.add(helpImage);
             tableMenu.row().pad(10,10,10,10);
             tableMenu.add(escapeImage);
         }
@@ -379,6 +398,8 @@ public class ControllerPanel implements Disposable{
 
         if(hero.summonAbilities.size > 0){
             Image imageOfCreature = new Image(animhelper.getTextureRegionByIDAndIndex(hero.summonAbilities.get(currentSummonCreatureIndex).getIcon()));
+            abilitytimeout = new Label( hero.summonAbilities.get(currentSummonCreatureIndex).getName(), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+            summonLabel = abilitytimeout;
             imageOfCreature.addListener(new ClickListener() {
 
                 @Override
@@ -395,7 +416,7 @@ public class ControllerPanel implements Disposable{
             tableSummon.row().pad(10,10,10,10);
             tableSummon.add();
             tableSummon.add(imageOfCreature);
-            tableSummon.add();
+            tableSummon.add(abilitytimeout);
         }
         tableSummon.row().pad(10,10,10,10);
 
@@ -480,6 +501,7 @@ public class ControllerPanel implements Disposable{
         atackalabels = new LinkedList<Label>();
         defenselabels = new LinkedList<Label>();
 //        helpalabels = new LinkedList<Label>();
+
 //
 //        tableAbilitiesAtack = new Table();
 //        tableAbilitiesAtack.bottom();
@@ -612,6 +634,17 @@ public class ControllerPanel implements Disposable{
                 defenselabels.get(i).setColor(Color.RED);
             }
         }
+
+        if(currentSummonCreatureIndex > -1) {
+            if (hero.showWhenAbilityWillBeAvailable(hero.summonAbilities.get(currentSummonCreatureIndex)) == 0) {
+                summonLabel.setText(hero.summonAbilities.get(currentSummonCreatureIndex).getName());
+                summonLabel.setColor(Color.GREEN);
+            } else {
+                summonLabel.setText(String.format("%.1f", hero.showWhenAbilityWillBeAvailable(hero.summonAbilities.get(currentSummonCreatureIndex))));
+                summonLabel.setColor(Color.RED);
+            }
+        }
+
         //        for(int i=0;i<hero.selectedHelpAbilities.size;i++)
 //            helpalabels.get(i).setText(String.format("%.1f",hero.showWhenAbilityWillBeAvailable(hero.selectedHelpAbilities.get(i))));
     }

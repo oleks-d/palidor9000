@@ -91,7 +91,7 @@ public class Creature extends Sprite {
     public boolean IN_BATTLE;
     public String id;
 
-    float JUMP_BASE = 0.5f;
+    float JUMP_BASE = 0.48f;
     float SPEED_BASE = 0.02f;
     public float sight = 300;
 
@@ -137,12 +137,18 @@ public class Creature extends Sprite {
     private Animation crushAnimation;
     private Animation fireAnimation;
     private Animation iceAnimation;
+    private Animation deathAnimation;
+    public Animation hideAnimation;
 
     Array<Animation> animationsList;
     Array<TextureRegion> animationRegions;
     Array<Float> animationStateTimers;
 
     public String program;
+
+    public String summonedCreature = "";
+    private Creature owner;
+    private int uniqueID;
 
     public void resetTimeSpentOnCast() {
         this.timeSpentOnCast = 0;
@@ -276,10 +282,12 @@ public class Creature extends Sprite {
         }
 
 
-        cutAnimation = screen.animationHelper.getAnimationByID("blood", 32, 32, 0.2f, 0, 1, 2);
-        crushAnimation= screen.animationHelper.getAnimationByID("smash", 32, 32, 0.2f, 0, 1, 2);
-        fireAnimation= screen.animationHelper.getAnimationByID("firedamage", 32, 32, 0.2f, 0, 1, 2);
-        iceAnimation= screen.animationHelper.getAnimationByID("icedamage", 32, 32, 0.2f, 0, 1, 2);
+        cutAnimation = screen.animationHelper.getAnimationByID("blood", 32, 32, 0.1f, 0, 1, 2);
+        crushAnimation= screen.animationHelper.getAnimationByID("smash", 32, 32, 0.1f, 0, 1, 2);
+        fireAnimation= screen.animationHelper.getAnimationByID("firedamage", 32, 32, 0.1f, 0, 1, 2);
+        iceAnimation= screen.animationHelper.getAnimationByID("icedamage", 32, 32, 0.1f, 0, 1, 2);
+        deathAnimation= screen.animationHelper.getAnimationByID("death", 32, 64, 0.2f, 0, 1, 2);
+        hideAnimation= screen.animationHelper.getAnimationByID("hide", 32, 64, 0.2f, 0, 1, 2);
 
         animationsList = new Array<Animation>();
         animationStateTimers = new Array<Float>();
@@ -403,6 +411,7 @@ public class Creature extends Sprite {
     }
 
     public void update(float dt){
+        setAnimationFrames(dt);
 
         if(toDestroy && !destroyed){
             world.destroyBody(body);
@@ -435,7 +444,7 @@ public class Creature extends Sprite {
 
             existingTime = existingTime + dt;
 
-            if (getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING) {
+            if ((getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING) && !stuned) {
                 timeSpentOnCast = timeSpentOnCast + dt;
             }
 
@@ -444,7 +453,7 @@ public class Creature extends Sprite {
             if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
                 statusbar.removeMessage();
 
-            setAnimationFrames(dt);
+
         }
     }
 
@@ -549,9 +558,9 @@ public class Creature extends Sprite {
 //                return State.RUNNING;
 //            else
 
-            if (body.getLinearVelocity().y > 0.01)
+            if (body.getLinearVelocity().y > 0.01 && !onAGround)
                 return State.JUMPING;
-            else if (body.getLinearVelocity().y < -0.01)
+            else if (body.getLinearVelocity().y < -0.01 && !onAGround)
                 return State.FALLING;
             else if (body.getLinearVelocity().x != 0)
                 return State.RUNNING;
@@ -571,35 +580,40 @@ public class Creature extends Sprite {
 
     @Override
     public void draw(Batch batch) {
-        if(!destroyed) {
-            try {
-//                if(this.id.equals("animal_bolfir")){
-//                    Gdx.app.log("error", "");
-//                }
 
-                weaponSprite.draw(batch);
-                super.draw(batch);
-                armorSprite.draw(batch);
-                statusbar.draw(batch);
-                weaponSprite2.draw(batch);
+            if (!destroyed) {
+                if(screen.hero.isAbleToSee(this) || isHero) {
+                    try {
+                        //                if(this.id.equals("animal_bolfir")){
+                        //                    Gdx.app.log("error", "");
+                        //                }
+
+                        weaponSprite.draw(batch);
+                        super.draw(batch);
+                        armorSprite.draw(batch);
+                        statusbar.draw(batch);
+                        weaponSprite2.draw(batch);
 
 
-
-                for(int i = 0 ; i<animationRegions.size;i++) {
-                    TextureRegion animregion = animationRegions.get(i);
-                    batch.draw(animregion, getX(), getY() + getHeight()/2, animregion.getRegionWidth() / PalidorGame.PPM, animregion.getRegionHeight() / PalidorGame.PPM);
+                    } catch (Exception e) { //TODO
+                        Gdx.app.log("error", e.getMessage());
+                        e.printStackTrace();
+                        //       batch.draw(region, getX()/100,getY()/100); //TODO
+                        //       statusbar.draw(batch);
+                    }
+                    //creatureAim.draw(batch);
                 }
-
-            }catch(Exception e){ //TODO
-                Gdx.app.log("error", e.getMessage());
-                e.printStackTrace();
-                //       batch.draw(region, getX()/100,getY()/100); //TODO
-                //       statusbar.draw(batch);
+            } else {
+                if (getY() > 0 && owner == null) {
+                    batch.draw(deadBody, getX(), getY(), getWidth(), getHeight());
+                    statusbar.draw(batch);
+                }
             }
-            //creatureAim.draw(batch);
-        }else {
-            batch.draw(deadBody, getX(), getY(), getWidth(), getHeight());
-            statusbar.draw(batch);
+
+
+        for(int i = 0 ; i<animationRegions.size;i++) {
+            TextureRegion animregion = animationRegions.get(i);
+            batch.draw(animregion, getX(), getY() + getHeight()/2, animregion.getRegionWidth() / PalidorGame.PPM, animregion.getRegionHeight() / PalidorGame.PPM);
         }
     }
 
@@ -723,7 +737,7 @@ public class Creature extends Sprite {
     }
 
     public void useAbility(AbilityID ability){
-        if(!stuned)
+        if(!stuned && abilityToCast == AbilityID.NONE)
         {
             if(checkCooldownExpired(ability)) {
 
@@ -1124,6 +1138,13 @@ public class Creature extends Sprite {
         for(int i =0; i<inventorySize;i++)
             throwFromInventory(getInventory().get(0));
 
+        startAnimation(deathAnimation);
+
+        if(owner != null) {
+            owner.summonedCreature = "";
+            owner.addStatusMessage("Summoned creature defeated", Fonts.IMPORTANT);
+        }
+
         //screen.slowDown(1);
     }
 
@@ -1164,9 +1185,9 @@ public class Creature extends Sprite {
 
     }
 
-    private void startAnimation(Animation animation) {
+    public void startAnimation(Animation animation) {
         if(animation != null) {
-            animationsList.add(cutAnimation);
+            animationsList.add(animation);
             animationStateTimers.add(0f);
         }
     }
@@ -1236,5 +1257,17 @@ public class Creature extends Sprite {
 
     public void onAGround(boolean val) {
         onAGround = val;
+    }
+
+    public void setOwner(Creature owner) {
+        this.owner = owner;
+    }
+
+    public int getID() {
+        return uniqueID;
+    }
+
+    public void setUniqueID(int i) {
+        uniqueID = i;
     }
 }

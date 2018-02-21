@@ -109,7 +109,7 @@ public class EffectsHandler {
 
             case STUNED:
                 if(magnitude > 0.3) {
-                    creature.addStatusMessage("Stuned", Fonts.BAD);
+                    //creature.addStatusMessage("Stuned", Fonts.BAD);
                     creature.setStun(true, true);
                 } else {
                     creature.setStun(true, false);
@@ -121,6 +121,9 @@ public class EffectsHandler {
                 break;
             case MOVE_RIGHT:
                 creature.getBody().applyLinearImpulse(new Vector2(magnitude,0), creature.getBody().getWorldCenter(), true);
+                break;
+            case MOVE_UP:
+                creature.getBody().applyLinearImpulse(new Vector2(0,magnitude), creature.getBody().getWorldCenter(), true);
                 break;
             case INVISIBLE:
                 creature.setInvisible(true);
@@ -143,7 +146,7 @@ public class EffectsHandler {
 
             case STUNED:
                 //if(creature.getNumberOfEffects(EffectID.STUNED) == 1) {
-                    creature.addStatusMessage("Active (not in stun)", Fonts.IMPORTANT);
+                    //creature.addStatusMessage("Active (not in stun)", Fonts.IMPORTANT);
                     creature.setStun(false, false);
                 //}
                 break;

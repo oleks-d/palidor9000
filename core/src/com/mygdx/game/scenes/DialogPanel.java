@@ -96,12 +96,12 @@ public class DialogPanel implements Disposable {
             //stage.addActor(background);
 
             Table table = new Table(skin);
-            table.setPosition(PalidorGame.WIDTH/3,PalidorGame.HIGHT/3);
+            table.setFillParent(true);
+            //table.setPosition(PalidorGame.WIDTH/3,PalidorGame.HIGHT/3);
             table.setBackground(background);
-            table.center().top();
+            table.center();
             table.add(dialogLabel);
 
-            //table.setFillParent(true);
             //table.setHeight(1);
 
             //levelLabel = new Label(lm.hero.currentLevel, new Label.LabelStyle(new BitmapFont(), Color.BROWN));

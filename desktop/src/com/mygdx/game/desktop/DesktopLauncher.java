@@ -13,7 +13,7 @@ public class DesktopLauncher {
 		config.title = PalidorGame.TITLE;
 		config.width = PalidorGame.WIDTH;
 		config.height = PalidorGame.HIGHT;
-		config.foregroundFPS  = 30;
+		//config.foregroundFPS  = 30;
 
 
 		new LwjglApplication(new PalidorGame(), config);

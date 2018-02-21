@@ -28,6 +28,8 @@ public class WeaponSprite extends Sprite {
     float partOfTrajectory;
     float trajectoryX;
     float trajectoryY;
+    float prevtrajectoryX;
+    float prevtrajectoryY;
 
     int scale;
 
@@ -37,6 +39,12 @@ public class WeaponSprite extends Sprite {
 
     public boolean isMoving = false;
     boolean holding = false;
+
+    double holdingTime = 0;
+    float holdingAngle = defaultAngle;
+
+
+    String lastAction = "";
 
     double timeToMoveWeapon;
 
@@ -93,30 +101,54 @@ public class WeaponSprite extends Sprite {
 
                     switch (owner.abilityToCast) {
 
+                        case ANIMAL_POKE:
+                            angle = 0;
+                            trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
+                            //trajectoryY = partOfTrajectory * owner.getHeight() / 2;
+                            scale = 2;
+                            holdingAngle = 1;
+                            break;
                         case SWORD_SWING:
+                        case SWORD_SMASH:
+                        case ANIMAL_CLAW:
+                        case UPPERPUNCH:
+                            angle = -partOfTrajectory * 160;
+                            trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
+                            if(!picture.isFlipY()){
+                                picture.flip(false,true);
+                            }
+                            trajectoryY = - partOfTrajectory * owner.getHeight() / 2;
+                            scale = 2;
+                            holdingAngle = 60;
+                            break;
+                        case ANIMAL_PUNCH:
                         case HUMMER_SWING:
                         case HUMMER_SMASH:
                             angle = partOfTrajectory * 160;
                             trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
                             trajectoryY = partOfTrajectory * owner.getHeight() / 2;
-//                            if (partOfTrajectory < 0.5) { //first part
+//                            if (partOfTrajectory < 0.8) { //first part
 //                                angle = partOfTrajectory * 180;
 //                                trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
 //                                trajectoryY = partOfTrajectory * owner.getHeight() / 2;
 //                            } else { //second part
-//                                angle = 220 - partOfTrajectory * 180;
-//                                trajectoryX = (owner.directionRight ? partOfTrajectory - 1 : 1 - partOfTrajectory) * owner.getWidth();
-//                                trajectoryY = (1 - partOfTrajectory) * owner.getHeight() / 2;
-//
+//                                angle = -60;
+//                                trajectoryX = 0.1f;
+//                                trajectoryY = -owner.getHeight()/ 2;
+////                                trajectoryX = (owner.directionRight ? partOfTrajectory - 1 : 1 - partOfTrajectory) * owner.getWidth();
+////                                trajectoryY = (1 - partOfTrajectory) * owner.getHeight() / 2;
+////
 //                            }
+                            scale = 2;
+
+//                            holding = true;
+//
+//                            if("".equals(lastAction)){
+//                                lastAction = "swing";
+//                            }
+                            holdingAngle = -60;
                             break;
 
-                        case SWORD_SMASH:
-                            angle = 360 - partOfTrajectory * 360;
-                            //trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
-                            //trajectoryY = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
-
-                            break;
                         case SLING_SHOT:
                         case LONGBOW_SHOT:
                         case TRIPLE_SHOT:
@@ -146,12 +178,36 @@ public class WeaponSprite extends Sprite {
                             trajectoryY = partOfTrajectory * owner.getHeight() / 2;
                     }
                 } else {
-                    if(!holding) {
-                        scale = 1;
-                        angle = defaultAngle;
-                        trajectoryX = 0;
-                        trajectoryY = 0;
+
+                    if(holdingAngle != 0) {
+                        if (holdingTime == 0) {
+                            holding = true;
+                            angle = holdingAngle;
+                            holdingTime = owner.existingTime + 0.5;
+                            if(picture.isFlipY())
+                                picture.flip(false,true);
+                            trajectoryX = prevtrajectoryX;
+                            trajectoryY = prevtrajectoryY;
+                        } else {
+                            if(holdingTime <= owner.existingTime){
+                                holding = false;
+                                holdingAngle = 0;
+                                holdingTime = 0;
+                            }
+                        }
                     }
+
+                        if (!holding) {
+                            if(picture.isFlipY()){
+                                picture.flip(false,true);
+                            }
+                            scale = 1;
+                            angle = defaultAngle;
+                            trajectoryX = 0;
+                            trajectoryY = 0;
+                            prevtrajectoryX = trajectoryX;
+                            prevtrajectoryY = trajectoryY;
+                        }
                 }
 
 
@@ -206,6 +262,9 @@ public class WeaponSprite extends Sprite {
             }else {
                 defaultAngle = 25;
             }
+
+            prevtrajectoryX = trajectoryX;
+            prevtrajectoryY = trajectoryY;
 
             isMoving = false;
         }

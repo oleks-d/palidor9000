@@ -91,7 +91,7 @@ public class ArmorSprite extends Sprite {
 
     @Override
     public void draw(Batch batch) {
-        if(pictureName != null) {
+        if(pictureName != null && region !=null) {
             batch.draw(region, getX(), getY(), region.getRegionWidth() / PalidorGame.PPM, region.getRegionHeight() / PalidorGame.PPM);
             //batch.draw(getTexture(), getX(),getY(),region.getRegionWidth(), region.getRegionHeight());
             //super.draw(batch);

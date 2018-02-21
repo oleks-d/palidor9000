@@ -67,7 +67,6 @@ public class ActivityWithEffect extends Sprite {
 
         setPosition(x, y);
 
-        directionRight = false;
         stateTimer = 0f;
 
 
@@ -82,7 +81,7 @@ public class ActivityWithEffect extends Sprite {
             createBody();
     }
 
-    public ActivityWithEffect(com.mygdx.game.screens.GameScreen screen, float x, float y, Array<Effect> activeEffects, ActivityAreaType type, Vector2 direction, String spriteRegionName){
+    public ActivityWithEffect(GameScreen screen, float x, float y, Array<Effect> activeEffects, ActivityAreaType type, Vector2 direction, String spriteRegionName){
         super(screen.animationHelper.getAtlas().findRegion(spriteRegionName));
         //setBounds(0, 0, PalidorGame.TILE_SIZE/ PalidorGame.PPM, PalidorGame.TILE_SIZE/ PalidorGame.PPM);
         setBounds(0, 0, type.getWidth()/ PalidorGame.PPM, type.getHigth()/ PalidorGame.PPM);
@@ -99,7 +98,6 @@ public class ActivityWithEffect extends Sprite {
 
         setPosition(x, y);
 
-        directionRight = false;
         stateTimer = 0f;
 
 
@@ -117,7 +115,8 @@ public class ActivityWithEffect extends Sprite {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / PalidorGame.PPM, getY()/ PalidorGame.PPM );
-        bodyDef.gravityScale= 0f;
+        if(type != ActivityAreaType.ROCK && type != ActivityAreaType.ROCK_BOOM)
+            bodyDef.gravityScale= 0f;
         if(type == ActivityAreaType.ARROW)
             bodyDef.bullet = true;
         body = world.createBody(bodyDef);
@@ -185,9 +184,10 @@ public class ActivityWithEffect extends Sprite {
                         PalidorGame.CREATURE_BIT;
 
                 body.createFixture(fixtureDef).setUserData(this);
-                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName,  type.getWidth(), type.getHigth(), 0.1f, 0, 1, 2);
+                runAnimation = screen.animationHelper.getAnimationByID(spriteRegionName,  type.getWidth(), type.getHigth(), 0.1f, 0);
                 runAnimation.setPlayMode(Animation.PlayMode.NORMAL);
                 break;
+            case ROCK_BOOM:
             case BOOM:
                 shape = new CircleShape();
                 shape.setRadius(PalidorGame.TILE_SIZE / 4 / PalidorGame.PPM );
@@ -232,10 +232,11 @@ public class ActivityWithEffect extends Sprite {
 
     }
 
-    public void update(float dt){
-        if (stateTimer >= liveTime)
-            onHit();
-            //destroyBody();
+    public void update(float dt) {
+        if (stateTimer >= liveTime){
+            //onHit();
+            destroyBody();
+    }
 
         if(!toDestroy && !destroyed)
             updatePosition(dt);
@@ -244,6 +245,14 @@ public class ActivityWithEffect extends Sprite {
             world.destroyBody(body);
             destroyed = true;
         }
+
+        if(getBody().getLinearVelocity().x>0)
+            directionRight = true;
+        if(getBody().getLinearVelocity().x<0)
+            directionRight = false;
+
+
+
     }
 
     public void updatePosition(float dt){
@@ -257,12 +266,12 @@ public class ActivityWithEffect extends Sprite {
         if(!destroyed && !toDestroy) {
             region = (TextureRegion) runAnimation.getKeyFrame(stateTimer, false);
 
-            if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()) {
-                //region.flip(true, false);
-                directionRight = false;
-            } else if ((body.getLinearVelocity().x > 0 || directionRight) && region.isFlipX()) {
-                //region.flip(true, false);
-                directionRight = true;
+            if (!directionRight && !region.isFlipY()) {
+                region.flip(false, true);
+                //directionRight = false;
+            } else if ((directionRight) && region.isFlipY()) {
+                region.flip(false, true);
+                //directionRight = true;
             }
         }
         stateTimer = stateTimer + dt;
@@ -275,23 +284,21 @@ public class ActivityWithEffect extends Sprite {
     }
 
     public void onHit(Creature target) {
-        switch(type) {
-            case ARROW:
-                if(target.getOrganization() != createdBy.getOrganization())
-                    destroyBody();
-                break;
-            case SPRAY:
-                break;
-            case BOOM:
-                if(target.getOrganization() != createdBy.getOrganization()) {
-                    AbilityHandler.explosion(screen, createdBy, getBody().getPosition().x * PPM, getBody().getPosition().y * PPM);
-                    destroyBody();
-                }
-                break;
-            default:
-                if(target.getOrganization() != createdBy.getOrganization())
-                    destroyBody();
-        }
+
+            switch (type) {
+                case ARROW:
+                        destroyBody();
+                    break;
+                case SPRAY:
+                    break;
+                case BOOM:
+                        AbilityHandler.explosion(screen, createdBy, getBody().getPosition().x * PPM, getBody().getPosition().y * PPM);
+                        destroyBody();
+                    break;
+                default:
+                    if (target.getOrganization() != createdBy.getOrganization())
+                        destroyBody();
+            }
     }
 
     public void onHit() {
@@ -301,6 +308,7 @@ public class ActivityWithEffect extends Sprite {
                 break;
             case SPRAY:
                 break;
+            case ROCK_BOOM:
             case BOOM:
                     AbilityHandler.explosion(screen, createdBy, getBody().getPosition().x * PPM, getBody().getPosition().y * PPM);
                     destroyBody();
@@ -310,8 +318,6 @@ public class ActivityWithEffect extends Sprite {
         }
     }
 
-    private void explosion() {
-    }
 
     @Override
     public void draw(Batch batch) {
@@ -336,17 +342,18 @@ public class ActivityWithEffect extends Sprite {
         appliedTo.add(target);
     }
 
-//    public boolean isTargetWasAlreadyProcessed(Creature target){
-//        for (int i = 0; i < appliedTo.size; i++){
-//            if (appliedTo.get(i).getID() == target.getID())
-//                return true;
-//        }
-//        return false;
-//
-//    }
+    public boolean isTargetWasAlreadyProcessed(Creature target){
+        for (int i = 0; i < appliedTo.size; i++){
+            if (appliedTo.get(i).getID() == target.getID())
+                return true;
+        }
+        return false;
+
+    }
 
     public void setCreatedBy(Creature target){
         createdBy = target;
+        directionRight = createdBy.directionRight;
     }
 
     public boolean isTargetACreator(Creature target){

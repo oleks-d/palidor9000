@@ -9,7 +9,7 @@
     "speed" : "5",
     "jump": "5",
     "spritesheetregion" : "animal_rolf",
-    "abilities" : "ANIMAL_PUNCH",
+    "abilities" : "ANIMAL_CLAW, ANIMAL_POKE,MASK1,DISAPPEAR",
     "pattern" : "ANIMAL_ROLF"
   },
 
@@ -21,7 +21,7 @@
     "speed" : "8",
     "jump": "10",
     "spritesheetregion" : "animal_bolfir",
-    "abilities" : "ANIMAL_PUNCH,ACID_SHOT",
+    "abilities" : "ANIMAL_CLAW,ACID_SHOT",
     "pattern" : "ANIMAL_BOLFIR"
   },
 
@@ -33,7 +33,7 @@
     "speed" : "5",
     "jump": "8",
     "spritesheetregion" : "animal_tordur",
-    "abilities" : "ANIMAL_PUNCH, ANIMAL_DASH, RAGE",
+    "abilities" : "ANIMAL_POKE, ANIMAL_DASH, RAGE",
     "pattern" : "ANIMAL_TORDUR"
   },
 
@@ -45,7 +45,7 @@
     "speed" : "10",
     "jump": "10",
     "spritesheetregion" : "animal_rager",
-    "abilities" : "ANIMAL_PUNCH, SPIKE_SHOT",
+    "abilities" : "ANIMAL_POKE, SPIKE_SHOT",
     "pattern" : "ANIMAL_RAGER"
   },
 
@@ -144,7 +144,7 @@
     "speed" : "10",
     "jump": "10",
     "spritesheetregion" : "triangle2",
-    "abilities" : "HUMMER_SWING"
+    "abilities" : "HUMMER_SWING,APPEAR"
   },
 
   {

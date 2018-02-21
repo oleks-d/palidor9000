@@ -77,7 +77,7 @@ public class CreatureStatus extends Sprite {
         //setPosition(owner.getBody().getPosition().x - owner.getWidth()/2 , owner.getBody().getPosition().y + owner.getHeight() /2);
         icons.clear();
         for (Effect effect : owner.activeEffects) {
-            if(effect.duration != 0) // do not show constant effects
+            //if(effect.duration != 0) // do not show constant effects
                 icons.add(owner.screen.animationHelper.getTextureRegionByIDAndIndex(effect.id.getIcon()));
         }
 
@@ -107,8 +107,8 @@ public class CreatureStatus extends Sprite {
                 messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + 1 - (float)(removeMessageTime - owner.existingTime) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 
-            Fonts.NAMES.getFont().draw(batch, String.valueOf(owner.stats.health.current), getX(), getY() + PalidorGame.TILE_SIZE/2  / PPM);
-            Fonts.NAMES.getFont().draw(batch, " " + owner.name, getX() + PalidorGame.TILE_SIZE / 4 /PPM, getY() + PalidorGame.TILE_SIZE/2  / PPM);
+            //Fonts.NAMES.getFont().draw(batch, String.valueOf(owner.stats.health.current) + "  " + owner.name, getX(), getY() + PalidorGame.TILE_SIZE/2  / PPM);
+            //Fonts.NAMES.getFont().draw(batch, " " + owner.name, getX() + PalidorGame.TILE_SIZE / 3 /PPM, getY() + PalidorGame.TILE_SIZE/2  / PPM);
             if(owner.isHero && owner.closeNeighbor != null && owner.closeNeighbor.dialogs.size > 0)
                 Fonts.IMPORTANT.getFont().draw(batch, "Press DOWN to talk with " + owner.closeNeighbor.name, getX() + PalidorGame.TILE_SIZE / 4 /PPM, getY() + PalidorGame.TILE_SIZE  / PPM);
 
@@ -118,9 +118,9 @@ public class CreatureStatus extends Sprite {
             if(owner.abilityToCastExecutionTime > 0.2 || timeSpentOnCast > 0) {
                 partOfCastbar = (((timeSpentOnCast>0 ? timeSpentOnCast : owner.timeSpentOnCast) / (abilityToCastExecutionTime > 0 ? abilityToCastExecutionTime : owner.abilityToCastExecutionTime)));
                 if (partOfCastbar > 1) partOfCastbar = 1;
-                batch.draw(castbar, getX(), getY() - PalidorGame.TILE_SIZE/PPM, (2*PalidorGame.TILE_SIZE / PPM) * partOfCastbar, 16 / PPM);
-                batch.draw(healthbar, getX(), getY() - PalidorGame.TILE_SIZE/PPM, (2*PalidorGame.TILE_SIZE / PPM), 16 / PPM);
-                Fonts.NAMES.getFont().draw(batch, "".equals(abilityToCastName) ? owner.abilityToCast.getName() : abilityToCastName,   getX() - PalidorGame.TILE_SIZE/PPM, getY()  - PalidorGame.TILE_SIZE/PPM);
+                batch.draw(castbar, getX(), getY() + PalidorGame.TILE_SIZE/PPM, (2*PalidorGame.TILE_SIZE / PPM) * partOfCastbar, 16 / PPM);
+                batch.draw(healthbar, getX(), getY() + PalidorGame.TILE_SIZE/PPM, (2*PalidorGame.TILE_SIZE / PPM), 16 / PPM);
+                Fonts.NAMES.getFont().draw(batch, "".equals(abilityToCastName) ? owner.abilityToCast.getName() : abilityToCastName,   getX() - PalidorGame.TILE_SIZE/PPM, getY()  + PalidorGame.TILE_SIZE/PPM);
             }
 
         }

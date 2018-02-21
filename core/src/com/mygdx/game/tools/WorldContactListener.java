@@ -47,23 +47,25 @@ public class WorldContactListener implements ContactListener {
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
-                    if(target.shieldEffect == null) {// creature was covered
-                        if(target.getEffect(EffectID.DODGE) == null) { // creature dodges
-                            for (Effect effect : act.activeEffects) {
-                                target.applyEffect(effect);
-                                if (!effect.id.isPositive()) {
-                                    target.setIN_BATTLE(true);
+                    if(!act.isTargetWasAlreadyProcessed(target)) {
+                        if (target.shieldEffect == null) {// creature was covered
+                            if (target.getEffect(EffectID.DODGE) == null) { // creature dodges
+                                for (Effect effect : act.activeEffects) {
+                                    target.applyEffect(effect);
+                                    if (!effect.id.isPositive()) {
+                                        target.setIN_BATTLE(true);
+                                    }
                                 }
+                            } else {
+                                target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
                             }
                         } else {
-                            target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
+                            target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
                         }
-                    } else {
-                        target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
+                        act.addTargetToAlreadyProcessed(target);
                     }
-
-                    act.onHit(target);
                 }
+                act.onHit(target);
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.ATTACK_BIT:
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT) {
@@ -77,29 +79,32 @@ public class WorldContactListener implements ContactListener {
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
-                    if(target.shieldEffect == null) {// creature was covered
-                        if(target.getEffect(EffectID.DODGE) == null) { // creature dodges
-                            for (Effect effect : act.activeEffects) {
-                                target.applyEffect(effect);
-                                if (!effect.id.isPositive()) {
-                                    target.setIN_BATTLE(true);
+                    if(!act.isTargetWasAlreadyProcessed(target)) {
+                        if (target.shieldEffect == null) {// creature was covered
+                            if (target.getEffect(EffectID.DODGE) == null) { // creature dodges
+                                for (Effect effect : act.activeEffects) {
+                                    target.applyEffect(effect);
+                                    if (!effect.id.isPositive()) {
+                                        target.setIN_BATTLE(true);
+                                    }
                                 }
-                            }
-                            //backstub  TODO fix
-                            if(act.createdBy.getAbilities().contains(AbilityID.BACKSTUB, false) && ((target.directionRight && act.createdBy.directionRight) || (!target.directionRight && !act.createdBy.directionRight)))
-                                target.applyEffect( new Effect(EffectID.POISON, 0.01f, 5f, 0f) );
+                                //backstub  TODO fix
+                                if (act.createdBy.getAbilities().contains(AbilityID.BACKSTUB, false) && ((target.directionRight && act.createdBy.directionRight) || (!target.directionRight && !act.createdBy.directionRight)))
+                                    target.applyEffect(new Effect(EffectID.POISON, 0.01f, 5f, 0f));
 
+                            } else {
+                                target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
+                            }
                         } else {
-                            target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
+                            target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
+                            act.createdBy.shake();
+                            act.createdBy.applyEffect(target.shieldEffect); // stun if target was protected
                         }
-                    } else {
-                        target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
-                        act.createdBy.shake();
-                        act.createdBy.applyEffect(target.shieldEffect); // stun if target was protected
+
+                        act.addTargetToAlreadyProcessed(target);
                     }
-                    //   act.addTargetToAlreadyProcessed(target);
-                    act.onHit(target);
                 }
+                act.onHit(target);
                 break;
 
             case PalidorGame.GROUND_BIT | PalidorGame.ACTIVITY_BIT:

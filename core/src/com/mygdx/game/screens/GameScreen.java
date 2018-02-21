@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
+import com.mygdx.game.enums.State;
 import com.mygdx.game.scenes.*;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
@@ -41,6 +42,7 @@ public class GameScreen implements Screen {
 
 
     private PalidorGame game;
+    float timeSinceLastRender;
 
     //Texture bg;
 
@@ -63,9 +65,9 @@ public class GameScreen implements Screen {
     HeroInventoryPanel heroInventoryPanel;
     HeroAbilitiesPanel heroAbilitiesPanel;
 
-    public com.mygdx.game.tools.LevelManager levelmanager;
+    public LevelManager levelmanager;
 
-    public com.mygdx.game.tools.AnimationHelper animationHelper;
+    public AnimationHelper animationHelper;
 
     boolean PAUSE;
     boolean onMainScreen = true;
@@ -239,9 +241,9 @@ public class GameScreen implements Screen {
             }
 
             if(toZoomOut) {
-                ZOOM_LEVEL = 1f;
-                camera.zoom = 1f;
-                viewport.setWorldSize(PalidorGame.WIDTH/ PPM , PalidorGame.HIGHT/ PPM);
+                ZOOM_LEVEL = 0.5f;
+                camera.zoom = 2f;
+                viewport.setWorldSize(PalidorGame.WIDTH/ 2*PPM , PalidorGame.HIGHT/ PPM);
                 toZoomOut = false;
             }
 
@@ -319,12 +321,11 @@ public class GameScreen implements Screen {
             }
 
 
-
-
             //update all summoned
             for (Creature creature : levelmanager.SUMMONED_CREATURES) {
                     creature.update(delta);
-                    //creature.attackIfEnemyIsNear();
+
+                    creature.nextStep(delta);
 
                     if (creature.getAbilityToCast() != AbilityID.NONE && creature.finishedCasting()) {
                         activity = creature.activateAbility(creature.getAbilityToCast());
@@ -383,14 +384,14 @@ public class GameScreen implements Screen {
                 onInventoryScreen = true;
                 onMainScreen = false;
                 PAUSE = true;
+                Gdx.graphics.setContinuousRendering(false);
             } else {
                 controller.update(hero);
                 onInventoryScreen = false;
                 onMainScreen = true;
                 PAUSE = false;
+                Gdx.graphics.setContinuousRendering(true);
             }
-
-
         }
 
 
@@ -403,11 +404,13 @@ public class GameScreen implements Screen {
                 onAbilitiesScreen = true;
                 onMainScreen = false;
                 PAUSE = true;
+                Gdx.graphics.setContinuousRendering(false);
             } else {
                 controller.update(hero);
                 onAbilitiesScreen = false;
                 onMainScreen = true;
                 PAUSE = false;
+                Gdx.graphics.setContinuousRendering(true);
             }
         }
 
@@ -511,22 +514,22 @@ public class GameScreen implements Screen {
 
             if (controller.touchedLeft || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 hero.direction.set(-1, hero.direction.y);
-                for (Creature creature : levelmanager.SUMMONED_CREATURES) {
-                    creature.move(false);
-                    if (hero.directionRight) creature.jump(); // change position
-                    creature.move(false);
-
-                }
+//                for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+//                    creature.move(false);
+//                    if (hero.directionRight) creature.jump(); // change position
+//                    creature.move(false);
+//
+//                }
                 hero.move(false);
                 //Gdx.app.log(hero.getBody().getLinearVelocity().x+"", hero.getBody().getLinearVelocity().y + "");
 
             } else if (controller.touchedRight || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 hero.direction.set(1, hero.direction.y);
-                for (Creature creature : levelmanager.SUMMONED_CREATURES) {
-                    creature.move(true);
-                    if (!hero.directionRight) creature.jump(); // change position
-                    creature.move(true);
-                }
+//                for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+//                    creature.move(true);
+//                    if (!hero.directionRight) creature.jump(); // change position
+//                    creature.move(true);
+//                }
                 hero.move(true);
                 //Gdx.app.log(hero.getBody().getLinearVelocity().x+"", hero.getBody().getLinearVelocity().y + "");
             } //else hero.direction.set(0, hero.direction.y);
@@ -541,9 +544,9 @@ public class GameScreen implements Screen {
                     hero.dash();
                 } else {
                     hero.jump();
-                    for (Creature creature : levelmanager.SUMMONED_CREATURES) {
-                        creature.jump();
-                    }
+//                    for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+//                        creature.jump();
+//                    }
                     whenJumpWasJustPressed = hero.existingTime;
                 }
                 controller.touchedJump = false;
@@ -569,7 +572,7 @@ public class GameScreen implements Screen {
             }
             if (controller.touchedAbility1 || Gdx.input.isKeyJustPressed(Input.Keys.A)) {
 
-                if (whenA1WasJustPressed + 0.5 > hero.existingTime) {
+                if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
                     hero.attack(true, true);
                 } else {
                     hero.attack(true, false);
@@ -579,7 +582,7 @@ public class GameScreen implements Screen {
                 //holdingTimeABILITY1 = holdingTimeABILITY1 + delta;
             }
             if (controller.touchedAbility2 || Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-                if (whenA2WasJustPressed + 0.5 > hero.existingTime) {
+                if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
                     hero.attack(false, true);
                 } else {
                     hero.attack(false, false);
@@ -691,6 +694,15 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+//        timeSinceLastRender += delta;
+//        if (timeSinceLastRender >= PalidorGame.MIN_FRAME_LENGTH) {
+//            // Do the actual rendering, pass timeSinceLastRender as delta time.
+//            Gdx.graphics.requestRendering();
+//            timeSinceLastRender = 0f;
+            //System.out.println(timeSinceLastRender);
+
+//        System.out.println(Gdx.graphics.getDeltaTime());
+
 
         update(delta);
 
@@ -742,13 +754,15 @@ public class GameScreen implements Screen {
 
             //render all enemies
             for (Creature creature : levelmanager.CREATURES) {
-                creature.draw(game.getBatch());
+
+                    creature.draw(game.getBatch());
                 //creature.weaponSprite.draw(game.getBatch());
             }
 
             //render all summoned
             for (Creature creature : levelmanager.SUMMONED_CREATURES) {
-                creature.draw(game.getBatch());
+
+                    creature.draw(game.getBatch());
                 //creature.weaponSprite.draw(game.getBatch());
             }
 
@@ -819,16 +833,17 @@ public class GameScreen implements Screen {
             }
 
             if (STOP_GAME) {
-            game.setScreen(new com.mygdx.game.screens.MainMenuScreen(game));
-            dispose();
-        }
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            }
 
 
-        //}
+//        } else
+//            System.out.println(timeSinceLastRender);
     }
 
     public boolean gameOver(){
-        if(hero.getState() == com.mygdx.game.enums.State.DEAD){
+        if(hero.getState() == State.DEAD){
             return true;
         }
         return false;

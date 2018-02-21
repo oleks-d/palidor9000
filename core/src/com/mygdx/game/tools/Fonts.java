@@ -7,13 +7,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
  * Created by odiachuk on 1/16/18.
  */
 public enum Fonts {
-    INFO(Color.LIME, 0.01f),
-    IMPORTANT(Color.GOLD, 0.01f),
-    BAD(Color.RED, 0.01f),
-    GOOD(Color.GREEN, 0.01f),
-    NAMES(Color.GOLD, 0.01f),
-    HEADER(Color.GREEN, 0.02f ),
-    GAMEHEADER(Color.GREEN, 4f );
+    INFO(Color.LIME, 0.015f),
+    IMPORTANT(Color.GOLD, 0.015f),
+    BAD(Color.RED, 0.015f),
+    GOOD(Color.GREEN, 0.015f),
+    NAMES(Color.GOLD, 0.015f),
+    HEADER(Color.GREEN, 0.015f ),
+
+    GAMEMENUITEM(Color.GREEN, 1f ),
+    GAMEHEADER(Color.GREEN, 2f ),
+    GAMEMENUHEADER(Color.BLUE, 1.5f ),;
+
     private BitmapFont font;
 
     Fonts(Color color, float scale) {
