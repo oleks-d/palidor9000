@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="119">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="123">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="100" height="20">
   <data encoding="base64">
@@ -111,6 +111,12 @@
     <property name="value" value="GotIt"/>
    </properties>
   </object>
+  <object id="122" name="step" x="1144.4" y="560.982">
+   <properties>
+    <property name="process" value="SP:5001:uuz"/>
+    <property name="text" value="Moving up"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="entities">
   <object id="116" name="axe_2" x="1454.59" y="351.109"/>
@@ -121,49 +127,63 @@
    <properties>
     <property name="dialogs" value="105"/>
     <property name="items" value="coin"/>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="96" name="father" x="1313.36" y="458.026">
    <properties>
-    <property name="dialogs" value="101,102"/>
-    <property name="organization" value="1"/>
+    <property name="dialogs" value="101,102,1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="97" name="mather" x="1512.67" y="575.502">
    <properties>
     <property name="dialogs" value="103,104"/>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="99" name="erlok" x="1937.7" y="108.237">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="100" name="arora" x="1804.38" y="461.985">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="101" name="enika" x="1961.46" y="459.345">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="102" name="lina" x="2031.41" y="208.553">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="103" name="leok" x="1814.94" y="201.954">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="104" name="logus" x="2345.56" y="491.024">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
+   </properties>
+  </object>
+  <object id="121" name="mech_spiky" x="2623.59" y="420.266" width="96" height="28">
+   <properties>
+    <property name="deathprocess" value="T:STEP_ON:1"/>
+    <property name="org" value="8"/>
+    <property name="program" value="nrnl"/>
+   </properties>
+  </object>
+  <object id="120" name="mech_brick" x="880.43" y="304.61" width="126.679" height="27">
+   <properties>
+    <property name="org" value="8"/>
+    <property name="program" value="ndnuz"/>
+    <property name="uid" value="5001"/>
    </properties>
   </object>
  </objectgroup>

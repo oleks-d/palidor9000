@@ -102,6 +102,7 @@ public class WeaponSprite extends Sprite {
                     switch (owner.abilityToCast) {
 
                         case ANIMAL_POKE:
+                        case PUNCH:
                             angle = 0;
                             trajectoryX = (owner.directionRight ? -partOfTrajectory : partOfTrajectory) * owner.getWidth();
                             //trajectoryY = partOfTrajectory * owner.getHeight() / 2;
@@ -184,10 +185,16 @@ public class WeaponSprite extends Sprite {
                             holding = true;
                             angle = holdingAngle;
                             holdingTime = owner.existingTime + 0.5;
-                            if(picture.isFlipY())
-                                picture.flip(false,true);
-                            trajectoryX = prevtrajectoryX;
-                            trajectoryY = prevtrajectoryY;
+                            if(picture.isFlipY()) { // swing
+                                picture.flip(false, true);
+                                trajectoryX = prevtrajectoryX;
+                                trajectoryY = prevtrajectoryY;
+                            }else{ //smash
+                                if(holdingAngle != 1){
+                                    trajectoryX = -owner.getWidth() / 2;
+                                    trajectoryY = -owner.getHeight() / 2;
+                                }
+                            }
                         } else {
                             if(holdingTime <= owner.existingTime){
                                 holding = false;
@@ -205,8 +212,8 @@ public class WeaponSprite extends Sprite {
                             angle = defaultAngle;
                             trajectoryX = 0;
                             trajectoryY = 0;
-                            prevtrajectoryX = trajectoryX;
-                            prevtrajectoryY = trajectoryY;
+//                            prevtrajectoryX = trajectoryX;
+//                            prevtrajectoryY = trajectoryY;
                         }
                 }
 

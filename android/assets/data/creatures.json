@@ -10,7 +10,8 @@
     "jump": "5",
     "spritesheetregion" : "animal_rolf",
     "abilities" : "ANIMAL_CLAW, ANIMAL_POKE,MASK1,DISAPPEAR",
-    "pattern" : "ANIMAL_ROLF"
+    "pattern" : "ANIMAL_ROLF",
+    "equipeditems" : "paw_1,paw_1"
   },
 
   {
@@ -22,7 +23,8 @@
     "jump": "10",
     "spritesheetregion" : "animal_bolfir",
     "abilities" : "ANIMAL_CLAW,ACID_SHOT",
-    "pattern" : "ANIMAL_BOLFIR"
+    "pattern" : "ANIMAL_BOLFIR",
+    "equipeditems" : "paw_1,paw_1"
   },
 
   {
@@ -34,7 +36,8 @@
     "jump": "8",
     "spritesheetregion" : "animal_tordur",
     "abilities" : "ANIMAL_POKE, ANIMAL_DASH, RAGE",
-    "pattern" : "ANIMAL_TORDUR"
+    "pattern" : "ANIMAL_TORDUR",
+    "equipeditems" : "paw_2,paw_2"
   },
 
   {
@@ -42,10 +45,11 @@
     "name" : "Rager",
     "description": "Terrible rager",
     "health" : "20",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "animal_rager",
     "abilities" : "ANIMAL_POKE, SPIKE_SHOT",
+    "equipeditems" : "paw_2,paw_2",
     "pattern" : "ANIMAL_RAGER"
   },
 
@@ -119,7 +123,7 @@
     "name" : "Rogan, the Fair",
     "description": "Your father. \n Hunter.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump" : "10",
     "spritesheetregion" : "triangle2",
     "abilities" : "SWORD_SWING,LONGBOW_SHOT"
@@ -129,7 +133,7 @@
     "name" : "Nila, the Kind",
     "description": "Your mather. \n Witch and healer assistant.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
@@ -141,7 +145,7 @@
     "name" : "Mark",
     "description": "Son of a blacksmith. \n Your friend",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle2",
     "abilities" : "HUMMER_SWING,APPEAR"
@@ -152,7 +156,7 @@
     "name" : "Erlok the Brave",
     "description": "Head of a willage. \n Old veteran",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle2",
     "abilities" : "SWORD_SWING"
@@ -164,7 +168,7 @@
     "name" : "Lina",
     "description": "Doughter of Erlok. \n Beautiful blond girl of your age with shining blue eyes.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle1_lady",
     "abilities" : "SWORD_SWING"
@@ -176,7 +180,7 @@
     "name" : "Leok",
     "description": "Son of Erlok. \n Small boy.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle2",
     "abilities" : "SWORD_SWING"
@@ -187,7 +191,7 @@
     "name" : "Logus the Strong",
     "description": "Balcksmith. \n Strong and silent.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle2",
     "abilities" : "HUMMER_SWING"
@@ -198,7 +202,7 @@
     "name" : "Arora the Wise",
     "description": "Which. \n Black hair and deep black eyes",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
@@ -209,7 +213,7 @@
     "name" : "Enika",
     "description": "Doughter of Arora. \n Charming girl of your age with black hair and brown eyes.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
@@ -222,23 +226,143 @@
     "name" : "Princess Inna",
     "description": "Doughter of King Arelius.",
     "health" : "10",
-    "speed" : "10",
+    "speed" : "5",
     "jump": "10",
     "spritesheetregion" : "triangle1_lady",
     "abilities" : "FIREWALL"
   },
 
 
+    {
+      "id" : "mech_t_r",
+      "name" : "piu",
+      "description": "Piu",
+      "health" : "2",
+      "speed" : "0",
+      "jump": "-1",
+      "spritesheetregion" : "turrel_right",
+      "abilities" : "TURREL_PIU"
+    },
 
   {
-    "id" : "example",
-    "name" : "nn",
-    "description": "Terrible rager",
-    "health" : "20",
-    "speed" : "10",
-    "jump": "10",
-    "spritesheetregion" : "rolf",
-    "effects" : "CUT_DAMAGE 1 1 0",
-    "abilities" : "PUNCH"
+    "id" : "mech_t_r_light",
+    "name" : "piu",
+    "description": "Piu",
+    "health" : "2",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "turrel_right",
+    "abilities" : "TURREL_PIU"
   },
+
+  {
+    "id" : "mech_t_r_2",
+    "name" : "piu",
+    "description": "Piu",
+    "health" : "2",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "turrel_right",
+    "effects" : "MINUS_CUT_DAMAGE 0 2 0,MINUS_CRUSH_DAMAGE 0 2 0,IMMUNE_POISON_DAMAGE 0 1 0,IMMUNE_FIRE_DAMAGE 0 1 0,IMMUNE_ICE_DAMAGE 0 1 0",
+    "abilities" : "TURREL_PIU"
+  },
+
+
+  {
+    "id" : "mech_t_r_3",
+    "name" : "piu",
+    "description": "Piu",
+    "health" : "2",
+    "speed" : "3",
+    "jump": "0",
+    "spritesheetregion" : "turrel_right",
+    "effects" : "IMMUNE_POISON_DAMAGE 0 1 0,IMMUNE_CUT_DAMAGE 0 1 0,IMMUNE_CRUSH_DAMAGE 0 1 0",
+    "abilities" : "TURREL_PIU"
+  },
+
+  {
+    "id" : "mech_button",
+    "name" : "button",
+    "description": "Piu",
+    "health" : "2",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_tumbler"
+  },
+
+  {
+    "id" : "mech_door",
+    "name" : "door",
+    "description": "door",
+    "health" : "10",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_door"
+  },
+
+  {
+    "id" : "mech_chest",
+    "name" : "chest",
+    "description": "chest",
+    "health" : "1",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_chest"
+  },
+
+  {
+    "id" : "mech_spiky",
+    "name" : "spikes",
+    "description": "spikes",
+    "health" : "1",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_spiky",
+    "effects" : "AURA_DAMAGE 0 3 0"
+  },
+
+  {
+    "id" : "mech_obj",
+    "name" : "object",
+    "description": "object",
+    "health" : "1",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_chest"
+  },
+
+
+  {
+    "id" : "mech_brick",
+    "name" : "object",
+    "description": "object",
+    "health" : "1",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_block_brick"
+  },
+
+
+  {
+    "id" : "mech_healthy",
+    "name" : "restpoint",
+    "description": "rest",
+    "health" : "10000",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_healthy",
+    "effects" : "AURA_HEAL 0 3 0"
+  }
+
+//  {
+//    "id" : "example",
+//    "name" : "nn",
+//    "description": "Terrible rager",
+//    "health" : "20",
+//    "speed" : "5",
+//    "jump": "10",
+//    "spritesheetregion" : "rolf",
+//    "effects" : "CUT_DAMAGE 1 1 0",
+//    "abilities" : "PUNCH"
+//  }
 ]}

@@ -2,7 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.screens.MainMenuScreen;
 
 import java.io.File;
@@ -22,12 +25,18 @@ public class PalidorGame extends Game {
 	public static final String SAVES_DIR = PalidorGame.DATA_DIR + File.separator + "saves";
 	public static final float MAP_HIGHT = 640;
 	public static final float MAP_WIDHT = 3200;
+	public static final float HEAVY_OBJECT_MASS = 10000;
     //public static final String STARTING_LEVEL = "Pit" ; //"Pit_Mob"; //"Forest";
 	public static String gameDetails;
 	public static boolean EXIT_FLAG = false;
 
 
 	public static final float MIN_FRAME_LENGTH = 0.03f;
+	public static Vector2 upVector = new Vector2(0,1);
+	public static Vector2 downVector= new Vector2(0,-1);
+	public static Vector2 rightVector = new Vector2(1,0);
+	public static Vector2 leftVector = new Vector2(-1,0);
+			;
 //	private float timeSinceLastRender;
 
 	public String currentHero;
@@ -53,10 +62,18 @@ public class PalidorGame extends Game {
 	public static final short JUMP_RIGHT = 2048;
 	public static final short JUMP_LEFT = 4096;
 
+	public static AssetManager asm = new AssetManager();
+
+
 
 	@Override
 	public void create () {
 		//currentHero = "firsthero";
+
+		asm.load("skin/font.fnt",BitmapFont.class);
+		asm.finishLoading();
+
+
 
 		batch = new SpriteBatch();
 

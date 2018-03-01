@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
+import com.mygdx.game.enums.State;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.gameobjects.GameItem;
 import com.mygdx.game.stuctures.Effect;
@@ -50,6 +51,8 @@ public class Hero extends Creature {
                  int money,
                  String items){
         super(screen, heroDescription, items, null, 0, null, null);
+
+        setUniqueID(999999);
 
         this.canPickUpObjects = true;
 
@@ -149,22 +152,25 @@ public class Hero extends Creature {
         }
     }
 
-//    public void fly() {
-//        if(abilities.contains(AbilityID.FLY, false))
-//            useAbility(AbilityID.FLY);
-//    }
+    public void fly() {
+        if(abilities.contains(AbilityID.FLY, false))
+            useAbility(AbilityID.FLY);
+    }
 //
 //    public void jumpBack() {
 //        if(abilities.contains(AbilityID.JUMP_BACK, false))
 //            useAbility(AbilityID.JUMP_BACK);
 //    }
 
-//    public void powerjump() {
-//        if(abilities.contains(AbilityID.POWERJUMP, false))
-//            useAbility(AbilityID.POWERJUMP);
-//        else
-//            jump();
-//    }
+    public void powerjump() {
+        if(getState() == State.JUMPING) {
+            if (abilities.contains(AbilityID.POWERJUMP, false))
+                useAbility(AbilityID.POWERJUMP);
+        }else if(getState() == State.FALLING && abilities.contains(AbilityID.FLY, false))
+            useAbility(AbilityID.FLY);
+        else
+            jump();
+    }
 
         public void haste() {
         if(abilities.contains(AbilityID.HASTE, false))
@@ -513,17 +519,18 @@ public class Hero extends Creature {
         return "";
     }
 
-    public void addAbilities(AbilityID[] abilities) {
+    public void addAbilities(Array<AbilityID> abilities) {
         for(AbilityID ability : abilities){
+            addStatusMessage("Ability: " + ability.getName(), Fonts.GOOD);
             this.abilities.add(ability);
             this.cooldowns.put(ability,0d);
 
             // special processing of skills
-            if(this.abilities.contains(AbilityID.BETTER_JUMP, true)) {
+            if(abilities.contains(AbilityID.BETTER_JUMP, true)) {
                 stats.jumphight.base = stats.jumphight.base + 1;
                 stats.jumphight.current = stats.jumphight.current + 1;
             }
-            if(this.abilities.contains(AbilityID.BARSKIN, true)) {
+            if(abilities.contains(AbilityID.BARSKIN, true)) {
                 stats.health.base = stats.health.base + 1;
                 stats.health.current = stats.health.current + 1;
             }
@@ -575,6 +582,7 @@ public class Hero extends Creature {
     public void addSkill(Skill skill) {
         skills.add(skill);
         addAbilities(skill.getAbilities());
+        addStatusMessage("Skill: " + skill.getName(), Fonts.GOOD);
     }
 
     public Array<Skill> getSkills() {
@@ -585,7 +593,7 @@ public class Hero extends Creature {
     public boolean isAbleToSee(Creature creature) {
         if(creature.isHidden()){
             if(abilities.contains(AbilityID.SEEING_DETAILS, false) &&
-                    ( getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM && getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM)){
+                    ( getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM / 2 && getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM/2)){
                 return true;
             } else
                 return false;

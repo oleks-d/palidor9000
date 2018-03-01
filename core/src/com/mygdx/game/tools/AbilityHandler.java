@@ -7,6 +7,7 @@ import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.ActivityAreaType;
 import com.mygdx.game.enums.EffectID;
+import com.mygdx.game.enums.State;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
 import com.mygdx.game.sprites.creatures.Creature;
@@ -25,11 +26,17 @@ public class AbilityHandler {
         creature.statusbar.addMessage(id.getName(), creature.existingTime + 1, Fonts.GOOD);
 
         switch (id) {
-//                case POWERJUMP:
-//                    creature.moveUp();
-//                    break;
-                case ANIMAL_PUNCH:
-                case PUNCH:
+                case POWERJUMP:
+                    //if(creature.getState()== State.JUMPING)
+                        creature.moveUp();
+                    break;
+            case FLY:
+                //if(creature.getState()== State.FALLING)
+                    //creature.moveUp(3);
+                creature.applyEffect(new Effect(EffectID.NO_MASS, 3f, 0.1f, 0f));
+                break;
+            case ANIMAL_PUNCH:
+            case PUNCH:
 
                     if(creature.directionRight)
                         activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
@@ -272,7 +279,7 @@ public class AbilityHandler {
 
                 activeEffects.add(new Effect(EffectID.STUNED, 0.5f, 0f, 0f));
 
-                direction = new Vector2((creature.direction.x * 6f), creature.direction.y * 6f );
+                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
                 result = new ActivityWithEffect(
                         screen,
                         creature.getBody().getPosition().x * PalidorGame.PPM ,
@@ -280,12 +287,13 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall2");
+                        "soundwall");
 
                 result.setCreatedBy(creature);
                 results.add(result);
 
                 //move creature
+                creature.applyEffect(new Effect(EffectID.NO_MASS, 0.5f, 0f, 0f));
                 creature.getBody().applyLinearImpulse(direction, creature.getBody().getWorldCenter(), true);
 
                 break;
@@ -382,6 +390,30 @@ public class AbilityHandler {
                         id.getActivityAreaType(),
                         direction,
                         "arrow_spike"); 
+
+                result.setCreatedBy(creature);
+                results.add(result);
+                break;
+            case TURREL_PIU:
+
+                if(creature.directionRight)
+                    activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
+                else
+                    activeEffects.add(new Effect(EffectID.MOVE_LEFT, 0.1f, 1f, 0f));
+
+                activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.1f, 2f + creature.getEffectsSum(EffectID.PLUS_CUT_DAMAGE), 0f));
+
+                direction = new Vector2((creature.direction.x * 5f), creature.direction.y * 5f );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y * PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "arrow");
 
                 result.setCreatedBy(creature);
                 results.add(result);
@@ -540,7 +572,7 @@ public class AbilityHandler {
                         activeEffects,
                         id.getActivityAreaType(),
                         direction,
-                        "soundwall2");
+                        "soundwall");
 
                 result.setCreatedBy(creature);
                 creature.applyEffect(new Effect(EffectID.INVISIBLE, 0f, 0f, 0f));
@@ -561,7 +593,10 @@ public class AbilityHandler {
                 creature.summonedCreature = "demon_1";
                 screen.levelmanager.createSummonedCreature(screen, creature.getX()*PalidorGame.PPM + creature.direction.x* PalidorGame.TILE_SIZE , creature.getY()*PalidorGame.PPM, "demon_1", creature);
                 break;
-
+            case SUMMON_BAD_DEMON:
+                creature.summonedCreature = "demon_1";
+                screen.levelmanager.createCreature(screen, creature.getX()*PalidorGame.PPM + creature.direction.x* PalidorGame.TILE_SIZE , creature.getY()*PalidorGame.PPM, "demon_1", 9);
+                break;
 
 //            case STOP_CAST:
 //
@@ -665,23 +700,7 @@ public class AbilityHandler {
         return ability.getCooldownTime();
     }
 
-    public static Animation getAnimation(GameScreen screen, AbilityID abilityToCast, String spritesheetRegion) {
-        switch(abilityToCast) {
-            //case LONGBOW_SHOT:
-                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 4, 5);
-            //case PUNCH:
-                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 2, 3);
-            //case FIREWALL:
-                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 6, 7);
-            //case ANIMAL_PUNCH:
-                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 1, 2, 3);
-            case APPEAR:
-                return screen.animationHelper.getAnimationByID("appearing", abilityToCast.getCastTime()/3, 0, 1, 2);
-            default:
-                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
-                return screen.animationHelper.getAnimationByID(spritesheetRegion, abilityToCast.getCastTime()/4, 4, 4, 4, 5);
-        }
-    }
+
 
     public static void explosion(GameScreen screen, Creature creature, float x, float y) {
 
@@ -860,5 +879,26 @@ public class AbilityHandler {
 
 
         screen.activitiesToCreate.addAll(results);
+    }
+
+
+    public static Animation getAnimation(GameScreen screen, AbilityID abilityToCast, String spritesheetRegion) {
+        switch(abilityToCast) {
+            //case LONGBOW_SHOT:
+            //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 4, 5);
+            //case PUNCH:
+            //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 2, 3);
+            //case FIREWALL:
+            //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 6, 7);
+            //case ANIMAL_PUNCH:
+            //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 1, 2, 3);
+            case TURREL_PIU:
+                return screen.animationHelper.getAnimationByID("turrel_right", abilityToCast.getCastTime()/4, 0, 0, 0, 2);
+            case APPEAR:
+                return screen.animationHelper.getAnimationByID("appearing", abilityToCast.getCastTime()/3, 0, 1, 2);
+            default:
+                //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.1f, 0, 1);
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, abilityToCast.getCastTime()/4, 4, 4, 4, 5);
+        }
     }
 }

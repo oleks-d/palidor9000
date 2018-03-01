@@ -1,5 +1,6 @@
 package com.mygdx.game.tools;
 
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
@@ -114,7 +115,9 @@ public class ConditionProcessor {
                         hero.addItemByID(conditionKey);
                         break;
                     case "A": //add ability
-                        hero.addAbilities(new AbilityID[]{AbilityID.valueOf(conditionKey)});
+                        Array<AbilityID> ability = new Array<AbilityID>();
+                        ability.add(AbilityID.valueOf(conditionKey));
+                        hero.addAbilities(ability);
                         break;
                     case "S": //add ability
                         hero.addSkill(Skill.valueOf(conditionKey));
@@ -143,12 +146,28 @@ public class ConditionProcessor {
                         hero.screen.shake(Double.parseDouble(conditionKey));
                         break;
 
-                    case "SC": // creature activate Creature
+                    case "SC": // creature Creature
                         hero.screen.creaturesToCreate.add(subcondition);
                         break;
 
-                    case "SI": // creature activate Creature
+                    case "RC": // creature Creature (from list of unavailable creatures)
+                        hero.screen.creaturesToCreate.add(conditionKey);
+                        break;
+
+                    case "KC": // kill Creature
+                        hero.screen.creaturesToDie.add(conditionKey);
+                        break;
+
+                    case "KN": // kill Creature you are interacting with
+                        hero.screen.creaturesToDie.add(String.valueOf(hero.getNeighbor().getID()));
+                        break;
+
+                    case "SI": // create  Item
                         hero.screen.itemsToCreate.add(subcondition);
+                        break;
+
+                    case "SP": //set creature program
+                        hero.screen.levelmanager.setProgramTo(conditionKey, conditionValue);
                         break;
 
                     case "WIN": // creature activate Creature
@@ -171,16 +190,15 @@ public class ConditionProcessor {
                     conditionValue = parts[2];
 
                 switch (conditionType) {
-                    case "T":  //put trigger
-                        creature.screen.hero.getGlobalStates().put(conditionKey, conditionValue);
-                        break;
-                    case "IR": // item REMOVE
+                    case "CIR": // item REMOVE
                         creature.addItemByID(conditionKey);
                         creature.throwFromInventory(conditionKey);
                         break;
-                    case "AE": //add effect
+                    case "CAE": //add effect
                         creature.applyEffect(new Effect(conditionKey));
                         break;
+                    default:
+                        conditionProcess(creature.screen.hero,subcondition);
 
                 }
             }

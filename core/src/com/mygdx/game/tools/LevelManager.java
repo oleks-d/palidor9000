@@ -173,17 +173,32 @@ public class LevelManager implements Disposable{
         Rectangle rect = ((RectangleMapObject) object).getRectangle();
         String items = (String)object.getProperties().get("items");
         String deathProcess = (String)object.getProperties().get("deathprocess");
-        String organizationID = (String)object.getProperties().get("organization");
+        String organizationID = (String)object.getProperties().get("org");
+        String uniqueID = (String)object.getProperties().get("uid");
         Integer organization =  organizationID==null ? 0 : Integer.valueOf(organizationID) ;
         String dialogs = (String)object.getProperties().get("dialogs");
         String condition = (String)object.getProperties().get("condition");
         String program = (String)object.getProperties().get("program");
         if(!(ConditionProcessor.conditionSatisfied(hero, condition))) {
-                UNAVAILABLE_CREATURES.add(new UnavailableCreatures(object.getName(), rect,  condition, items, deathProcess, organization, dialogs, program));
+                UNAVAILABLE_CREATURES.add(new UnavailableCreatures(object.getName(), rect,  condition, items, deathProcess, organization, dialogs, program, uniqueID));
                 return; //do not create if condition did not pass
         }
-        CREATURES.add(new Creature(screen, rect.getX() , rect.getY(), CREATURE_DESCRIPTIONS.get(object.getName()), items==null?"":items, deathProcess==null?"":deathProcess, organization==null?0:organization, dialogs==null?"":dialogs , program==null?"":program));
+        Creature mob = new Creature(screen, rect, CREATURE_DESCRIPTIONS.get(object.getName()), items==null?"":items, deathProcess==null?"":deathProcess, organization==null?0:organization, dialogs==null?"":dialogs , program==null?"":program);
+        if(uniqueID == null || "".equals(uniqueID))
+            mob.setUniqueID(CREATURES.size + 2);
+        else
+            mob.setUniqueID(Integer.valueOf(uniqueID));
+        CREATURES.add(mob);
 
+    }
+
+    public void createCreatureFromUnavailableCreature(UnavailableCreatures unavailablemob){
+        Creature mob = new Creature(screen, unavailablemob.rect, CREATURE_DESCRIPTIONS.get(unavailablemob.name), unavailablemob.items==null?"":unavailablemob.items, unavailablemob.deathProcess==null?"":unavailablemob.deathProcess, unavailablemob.organization==null?0:unavailablemob.organization, unavailablemob.dialogs==null?"":unavailablemob.dialogs , unavailablemob.program==null?"":unavailablemob.program);
+        if(unavailablemob.getUid() == null || "".equals(unavailablemob.getUid()))
+            mob.setUniqueID(CREATURES.size + 2);
+        else
+            mob.setUniqueID(Integer.valueOf(unavailablemob.getUid()));
+        CREATURES.add(mob);
     }
 
     public void createSummonedCreature(GameScreen screen, float x, float y, String object, Creature owner) {
@@ -451,13 +466,19 @@ public class LevelManager implements Disposable{
             writer.write("\n");
             // write creatures
             for (int i = 0; i < CREATURES.size; i++) {
-                writer.write("<object id=\"" + 400 + i + "\" name=\"" + CREATURES.get(i).id + "\" x=\"" + CREATURES.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - CREATURES.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\">\n");
+                if(CREATURES.get(i).originalRect.width != 0)
+                    writer.write("<object id=\"" + 400 + i + "\" name=\"" + CREATURES.get(i).descriptionID + "\" x=\"" + CREATURES.get(i).originalRect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - CREATURES.get(i).originalRect.y - CREATURES.get(i).originalRect.getHeight()) + "\" width=\"" + CREATURES.get(i).originalRect.getWidth() + "\" height=\"" + CREATURES.get(i).originalRect.getHeight() + "\">\n");
+                else
+                    writer.write("<object id=\"" + 400 + i + "\" name=\"" + CREATURES.get(i).descriptionID + "\" x=\"" + CREATURES.get(i).originalRect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - CREATURES.get(i).originalRect.y) + "\">\n");
+
+                // writer.write("<object id=\"" + 400 + i + "\" name=\"" + CREATURES.get(i).descriptionID + "\" x=\"" + CREATURES.get(i).getBody().getPosition().x * PalidorGame.PPM + "\" y=\"" + (PalidorGame.MAP_HIGHT - CREATURES.get(i).getBody().getPosition().y * PalidorGame.PPM) + "\">\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"\"/>\n" +
                         "    <property name=\"items\" value=\"" + CREATURES.get(i).getInventory().toString().replaceAll("[\\[\\]]", "") + "\"/>\n" +
                         "    <property name=\"deathprocess\" value=\"" + CREATURES.get(i).getDeathProcess() + "\"/>" +
-                        "    <property name=\"organization\" value=\"" + CREATURES.get(i).getOrganization() + "\"/>" +
+                        "    <property name=\"org\" value=\"" + CREATURES.get(i).getOrganization() + "\"/>" +
+                        "    <property name=\"uid\" value=\"" + CREATURES.get(i).getID() + "\"/>" +
                         "    <property name=\"dialogs\" value=\"" + CREATURES.get(i).getDialogs().toString().replaceAll("[\\[\\]]", "") + "\"/>" +
                         "    <property name=\"program\" value=\"" + CREATURES.get(i).getProgram().toString().replaceAll("[\\[\\]]", "") + "\"/>" +
                         "   </properties>\n");
@@ -466,15 +487,16 @@ public class LevelManager implements Disposable{
             }
 
             for (int i = 0; i < UNAVAILABLE_CREATURES.size; i++) {
-                writer.write("<object id=\"" + 600 + i + "\" name=\"" + UNAVAILABLE_CREATURES.get(i).name + "\" x=\"" + UNAVAILABLE_CREATURES.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_CREATURES.get(i).rect.y) + "\">\n");
+                writer.write("<object id=\"" + 600 + i + "\" name=\"" + UNAVAILABLE_CREATURES.get(i).name + "\" x=\"" + UNAVAILABLE_CREATURES.get(i).rect.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_CREATURES.get(i).rect.y) + "\" width=\"" + UNAVAILABLE_CREATURES.get(i).rect.getWidth() + "\" height=\"" + UNAVAILABLE_CREATURES.get(i).rect.getHeight() + "\">\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"" + UNAVAILABLE_CREATURES.get(i).getConditions() + "\"/>\n" +
                         "    <property name=\"items\" value=\"" + UNAVAILABLE_CREATURES.get(i).getItems() + "\"/>\n" +
                         "    <property name=\"deathprocess\" value=\"" + UNAVAILABLE_CREATURES.get(i).getDeathProcess() + "\"/>" +
-                        "    <property name=\"organization\" value=\"" + UNAVAILABLE_CREATURES.get(i).getOrganization() + "\"/>" +
+                        "    <property name=\"org\" value=\"" + UNAVAILABLE_CREATURES.get(i).getOrganization() + "\"/>" +
                         "    <property name=\"dialogs\" value=\"" + UNAVAILABLE_CREATURES.get(i).getDialogs() + "\"/>" +
                         "    <property name=\"program\" value=\"" + UNAVAILABLE_CREATURES.get(i).getProgram() + "\"/>" +
+                        "    <property name=\"uid\" value=\"" + UNAVAILABLE_CREATURES.get(i).getUid() + "\"/>" +
                         "   </properties>\n");
                 writer.write("\n");
                 writer.write("</object>");
@@ -495,7 +517,7 @@ public class LevelManager implements Disposable{
                     writer.write("<object id=\"" + 800 + i + "\" name=\"" + OBJECTS.get(i).id + "\" x=\"" + OBJECTS.get(i).originalRectangle.x + "\" y=\"" + (PalidorGame.MAP_HIGHT - OBJECTS.get(i).originalRectangle.y - OBJECTS.get(i).originalRectangle.height) + "\" width=\"" + OBJECTS.get(i).originalRectangle.width + "\" height=\"" + OBJECTS.get(i).originalRectangle.height + "\" >\n");
 
                 writer.write("   <properties>\n" +
-                        "    <property name=\"condition\" value=\""+ OBJECTS.get(i).getCondition() +"\"/>\n" +
+                        "    <property name=\"condition\" value=\"" + OBJECTS.get(i).getCondition() + "\"/>\n" +
                         "    <property name=\"items\" value=\"" + OBJECTS.get(i).getItems().toString().replaceAll("[\\[\\]]", "") + "\"/>\n" +
                         "    <property name=\"program\" value=\"" + OBJECTS.get(i).getProgram() + "\"/>\n" +
                         "    <property name=\"trigger\" value=\"" + OBJECTS.get(i).getTrigger() + "\"/>\n" +
@@ -505,7 +527,7 @@ public class LevelManager implements Disposable{
             }
 
             for (int i = 0; i < UNAVAILABLE_OBJECTS.size; i++) {
-                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + (UNAVAILABLE_OBJECTS.get(i).rect.x- UNAVAILABLE_OBJECTS.get(i).rect.width / 2) + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y - UNAVAILABLE_OBJECTS.get(i).rect.height) + "\" width=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getWidth() + "\" height=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getHeight() + "\" >\n");
+                writer.write("<object id=\"" + 1000 + i + "\" name=\"" + UNAVAILABLE_OBJECTS.get(i).getID() + "\" x=\"" + (UNAVAILABLE_OBJECTS.get(i).rect.x - UNAVAILABLE_OBJECTS.get(i).rect.width / 2) + "\" y=\"" + (PalidorGame.MAP_HIGHT - UNAVAILABLE_OBJECTS.get(i).rect.y - UNAVAILABLE_OBJECTS.get(i).rect.height) + "\" width=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getWidth() + "\" height=\"" + UNAVAILABLE_OBJECTS.get(i).rect.getHeight() + "\" >\n");
 
                 writer.write("   <properties>\n" +
                         "    <property name=\"condition\" value=\"" + UNAVAILABLE_OBJECTS.get(i).getCondition() + "\"/>\n" +
@@ -533,6 +555,12 @@ public class LevelManager implements Disposable{
         for(int i = 0; i < CREATURES.size; i++)
             if(CREATURES.get(i).getState() == State.DEAD)
                 CREATURES.removeIndex(i);
+    }
+
+    public void setProgramTo(String creatureID, String program) {
+        for(int i = 0; i < CREATURES.size; i++)
+            if(CREATURES.get(i).getID() == Integer.valueOf(creatureID))
+                CREATURES.get(i).brain.resetProgram(program);
     }
 
     private class UnavailableObject {
@@ -575,12 +603,13 @@ public class LevelManager implements Disposable{
         }
     }
 
-    private class UnavailableCreatures {
+    public class UnavailableCreatures {
         String name;
         Rectangle rect;
         private String program;
+        String uid;
 
-        public UnavailableCreatures(String name, Rectangle rect, String condition, String items, String deathProcess, Integer organization, String dialogs, String program) {
+        public UnavailableCreatures(String name, Rectangle rect, String condition, String items, String deathProcess, Integer organization, String dialogs, String program, String uid ) {
             this.name = name;
             this.rect = rect;
             this.condition = condition;
@@ -589,6 +618,7 @@ public class LevelManager implements Disposable{
             this.organization = organization;
             this.dialogs = dialogs;
             this.program = program;
+            this.uid = uid;
         }
 
         String condition;
@@ -619,7 +649,11 @@ public class LevelManager implements Disposable{
         }
 
         public String getProgram() {
-            return program;
+            return program==null?"":program;
+        }
+
+        public String getUid() {
+            return uid==null?"":uid;
         }
     }
 }

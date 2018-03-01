@@ -91,26 +91,22 @@ public class CreatureStatus extends Sprite {
     public void draw(Batch batch) {
         if(!owner.destroyed) {
             //super.draw(batch);
-            int i;
-            for (i = 0; i < icons.size; i++)
-                batch.draw(icons.get(i), getX() + i * PalidorGame.TILE_SIZE / 4 / PPM, getY(), PalidorGame.TILE_SIZE / 4 / PPM, PalidorGame.TILE_SIZE / 4 / PPM);
 
-            if(owner.isHidden()){
-                batch.draw(hiddenMark, getX() + i * PalidorGame.TILE_SIZE / 4 / PPM, getY(), PalidorGame.TILE_SIZE / 4 / PPM, PalidorGame.TILE_SIZE / 4 / PPM);
-            }
+            int i;
 
             if(owner.IN_BATTLE){
            //     batch.draw(battleMark, getX() + i * PalidorGame.TILE_SIZE / 2 / PPM, getY(), PalidorGame.TILE_SIZE / 2 / PPM, PalidorGame.TILE_SIZE / 2 / PPM);
             }
 
             for(int j = 0; j<messages.size; j++){
-                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + 1 - (float)(removeMessageTime - owner.existingTime) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
+                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + 0.3f - 0.3f*((float)(removeMessageTime - owner.existingTime)) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
+                //messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 
+            //Fonts.TESTFF.getFont().draw(batch, getBackgroundChars(owner.name.length()), getX()-0.05f, getY()+0.05f + PalidorGame.TILE_SIZE/2  / PPM);
             //Fonts.NAMES.getFont().draw(batch, String.valueOf(owner.stats.health.current) + "  " + owner.name, getX(), getY() + PalidorGame.TILE_SIZE/2  / PPM);
-            //Fonts.NAMES.getFont().draw(batch, " " + owner.name, getX() + PalidorGame.TILE_SIZE / 3 /PPM, getY() + PalidorGame.TILE_SIZE/2  / PPM);
             if(owner.isHero && owner.closeNeighbor != null && owner.closeNeighbor.dialogs.size > 0)
-                Fonts.IMPORTANT.getFont().draw(batch, "Press DOWN to talk with " + owner.closeNeighbor.name, getX() + PalidorGame.TILE_SIZE / 4 /PPM, getY() + PalidorGame.TILE_SIZE  / PPM);
+                Fonts.IMPORTANT.getFont().draw(batch, "Press DOWN to interact with \n" + owner.closeNeighbor.name, getX() + PalidorGame.TILE_SIZE / 4 /PPM, getY() + PalidorGame.TILE_SIZE  / PPM);
 
             //batch.draw(healthbar, getX() + 8 / PPM, getY() + 8 / PPM, (60*(owner.stats.health.current/owner.stats.health.base )) / PPM, 8 / PPM);
 //TODO healthbar
@@ -123,14 +119,29 @@ public class CreatureStatus extends Sprite {
                 Fonts.NAMES.getFont().draw(batch, "".equals(abilityToCastName) ? owner.abilityToCast.getName() : abilityToCastName,   getX() - PalidorGame.TILE_SIZE/PPM, getY()  + PalidorGame.TILE_SIZE/PPM);
             }
 
+
+            for (i = 0; i < icons.size; i++)
+                batch.draw(icons.get(i), getX() + i * PalidorGame.TILE_SIZE / 4 / PPM, getY(), PalidorGame.TILE_SIZE / 4 / PPM, PalidorGame.TILE_SIZE / 4 / PPM);
+
+            if(owner.isHidden()){
+                batch.draw(hiddenMark, getX() + i * PalidorGame.TILE_SIZE / 4 / PPM, getY(), PalidorGame.TILE_SIZE / 4 / PPM, PalidorGame.TILE_SIZE / 4 / PPM);
+            }
+
         }
 
+    }
+
+    private String getBackgroundChars(int i) {
+        String result = "";
+        for(int j=0;j<i;j++)
+            result = result + "@";
+        return result;
     }
 
     public void addMessage(String message, double removeMessageTime, Fonts font) {
         messages.add(new StatusMessage(message, font.getFont()));
         this.removeMessageTime = removeMessageTime;
-        if(messages.size > 3)
+        if(messages.size > 5)
             removeMessage();
     }
 

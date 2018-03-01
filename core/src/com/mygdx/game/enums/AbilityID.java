@@ -8,14 +8,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 public enum AbilityID{
     NONE("Nope", "None", "icon_blank", State.CASTING, AbilityType.FLAG, ActivityAreaType.SELF, 0f, 0f),
-    PUNCH("Punch",  "Melee strike", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 1f, 1f ),
+    PUNCH("Punch",  "Melee strike", "fist", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.6f, 1f ),
 
 
     HUMMER_SWING("Smash",  "Melee strike \n (crush damage)", "hummer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 0.3f ),
 //    AXE_SWING("Axe swing",  "Melee strike", "axe", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 1f ),
     SWORD_SWING("Swing",  "Melee strike \n (cut damage)", "sword", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.3f, 0.3f ),
 
-    DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.6f , 5f),
+    DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.1f , 0.2f),
 
     HUMMER_SMASH("Total SMASH",  "Stunning Melee strike (use Smash twice) \n (stun 3 sec)", "hummer_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.6f, 5f ),
 //    AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
@@ -59,7 +59,7 @@ public enum AbilityID{
 //    SILENT_STRIKE("Silent strike", "Double damage from behind", "sword", State.KICKING, AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 60f),
 
 //    JUMP_BACK("Jump back","Run backward","icon_blank", State.STANDING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
-//    FLY("Fly","Falling slower","icon_blank", State.CASTING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
+    FLY("Fly","Falling slower","icon_blank", State.CASTING, AbilityType.FLAG , ActivityAreaType.SELF, 0.1f , 3f),
 //    INVISIBILITY("Invisibility", "Hide from everyone", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 10f),
 //    TIMESTOP("Timestop", "You are moving toooo fast", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
     //TELEPORT("Teleport", "Move to ", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
@@ -74,19 +74,11 @@ public enum AbilityID{
     SUMMON_ROLF("Call Rolf", "Allows to call Rolf" , "axe", State.CASTING,AbilityType.SUMMON, ActivityAreaType.SELF, 3f,45f),
     SUMMON_DEMON("Call Demon", "Allows to call Demon" , "hummer_red", State.CASTING,AbilityType.SUMMON, ActivityAreaType.SELF, 3f,45f),
 
+    SUMMON_BAD_DEMON("Call Demon", "Allows to call Demon" , "hummer_red", State.CASTING,AbilityType.SUMMON, ActivityAreaType.SELF, 3f,45f),
 
     //special abilities
     ROLFS_TALK("Talk with Rolfs", "Allows to become a friend with a Rolf " , "icon_blank", State.CASTING,AbilityType.FLAG, ActivityAreaType.SELF, 0.1f,1f),
 
-    //creatures actions
-    ANIMAL_PUNCH("Bite",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.7f, 1f ),
-    ANIMAL_POKE("Poke",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 1f ),
-    ANIMAL_CLAW("Claw",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.9f, 1f ),
-
-    ANIMAL_SHIELD("Covering with shell", "Cover with shell", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.BOX, 0.1f, 3f),
-    ACID_SHOT("Splash", "Acid arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.4f, 0.5f ),
-    SPIKE_SHOT("Showing spikes", "Spike arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.5f, 0.5f ),
-    ANIMAL_DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.6f , 10f),
 
     BACKSTUB("Backstub", "Damage made in a back" , "sword_red" , State.KICKING , AbilityType.FLAG ,ActivityAreaType.BOX, 1f , 1f),
     DISAPPEAR("Disappear", "Hide from everyone in combat", "icon_cross", State.CASTING , AbilityType.FLAG, ActivityAreaType.SELF, 0.1f, 5f),
@@ -104,8 +96,8 @@ public enum AbilityID{
     GREATEST_LEADERSHIP("Greater leadersip", "Allows to have  strongest followers", "icon_blank", State.CASTING , AbilityType.FLAG, ActivityAreaType.SELF, 0.1f, 5f),
 
     BETTER_JUMP("Better jump", "Jump higher" , "icon_blank" , State.CASTING , AbilityType.FLAG, ActivityAreaType.SELF, 0.1f, 5f),
-    POWERPUNCH ("Powerpush","Push forward","icon_blank",State.KICKING,AbilityType.CLOSE_RANGE_ATACK , ActivityAreaType.BOX, 0.2f , 0.5f),
-    UPPERPUNCH ("Powerpunch","Appercote","icon_blank",State.KICKING,AbilityType.CLOSE_RANGE_ATACK , ActivityAreaType.BOX, 0.2f , 0.5f),
+    POWERPUNCH ("Powerpush","Push forward","fist_red",State.KICKING,AbilityType.CLOSE_RANGE_ATACK , ActivityAreaType.BOX, 0.2f , 0.5f),
+    UPPERPUNCH ("Powerpunch","Appercote","fist_red",State.KICKING,AbilityType.CLOSE_RANGE_ATACK , ActivityAreaType.BOX, 0.2f , 0.5f),
 
 
     RAGE("Rage", "Makes you stronger" , "icon_cross_red", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 0.7f, 5f),
@@ -113,7 +105,21 @@ public enum AbilityID{
 
     HEAL("Heal", "Healing" , "icon_cross_green", State.CASTING , AbilityType.BUFF , ActivityAreaType.SELF, 1f, 5f),
 
-    APPEAR("Appearing", "Sumoned", "icon_cross_red", State.CASTING , AbilityType.FLAG , ActivityAreaType.SELF, 2f, 0.1f);
+    APPEAR("Appearing", "Sumoned", "icon_cross_red", State.CASTING , AbilityType.FLAG , ActivityAreaType.SELF, 2f, 0.1f),
+
+    // for mechs
+    TURREL_PIU("Piu left", "Arrow" , "icon_blank", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.5f, 0.5f ),
+
+    //creatures actions
+    ANIMAL_PUNCH("Bite",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.7f, 1f ),
+    ANIMAL_POKE("Poke",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 1f ),
+    ANIMAL_CLAW("Claw",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.9f, 1f ),
+
+    ANIMAL_SHIELD("Covering with shell", "Cover with shell", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.BOX, 0.1f, 3f),
+    ACID_SHOT("Splash", "Acid arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.4f, 0.5f ),
+    SPIKE_SHOT("Showing spikes", "Spike arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.5f, 0.5f ),
+    ANIMAL_DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.6f , 10f);
+
 
     private final AbilityType type;
     String value;

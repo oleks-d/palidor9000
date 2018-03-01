@@ -24,6 +24,7 @@ import com.mygdx.game.dialogs.GameDialog;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.tools.ConditionProcessor;
+import com.mygdx.game.tools.Fonts;
 
 /**
  * Created by odiachuk on 12/18/17.
@@ -75,7 +76,7 @@ public class DialogPanel implements Disposable {
 
         optionLabels = new Array<Label>();
 
-        dialogLabel = new Label(" --- --- --- --- --- --- ", new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        dialogLabel = new Label(" --- --- --- --- --- --- ", new Label.LabelStyle(Fonts.DIALOG_REPLIC.getFont(), Color.GOLD));
 
         //default close dialog
         CLOSE_DIALOG = new GameDialog(0);
@@ -122,7 +123,7 @@ public class DialogPanel implements Disposable {
             table.row().pad(10,10,10,10);
             for(Label option : optionLabels) {
                 table.add(option);
-                table.row();
+                table.row().pad(10,10,10,10);
             }
             table.pack();
 
@@ -137,8 +138,8 @@ public class DialogPanel implements Disposable {
 
     public void addMessage(String text, String who, TextureRegion picture){
         //background = new Image(new Texture(PalidorGame.SPRITES_DIR + File.separator + "dialog_background.png"));
-        nameLabel = new Label(who, new Label.LabelStyle(new BitmapFont(), Color.CORAL));
-        textLabel = new Label(text, new Label.LabelStyle(new BitmapFont(), Color.WHITE));;
+        nameLabel = new Label(who, new Label.LabelStyle(Fonts.DIALOG_REPLIC.getFont(), Color.CORAL));
+        textLabel = new Label(text, new Label.LabelStyle(Fonts.DIALOG_REPLIC.getFont(), Color.WHITE));;
         pictureImage = new Image(picture);
         update();
     }
@@ -149,7 +150,8 @@ public class DialogPanel implements Disposable {
             DialogAnswer option = options.get(i);
             if(ConditionProcessor.conditionSatisfied(screen.hero, options.get(i).getCondition())) {
                 final int index = i;
-                Label label = new Label(String.format("\" %s \"",option.getText()), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+                //Label label = new Label(String.format("\" %s \"",option.getText()), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+                Label label = new Label(String.format("\" %s \"",option.getText()), new Label.LabelStyle(Fonts.DIALOG_REPLIC.getFont(), Color.WHITE));
                 label.addListener(new InputListener() {
 
                     @Override
@@ -177,7 +179,7 @@ public class DialogPanel implements Disposable {
             GameDialog option = options.get(i);
             if(ConditionProcessor.conditionSatisfied(screen.hero, option.getCondition())) {
                 final int index = i;
-                Label label = new Label(option.getTitle(), new Label.LabelStyle(new BitmapFont(), Color.CYAN));
+                Label label = new Label(option.getTitle(), new Label.LabelStyle(Fonts.DIALOG_REPLIC.getFont(), Color.CYAN));
                 label.addListener(new InputListener() {
 
                     @Override
@@ -243,7 +245,7 @@ public class DialogPanel implements Disposable {
 
     public void selectDialogOption(int i) {
         if(currentDialogOptions.get(i).getProcess() != null)
-            ConditionProcessor.conditionProcess(screen.hero, currentDialogOptions.get(i).getProcess());
+            ConditionProcessor.conditionProcess(actor, currentDialogOptions.get(i).getProcess());
         currentReplic = currentDialogOptions.get(i).getNext();
         if(currentReplic==0)
             screen.endDialog();

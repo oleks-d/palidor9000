@@ -120,11 +120,13 @@ public enum Skill {
             new AbilityID[]{
                     AbilityID.POWERPUNCH,
                     AbilityID.UPPERPUNCH,
-                    //AbilityID.POWERJUMP
+                    AbilityID.FLY
+
             } , 100,6),
     AGILITY3(26, "Master Haste", "Using reflexes and speed in combat",
             new AbilityID[]{
-                    AbilityID.HASTE
+                    AbilityID.HASTE,
+                    AbilityID.POWERJUMP
             } , 100,16),
 
 
@@ -139,7 +141,7 @@ public enum Skill {
         return name;
     }
 
-    public AbilityID[] getAbilities() {
+    public Array<AbilityID> getAbilities() {
         return abilities;
     }
 
@@ -152,16 +154,19 @@ public enum Skill {
     }
 
     String description;
-    AbilityID[] abilities;
+    Array<AbilityID> abilities;
     int idOfRequiredSkill;
     int price;
 
     Skill(int id, String name, String description, AbilityID[] abilities, int price,  int idOfRequiredSkill) {
+        this.abilities = new Array<AbilityID>();
+
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.abilities = abilities;
+
+        this.abilities.addAll(abilities);
         this.idOfRequiredSkill = idOfRequiredSkill;
     }
 

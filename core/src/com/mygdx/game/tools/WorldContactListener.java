@@ -6,6 +6,7 @@ import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.EffectID;
+import com.mygdx.game.enums.State;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
 import com.mygdx.game.sprites.activities.ActivityWithEffect;
@@ -29,6 +30,9 @@ public class WorldContactListener implements ContactListener {
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
+        Creature creatureA;
+        Creature creatureB;
+
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         ActivityWithEffect act;
@@ -48,18 +52,22 @@ public class WorldContactListener implements ContactListener {
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
                     if(!act.isTargetWasAlreadyProcessed(target)) {
-                        if (target.shieldEffect == null) {// creature was covered
+                        if (target.shieldEffect == null) {// creature was not covered
                             if (target.getEffect(EffectID.DODGE) == null) { // creature dodges
                                 for (Effect effect : act.activeEffects) {
                                     target.applyEffect(effect);
                                     if (!effect.id.isPositive()) {
                                         target.setIN_BATTLE(true);
+                                        target.brain.addToListOfGlobalEnemies(act.createdBy);
+                                        target.setCharmed(false);
                                     }
                                 }
                             } else {
                                 target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
                             }
                         } else {
+                            if(target.getState() == State.FALLING)
+                                target.moveUp();
                             target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
                         }
                         act.addTargetToAlreadyProcessed(target);
@@ -86,6 +94,8 @@ public class WorldContactListener implements ContactListener {
                                     target.applyEffect(effect);
                                     if (!effect.id.isPositive()) {
                                         target.setIN_BATTLE(true);
+                                        target.brain.addToListOfGlobalEnemies(act.createdBy);
+                                        target.setCharmed(false);
                                     }
                                 }
                                 //backstub  TODO fix
@@ -96,6 +106,8 @@ public class WorldContactListener implements ContactListener {
                                 target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
                             }
                         } else {
+                            if(target.getState() == State.FALLING)
+                                target.moveUp();
                             target.addStatusMessage("Shield absorbed damage", Fonts.GOOD);
                             act.createdBy.shake();
                             act.createdBy.applyEffect(target.shieldEffect); // stun if target was protected
@@ -170,12 +182,20 @@ public class WorldContactListener implements ContactListener {
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.CREATURE_BIT:
                 // not hidden
-                ((Creature) fixA.getUserData()).setInvisible(false);
-                ((Creature) fixB.getUserData()).setInvisible(false);
+                creatureA = ((Creature) fixA.getUserData());
+                creatureB = ((Creature) fixB.getUserData());
+
+                creatureA.setInvisible(false);
+                creatureB.setInvisible(false);
 
                 //neighbor
-                ((Creature) fixA.getUserData()).setNeighbor(((Creature) fixB.getUserData()));
-                ((Creature) fixB.getUserData()).setNeighbor(((Creature) fixA.getUserData()));
+                creatureA.setNeighbor(creatureB);
+                creatureB.setNeighbor(creatureA);
+
+                //
+                creatureA.applyAura(creatureB);
+                creatureB.applyAura(creatureA);
+
                 break;
             case PalidorGame.GROUND_BIT | PalidorGame.CREATURE_BOTTOM:
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
@@ -193,11 +213,15 @@ public class WorldContactListener implements ContactListener {
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.CREATURE_BOTTOM:
                 if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
-                    ((Creature) fixA.getUserData()).moveUp();
+                    //((Creature) fixA.getUserData()).moveUp();
+                    ((Creature) fixA.getUserData()).onAGround(true);
                 } else {
-                    ((Creature) fixB.getUserData()).moveUp();
+                    //((Creature) fixB.getUserData()).moveUp();
+                    ((Creature) fixB.getUserData()).onAGround(true);
                 }
                 break;
+
+
 //            case PalidorGame.GROUND_BIT | PalidorGame.ACTIVITY_BIT:
 //                if (fixA.getFilterData().categoryBits == PalidorGame.GROUND_BIT){
 //                    act = ((ActivityWithEffect) fixB.getUserData());

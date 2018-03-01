@@ -124,7 +124,7 @@
    <properties>
     <property name="deathprocess" value="IR:key_2::"/>
     <property name="items" value="coin,sword_1"/>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
   <object id="84" name="mark" x="2768" y="597">
@@ -136,7 +136,7 @@
   </object>
   <object id="77" name="animal_2" x="1969" y="332">
    <properties>
-    <property name="organization" value="1"/>
+    <property name="org" value="1"/>
    </properties>
   </object>
  </objectgroup>

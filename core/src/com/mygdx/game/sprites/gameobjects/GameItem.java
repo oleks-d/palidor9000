@@ -70,7 +70,7 @@ public class GameItem extends Sprite {
         destroyed = false;
 
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX() / PalidorGame.PPM, getY()/ PalidorGame.PPM );
         body = world.createBody(bodyDef);
 
@@ -79,9 +79,9 @@ public class GameItem extends Sprite {
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.isSensor = true;
+        //fixtureDef.isSensor = true;
         fixtureDef.filter.categoryBits = PalidorGame.ITEM_BIT;
-        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.GROUND_BIT;
+        fixtureDef.filter.maskBits = PalidorGame.CREATURE_BIT | PalidorGame.GROUND_BIT | PalidorGame.ITEM_BIT;;
 
 
         body.createFixture(fixtureDef).setUserData(this);

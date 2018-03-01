@@ -10,7 +10,8 @@ public class EffectsHandler {
         switch (id){
             case POISON:
                 //int damageValue = Math.round(magnitude);
-                creature.doDamage( Math.round(magnitude),EffectID.POISON);
+                if(creature.getEffect(EffectID.IMMUNE_POISON_DAMAGE) == null)
+                    creature.doDamage( Math.round(magnitude),EffectID.POISON);
                 break;
             case CUT_DAMAGE:
                 if(creature.getEffect(EffectID.IMMUNE_CUT_DAMAGE) == null)
@@ -127,6 +128,12 @@ public class EffectsHandler {
                 break;
             case INVISIBLE:
                 creature.setInvisible(true);
+                break;
+            case CHARMED:
+                creature.setCharmed(true);
+                break;
+            case NO_MASS:
+                creature.setGravitation(magnitude);
 
 //            default:
 //                Gdx.app.log("No such effect or no processing needed", id.toString());
@@ -157,8 +164,14 @@ public class EffectsHandler {
             case INVISIBLE:
                 creature.setInvisible(false);
                 break;
+            case CHARMED:
+                creature.setCharmed(false);
+                break;
             case THROW_FROM_INVENTORY:
                 creature.throwFromInventory();
+                break;
+            case NO_MASS:
+                creature.setGravitation(1);
                 break;
             default:
                 // No remove process needed

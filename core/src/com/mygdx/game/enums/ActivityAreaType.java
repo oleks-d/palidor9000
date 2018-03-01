@@ -6,7 +6,7 @@ import com.mygdx.game.PalidorGame;
  * Created by odiachuk on 12/22/17.
  */
 public enum ActivityAreaType {
-    ARROW(1f,32,32),
+    ARROW(1f,32,16),
     BOX(0.2f,64,92),
     SPRAY(1f,64,48),
     SELF(0f),

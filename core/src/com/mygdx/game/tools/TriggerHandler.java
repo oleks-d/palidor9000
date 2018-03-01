@@ -15,14 +15,18 @@ public class TriggerHandler {
         switch(trigger.getType()){
             case "route": // movement to other locations
                 if(creature.equals(creature.screen.hero)) {
-                    if((ConditionProcessor.conditionSatisfied(creature.screen.hero, trigger.getCondition()))) {
-                        creature.screen.levelmanager.removeDeadBodies();
-                        creature.screen.levelmanager.saveLevel(creature.screen.hero.currentLevel, creature.screen.hero.name);
-                        creature.screen.levelmanager.loadNextLevel(trigger.getValue(), creature.screen.hero.name);
-                        creature.screen.levelmanager.saveHero(creature.screen.hero);
-                        creature.screen.hero.addStatusMessage(creature.screen.hero.currentLevel, Fonts.HEADER);
-                    } else
-                        creature.screen.hero.addStatusMessage("You cannot leave this area so far", Fonts.INFO);
+                    if (!creature.IN_BATTLE) {
+                        if ((ConditionProcessor.conditionSatisfied(creature.screen.hero, trigger.getCondition()))) {
+                            creature.screen.levelmanager.removeDeadBodies();
+                            creature.screen.levelmanager.saveLevel(creature.screen.hero.currentLevel, creature.screen.hero.name);
+                            creature.screen.levelmanager.loadNextLevel(trigger.getValue(), creature.screen.hero.name);
+                            creature.screen.levelmanager.saveHero(creature.screen.hero);
+                            creature.screen.hero.addStatusMessage(creature.screen.hero.currentLevel, Fonts.HEADER);
+                        } else
+                            creature.screen.hero.addStatusMessage("Can not leave area so far", Fonts.INFO);
+                    }
+                    else
+                        creature.screen.hero.addStatusMessage("Hero in battle!", Fonts.INFO);
                 }
             break;
             case "story": // story points

@@ -13,6 +13,10 @@ import java.io.File;
  */
 public class AnimationHelper {
 
+    public Animation greenAuraAnimation;
+    public Animation yellowAuraAnimation;
+    public Animation redAuraAnimation;
+
     public TextureAtlas getAtlas() {
         return atlas;
     }

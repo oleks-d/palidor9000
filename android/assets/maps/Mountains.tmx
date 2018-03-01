@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="188">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="190">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="day" width="100" height="20">
   <data encoding="base64">
@@ -115,7 +115,22 @@
   </object>
  </objectgroup>
  <objectgroup name="entities"/>
- <objectgroup name="creatures"/>
+ <objectgroup name="creatures">
+  <object id="188" name="mech_t_r" x="2920" y="545" width="22" height="20">
+   <properties>
+    <property name="org" value="9"/>
+    <property name="program" value="ruada"/>
+    <property name="uid" value="4001"/>
+   </properties>
+  </object>
+  <object id="189" name="mech_button" x="2609" y="560">
+   <properties>
+    <property name="deathprocess" value="KC:4001"/>
+    <property name="org" value="9"/>
+    <property name="program" value="n"/>
+   </properties>
+  </object>
+ </objectgroup>
  <objectgroup name="objects">
   <object id="173" name="block_mountain" x="893" y="600" width="96" height="10">
    <properties>

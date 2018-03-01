@@ -65,6 +65,15 @@
     "effects": "MINUS_CRUSH_DAMAGE 0 1 0"
   },
   {
+    "id":"mask_zorro",
+    "name" : "Mask",
+    "description" : "Hide from everyone",
+    "value" : "100",
+    "image" : "helmet",
+    "type" : "HEAD",
+    "effects": "INVISIBLE 0 1 0"
+  },
+  {
     "id":"armor_1",
     "name" : "Rusty armor",
     "description" : "Some protection against cut damage \n +1 Armor against cut",
@@ -238,6 +247,29 @@
     "image" : "red_book",
     "usable" : "TRUE",
     "condition" : "A:READ_ANCIENT"
+  },
+
+
+
+  {
+    "id":"paw_1",
+    "name" : "paw",
+    "description" : "paw",
+    "value" : "100",
+    "image" : "fist",
+    "picture" : "weapon_paw",
+    "effects": "",
+    "type" : "WEAPON_HUMMER"
+  },
+  {
+    "id":"paw_2",
+    "name" : "paw",
+    "description" : "paw",
+    "value" : "100",
+    "image" : "fist",
+    "picture" : "weapon_paw2",
+    "effects": "",
+    "type" : "WEAPON_AXE"
   },
 
 ]}

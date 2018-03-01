@@ -1,17 +1,17 @@
 {
   "hero": {
-    "name": "jjjj",
+    "name": "Unknown Hero",
     "description": "Player",
     "health": "10",
     "speed": "10",
     "jump": "10",
     "spritesheetregion": "triangle1",
-    "abilities": "PUNCH,READ_BASIC,ROLFS_TALK",
+    "abilities": "PUNCH",
     "org": "0",
     "equipeditems": ""
   },
 
-    "items": "armor_1, axe_1, hummer_1, fire_1, shield_1, helmet_1, bow_1, sling_1, ice_1",
+    "items": "",
   "globalStates" : [
 { "key" : "0", "value" : "249"},
 { "key" : "1", "value" : "249"},
@@ -19,19 +19,18 @@
 { "key" : "3", "value" : "249"},
 { "key" : "4", "value" : "01239"},
 { "key" : "NEXT", "value" : "0"},
-{ "key" : "Mather", "value" : "Lessons"},
-{ "key" : "9", "value" : "01234"},
-{ "key" : "QUEST_BERRIES", "value" : "1"}  ],
+{ "key" : "8", "value" : "9"},
+{ "key" : "9", "value" : "01234"}  ],
 
-  "currentLevel" : "Forest",
-  "previousLevel" : "Willage",
-  "exp" : "1000",
+  "currentLevel" : "Willage",
+  "previousLevel" : "Start",
+  "exp" : "0",
   "money" : "0",
 
   "selectedAtackAbilities" : "PUNCH",
   "selectedDefenseAbilities": "PUNCH",
   "summon": "",
-  "skills": "INTELLIGENCE1",
+  "skills": "",
 
 
 }

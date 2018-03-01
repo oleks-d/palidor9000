@@ -5,7 +5,7 @@
     "replics": [
       {"id": 1 ,"text" : "Hi Hero!", "answers" : [{"text":"Hi Mark", "next":2}, {"text":"Go away Mark", "next":3}]},
       {"id": 2 ,"text" : "I think you are cool!", "answers" : [{"text":"Thanks Mark", "next":0}, {"text":"Go away Mark", "next":3}]},
-      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "AE:ANGRY 10 0 0" , "next":0}]}
+      {"id": 3 ,"text" : "I will FFF you Hero!", "answers" : [{"text":"<Fight>", "process": "CAE:ANGRY 10 0 0;AE:SLOW 10 1 0" , "next":0}]}
     ]
   },
   {"id":2,
@@ -87,7 +87,26 @@
     "condition" : "A:ROLFS_TALK",
     "replics": [
       {"id": 1 ,"text" : "Fr fr fr GGGru!", "answers" : [{"text":"FFF uf fuf! \n (Do you want to be friend?)", "next":0, "process":"FR:fff"}]}
-    ]}
+    ]},
 
-    ]
+
+  {"id":901,
+    "title":"Open chest",
+    "condition" : "I:key_1",
+    "replics": [
+      {"id": 1 ,"text" : "There some goods in this chest", "answers" :
+      [ {"text":"Take all", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
+      }]},
+
+
+  {"id":902,
+    "title":"Open door",
+    "condition" : "I:key_1",
+    "replics": [
+      {"id": 1 ,"text" : "Do you want to open this door?", "answers" :
+      [ {"text":"Open", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
+      }]}
+
+]
+
 }

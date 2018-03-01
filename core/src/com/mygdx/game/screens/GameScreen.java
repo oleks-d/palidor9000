@@ -123,6 +123,7 @@ public class GameScreen implements Screen {
 
 
     public Array<String> creaturesToCreate;
+    public Array<String> creaturesToDie;
     public Array<String> itemsToCreate;
     public Array<ActivityWithEffect> activitiesToCreate;
 
@@ -149,6 +150,10 @@ public class GameScreen implements Screen {
 
         animationHelper = new AnimationHelper();
 
+        animationHelper.greenAuraAnimation = animationHelper.getAnimationByID("green_aura", 64, 64, 0.1f, 0);
+        animationHelper.yellowAuraAnimation= animationHelper.getAnimationByID("yellow_aura", 64, 64, 0.1f, 0);
+        animationHelper.redAuraAnimation= animationHelper.getAnimationByID("red_aura", 64, 64, 0.1f, 0);
+
         //controller
         controller = new ControllerPanel(game.getBatch(),animationHelper);
 
@@ -166,6 +171,7 @@ public class GameScreen implements Screen {
         levelmanager.loadLevel(hero.currentLevel, hero.name);
 
         creaturesToCreate = new Array<String>();
+        creaturesToDie = new Array<String>();
         itemsToCreate = new Array<String>();
         activitiesToCreate = new Array<ActivityWithEffect>();
 
@@ -261,17 +267,36 @@ public class GameScreen implements Screen {
             //summon creature
             if(creaturesToCreate.size > 0) {
                 for(String line : creaturesToCreate) {
-                    String typeOfCreature = line.split(":")[1];
-                    String conditionValue = line.split(":")[2];
-                    float newCreatureX = Float.valueOf(conditionValue.split(",")[0]);
-                    float newCreatureY = Float.valueOf(conditionValue.split(",")[1]);
-                    int newCreatureOrg = Integer.valueOf(conditionValue.split(",")[2]);
-                    hero.screen.levelmanager.createCreature(hero.screen, newCreatureX, newCreatureY, typeOfCreature, newCreatureOrg );
+
+
+                    if(line.contains(":")) {
+                        String typeOfCreature = line.split(":")[1];
+                        String conditionValue = line.split(":")[2];
+                        float newCreatureX = Float.valueOf(conditionValue.split(",")[0]);
+                        float newCreatureY = Float.valueOf(conditionValue.split(",")[1]);
+                        int newCreatureOrg = Integer.valueOf(conditionValue.split(",")[2]);
+                        hero.screen.levelmanager.createCreature(hero.screen, newCreatureX, newCreatureY, typeOfCreature, newCreatureOrg);
+                    } else
+                        for (LevelManager.UnavailableCreatures creature : hero.screen.levelmanager.UNAVAILABLE_CREATURES)
+                            if (creature.getUid().equals(line))
+                                hero.screen.levelmanager.createCreatureFromUnavailableCreature(creature);
+
                 };
                 creaturesToCreate.clear();
 
             }
 
+            //kill creature
+            if(creaturesToDie.size > 0) {
+                for(String line : creaturesToDie) {
+                    for(Creature current: hero.screen.levelmanager.CREATURES) {
+                        if( current.getID() == Integer.valueOf(line))
+                            current.toDie();
+                    }
+                };
+                creaturesToDie.clear();
+
+            }
 
             //summon item
             if(itemsToCreate.size > 0) {
@@ -307,7 +332,16 @@ public class GameScreen implements Screen {
 //                    if (creature.getBody().getPosition().x < camera.position.x + viewport.getWorldWidth() / 2 && creature.getBody().getPosition().x > camera.position.x - viewport.getWorldWidth() / 2)
 //                        creature.makeActive();
 //                }else
-                    {
+                {
+                    //if(hero.IN_BATTLE)
+                    //        if(hero.isEnemy(creature))
+                                //creature.startAnimation(animationHelper.redAuraAnimation);
+                    //          //  creature.setAura();
+                    //        else
+                                //creature.startAnimation(animationHelper.yellowAuraAnimation);
+                    //        //creature.setAura();
+
+
                     creature.update(delta);
                     //creature.weaponSprite.update(delta);
                     creature.nextStep(delta);
@@ -323,6 +357,14 @@ public class GameScreen implements Screen {
 
             //update all summoned
             for (Creature creature : levelmanager.SUMMONED_CREATURES) {
+//                if(creature.owner != null && creature.owner.getID() == hero.getID())
+//                    creature.startAnimation(animationHelper.greenAuraAnimation);
+//                else
+//                    if(hero.isEnemy(creature))
+//                        creature.startAnimation(animationHelper.redAuraAnimation);
+//                    else
+//                        creature.startAnimation(animationHelper.yellowAuraAnimation);
+
                     creature.update(delta);
 
                     creature.nextStep(delta);
@@ -539,11 +581,13 @@ public class GameScreen implements Screen {
                 //holdingTimeJUMP = holdingTimeJUMP + delta;
 
                 if (whenJumpWasJustPressed + 0.5 > hero.existingTime) {
-                    hero.haste();
+                    //hero.haste();
+                    hero.powerjump();
                 } else if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
                     hero.dash();
                 } else {
-                    hero.jump();
+                    hero.powerjump();
+                    //hero.jump();
 //                    for (Creature creature : levelmanager.SUMMONED_CREATURES) {
 //                        creature.jump();
 //                    }
@@ -649,6 +693,7 @@ public class GameScreen implements Screen {
     public void showDialog(){
         PAUSE = true;
         onDialogScreen = true;
+        Gdx.graphics.setContinuousRendering(false);
         onMainScreen = false;
 
         dialogPanel.update();
@@ -660,6 +705,7 @@ public class GameScreen implements Screen {
             PAUSE = true;
 
             onDialogScreen = true;
+            Gdx.graphics.setContinuousRendering(false);
             onMainScreen = false;
 
             dialogPanel.setDialogs(actor);
@@ -671,6 +717,7 @@ public class GameScreen implements Screen {
         dialogPanel.reset();
         PAUSE = false;
         onDialogScreen = false;
+        Gdx.graphics.setContinuousRendering(true);
         onMainScreen = true;
 
         controller.update();
@@ -737,20 +784,12 @@ public class GameScreen implements Screen {
 
             //levelmanager.background.draw(game.getBatch()); // TODO background
 
-            //render all items
-            for (GameItem item : levelmanager.ITEMS) {
-                if (!item.isDestroyed())
-                    item.draw(game.getBatch());
-            }
-
 
             //render all objects
             for (GameObject object : levelmanager.OBJECTS) {
                 object.draw(game.getBatch());
             }
 
-            //render hero
-            hero.draw(game.getBatch());
 
             //render all enemies
             for (Creature creature : levelmanager.CREATURES) {
@@ -764,6 +803,16 @@ public class GameScreen implements Screen {
 
                     creature.draw(game.getBatch());
                 //creature.weaponSprite.draw(game.getBatch());
+            }
+
+            //render hero
+            hero.draw(game.getBatch());
+
+
+            //render all items
+            for (GameItem item : levelmanager.ITEMS) {
+                if (!item.isDestroyed())
+                    item.draw(game.getBatch());
             }
 
             //render all activities

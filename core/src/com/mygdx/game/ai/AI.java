@@ -1,8 +1,5 @@
 package com.mygdx.game.ai;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.PalidorGame;
 import com.mygdx.game.enums.AbilityID;
@@ -10,10 +7,7 @@ import com.mygdx.game.enums.AbilityType;
 import com.mygdx.game.enums.CreatureAction;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.sprites.creatures.Creature;
-import com.mygdx.game.sprites.creatures.Hero;
-import com.mygdx.game.tools.ConditionProcessor;
 
-import java.util.HashMap;
 import java.util.Random;
 
 import static com.mygdx.game.PalidorGame.PPM;
@@ -22,6 +16,8 @@ import static com.mygdx.game.PalidorGame.PPM;
  * Created by odiachuk on 12/26/17.
  */
 public class AI {
+
+    Random randomizer = new Random();
 
 //    static int STATE_STAND = 0;
 //    static int STATE_EXECUTEPROGRAM = 1;
@@ -35,8 +31,12 @@ public class AI {
     int maxNumberOfActionSteps = 0;
 
 
-    private final Array<Creature> listOfEnemies;
+    CreatureAction repeatAction = null;
 
+
+    private Array<Creature> listOfCurrentEnemies;
+    private Array<Creature> globalListOfEnemies;
+    
     private boolean moveLeft;
     private boolean moveRight;
 
@@ -57,14 +57,17 @@ public class AI {
     int currentStepNumber;
 
     GameScreen screen;
-    Creature creature;
+    Creature creatureOwner;
     String program;
 
-    String DEFAULT_PROGRAM = "lrn";
+    String DEFAULT_PROGRAM = "lwrwnw";
+
+    String organization;
 
     public AI(Creature creature, GameScreen screen, String program, BehaviourPattern pattern){
         this.screen = screen;
-        this.creature = creature;
+        this.creatureOwner = creature;
+        organization = String.valueOf(creatureOwner.getOrganization());
         this.program = program;
         this.pattern =  pattern;
 
@@ -78,27 +81,30 @@ public class AI {
             maxNumberOfActionSteps = pattern.steps.length;
         }
 
-        listOfEnemies = new Array<Creature>();
+        listOfCurrentEnemies = new Array<Creature>();
+        globalListOfEnemies = new Array<Creature>();
 
-        if(program != null && !program.equals("")) {
+        if(program != null && !program.equals("") ) {
             //state = STATE_EXECUTEPROGRAM;
             steps = program.toCharArray();
         } else {
-            steps = DEFAULT_PROGRAM.toCharArray();
+            if(!creature.isMachine) {
+                this.program = DEFAULT_PROGRAM;
+                steps = DEFAULT_PROGRAM.toCharArray();
+            }
         }
     }
 
     private boolean isVisible(Creature mob) {
-        return (mob.isEnemy(creature) //is enemy
-                && !mob.destroyed
+        return ( !mob.destroyed
                 && !mob.isHidden() // not hidden
-          //      && ( mob.getBody().getPosition().x + creature.sight/PPM < creature.getBody().getPosition().x && mob.getBody().getPosition().x - creature.sight/PPM > creature.getBody().getPosition().x)); // visible
-                && ( mob.getBody().getPosition().x < creature.getBody().getPosition().x + creature.sight/PPM && mob.getBody().getPosition().x > creature.getBody().getPosition().x  - creature.sight/PPM ));
+          //      && ( mob.getBody().getPosition().x + creatureOwner.sight/PPM < creatureOwner.getBody().getPosition().x && mob.getBody().getPosition().x - creatureOwner.sight/PPM > creatureOwner.getBody().getPosition().x)); // visible
+                && ( mob.getBody().getPosition().x < creatureOwner.getBody().getPosition().x + creatureOwner.sight/PPM && mob.getBody().getPosition().x > creatureOwner.getBody().getPosition().x  - creatureOwner.sight/PPM ));
 
         };
 
-    private boolean isReachable(Creature creature) {
-        if((creature.getY() - 0.30 < creature.getY() && creature.getY() + 0.30 > creature.getY()))
+    private boolean isReachable(Creature mob) {
+        if((creatureOwner.getY() - 0.05 < mob.getY() && creatureOwner.getY() + 0.05 > mob.getY()))
             return true;
         return false;
 
@@ -106,158 +112,160 @@ public class AI {
 
     private int getDistance(Creature mob) {
         if(isReachable(mob))
-            return Math.abs(Math.round(creature.getX() - mob.getX()));
+            return Math.abs(Math.round(creatureOwner.getX() - mob.getX()));
         else
-            return Math.abs(Math.round(creature.getX() - mob.getX()))+10;
+            return Math.abs(Math.round(creatureOwner.getX() - mob.getX()))+10;
     }
 
     public void getNextStep( float delta) {
 
-        int curDistanceToEnemy =0;
-        int shortestDistanceToEnemy =0;
+        if (creatureOwner.abilityToCast == AbilityID.NONE && !creatureOwner.isCharmed()) {
 
-        float targetX = 0, targetY = 0;
-        listOfEnemies.clear();
 
-        CreatureAction result = CreatureAction.STOP;
+            int curDistanceToEnemy = 0;
+            int shortestDistanceToEnemy = 0;
 
-        //define nearby situation :
+            float targetX = 0, targetY = 0;
+            listOfCurrentEnemies.clear();
 
-        //check for neighbors
-        if(creature.getNeighbor() != null && creature.getNeighbor().isEnemy(creature)){
-            targetX = creature.getNeighbor().getX();
-            targetY = creature.getNeighbor().getY();
-            //state = STATE_ATTACK;
-            creature.getNeighbor().setIN_BATTLE(true);
+            CreatureAction result = CreatureAction.STOP;
 
-        } else {
+            //define nearby situation :
 
-        // look for creatures nearby
-        for (int i = 0; i < screen.levelmanager.CREATURES.size; i++) {
-            Creature mob = screen.levelmanager.CREATURES.get(i);
-            if (isVisible(mob)) {
-                listOfEnemies.add(mob);
-            }
-        }
-
-        for (int i = 0; i < screen.levelmanager.SUMMONED_CREATURES.size; i++) {
-            Creature mob = screen.levelmanager.SUMMONED_CREATURES.get(i);
-            if (isVisible(mob)) {
-                listOfEnemies.add(mob);
-            }
-        }
-
-        if (isVisible(screen.hero)) { //&& screen.hero.getToughness() < creature.getToughness()) {
-            listOfEnemies.add(screen.hero);
-        }
-
-        //check all enemies
-        for (Creature mob : listOfEnemies) {
-            curDistanceToEnemy = getDistance(mob);
-            if (shortestDistanceToEnemy ==0 || curDistanceToEnemy < shortestDistanceToEnemy) {
-                shortestDistanceToEnemy = curDistanceToEnemy;
-                targetX = mob.getX();
-                targetY = mob.getY();
+            //check for neighbors
+            if (creatureOwner.getNeighbor() != null &&  isEnemy(creatureOwner.getNeighbor())) {
+                targetX = creatureOwner.getNeighbor().getX();
+                targetY = creatureOwner.getNeighbor().getY();
                 //state = STATE_ATTACK;
-                mob.setIN_BATTLE(true);
+                creatureOwner.getNeighbor().setIN_BATTLE(true);
+
+            } else {
+
+                // look for creatures nearby
+                for (int i = 0; i < screen.levelmanager.CREATURES.size; i++) {
+                    Creature mob = screen.levelmanager.CREATURES.get(i);
+                    if (isVisible(mob) && isEnemy(mob)) {
+                        listOfCurrentEnemies.add(mob);
+                    }
+                }
+
+                for (int i = 0; i < screen.levelmanager.SUMMONED_CREATURES.size; i++) {
+                    Creature mob = screen.levelmanager.SUMMONED_CREATURES.get(i);
+                    if (isVisible(mob) && isEnemy(mob)) {
+                        listOfCurrentEnemies.add(mob);
+                    }
+                }
+
+                if (isVisible(screen.hero) && isEnemy(screen.hero)) { //&& screen.hero.getToughness() < creatureOwner.getToughness()) {
+                    listOfCurrentEnemies.add(screen.hero);
+                }
+
+                //check all enemies
+                for (Creature mob : listOfCurrentEnemies) {
+                    curDistanceToEnemy = getDistance(mob);
+                    if (shortestDistanceToEnemy == 0 || curDistanceToEnemy < shortestDistanceToEnemy) {
+                        shortestDistanceToEnemy = curDistanceToEnemy;
+                        targetX = mob.getX();
+                        targetY = mob.getY();
+                        //state = STATE_ATTACK;
+                        mob.setIN_BATTLE(true);
+                    }
+                }
             }
-        }
-    }
 
 
+            // if target was found
+            if (targetX != 0) {
 
-        // if target was found
-        if (targetX != 0) {
-
-            if (targetX < creature.getX() -0.1)    //move/atack left
-            {
-                creature.directionRight = false;
-                creature.direction.set(-1, 0);
-                if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) { // is reachable
-                    if (targetX > creature.getX() - 1.5* PalidorGame.TILE_SIZE / PPM             // is close
-                            && targetX > creature.getX() - 1.5* PalidorGame.TILE_SIZE / PPM) {
-                        result = CreatureAction.CLOSE_ATACK;
-                    } else
-                        result = CreatureAction.RANGE_ATACK;
-                } else result = CreatureAction.MOVE_LEFT;
-            } else if (targetX > creature.getX() +0.1 ) {        //move/atack right
+                if (targetX < creatureOwner.getX() - 0.1)    //move/atack left
                 {
-                    creature.directionRight = true;
-                    creature.direction.set(1, 0);
-                    if (targetY - 0.10 < creature.getY() && targetY + 0.10 > creature.getY()) {// is reachable
-                        if (targetX < creature.getX() + 1.5* PalidorGame.TILE_SIZE / PPM             // is close
-                                && targetX > creature.getX() - 1.5* PalidorGame.TILE_SIZE / PPM)
+                    creatureOwner.directionRight = false;
+                    creatureOwner.direction.set(-1, 0);
+                    if (targetY - 0.10 < creatureOwner.getY() && targetY + 0.10 > creatureOwner.getY()) { // is reachable
+                        if (targetX > creatureOwner.getX() - 1.5 * PalidorGame.TILE_SIZE / PPM             // is close
+                                && targetX > creatureOwner.getX() - 1.5 * PalidorGame.TILE_SIZE / PPM) {
                             result = CreatureAction.CLOSE_ATACK;
-                        else
+                        } else
                             result = CreatureAction.RANGE_ATACK;
-                    } else result = CreatureAction.MOVE_RIGHT;
+                    } else result = CreatureAction.MOVE_LEFT;
+                } else if (targetX > creatureOwner.getX() + 0.1) {        //move/atack right
+                    {
+                        creatureOwner.directionRight = true;
+                        creatureOwner.direction.set(1, 0);
+                        if (targetY - 0.10 < creatureOwner.getY() && targetY + 0.10 > creatureOwner.getY()) {// is reachable
+                            if (targetX < creatureOwner.getX() + 1.5 * PalidorGame.TILE_SIZE / PPM             // is close
+                                    && targetX > creatureOwner.getX() - 1.5 * PalidorGame.TILE_SIZE / PPM)
+                                result = CreatureAction.CLOSE_ATACK;
+                            else
+                                result = CreatureAction.RANGE_ATACK;
+                        } else result = CreatureAction.MOVE_RIGHT;
 
+                    }
+
+                } else
+                    result = CreatureAction.WALK;
+
+
+                if (isHasToJump() && targetY - 0.10 > creatureOwner.getY()) {
+                    if (targetX > creatureOwner.getX() && jumpRight) { // on right
+                        result = CreatureAction.JUMP_RIGHT;
+                    } else if (targetX < creatureOwner.getX() && !jumpRight) { //on left
+                        result = CreatureAction.JUMP_LEFT;
+                    }
+                    setHasToJump(false, false);
                 }
 
-            } else
-                result = CreatureAction.WALK;
+
+                //reset program
+
+                resetProgram();
 
 
-            if (isHasToJump() && targetY - 0.10 > creature.getY()) {
-                if (targetX > creature.getX() && jumpRight) { // on right
-                    result = CreatureAction.JUMP_RIGHT;
-                } else if (targetX < creature.getX() && !jumpRight) { //on left
-                    result = CreatureAction.JUMP_LEFT;
+            } else // follow program (if any)
+                if (program != null && !"".equals(program)) {
+                    result = nextStepByProgram(delta);
+
                 }
-                setHasToJump(false, false);
-            }
-
-
-            //reset program
-
-            resetProgram();
-
-
-        } else // follow program (if any)
-            if (program != null && !"".equals(program)) {
-                result = nextStepByProgram(delta);
-
-            }
 
 //        if("".equals(pattern)) {
 
-        if(creature.stats.health.current < creature.stats.health.base/3)
-            result = CreatureAction.ALMOST_DEAD;
+            if (creatureOwner.stats.health.current < creatureOwner.stats.health.base / 3)
+                result = CreatureAction.ALMOST_DEAD;
 
-        if (creature.abilityToCast == AbilityID.NONE)
-            switch (result) {
-                case STOP:
-                    creature.stop();
-                    break;
-                case MOVE_LEFT:
-                    if (!moveRight)
-                        creature.move(false);
-                    break;
-                case MOVE_RIGHT:
-                    if (!moveLeft)
-                        creature.move(true);
-                    break;
-                case JUMP_LEFT:
-                    creature.move(false);
-                    creature.jump();
-                    break;
-                case JUMP_RIGHT:
-                    creature.move(true);
-                    creature.jump();
-                    break;
-                case RANGE_ATACK:
+            if (creatureOwner.abilityToCast == AbilityID.NONE)
+                switch (result) {
+                    case STOP:
+                        creatureOwner.stop();
+                        break;
+                    case MOVE_LEFT:
+                        if (!moveRight)
+                            creatureOwner.move(false);
+                        break;
+                    case MOVE_RIGHT:
+                        if (!moveLeft)
+                            creatureOwner.move(true);
+                        break;
+                    case JUMP_LEFT:
+                        creatureOwner.move(false);
+                        creatureOwner.jump();
+                        break;
+                    case JUMP_RIGHT:
+                        creatureOwner.move(true);
+                        creatureOwner.jump();
+                        break;
+                    case RANGE_ATACK:
 //                if(pattern!=null) {
 //                    if( pattern.getSteps()[currentActionStepNumber].getCondition().equals("D")) {
-//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                        creatureOwner.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
 //
 //                    } else {
 //
-//                        if (creature.directionRight) {
+//                        if (creatureOwner.directionRight) {
 //                            if (!moveLeft)
-//                                creature.move(creature.directionRight);
+//                                creatureOwner.move(creatureOwner.directionRight);
 //                        } else {
 //                            if (!moveRight)
-//                                creature.move(creature.directionRight);
+//                                creatureOwner.move(creatureOwner.directionRight);
 //                        }
 //                    }
 //                    currentActionStepNumber++;
@@ -266,91 +274,183 @@ public class AI {
 //
 //                } else {
 
-                    if (creature.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
-                        creature.useAbility(creature.findAbility(AbilityType.LONG_RANGE_ATACK));
-                        creature.weaponSprite.isMoving = true;
-                    } else if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
-                        if (creature.directionRight) {
-                            if (!moveLeft)
-                                creature.move(creature.directionRight);
-                        } else {
-                            if (!moveRight)
-                                creature.move(creature.directionRight);
+                        if (creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                            creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK));
+                            creatureOwner.weaponSprite.isMoving = true;
+                        } else if (creatureOwner.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
+                            if (creatureOwner.directionRight) {
+                                if (!moveLeft)
+                                    creatureOwner.move(creatureOwner.directionRight);
+                            } else {
+                                if (!moveRight)
+                                    creatureOwner.move(creatureOwner.directionRight);
+                            }
                         }
-                    }
 //                }
 
-                    break;
-                case CLOSE_ATACK:
+                        break;
+                    case CLOSE_ATACK:
 //                if(pattern!=null) {
 //                    if( pattern.getSteps()[currentActionStepNumber].getCondition().equals("")) {
 //
-//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                        creatureOwner.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
 //                    }
 //                    currentActionStepNumber++;
 //                    if(currentActionStepNumber == maxNumberOfActionSteps)
 //                        currentActionStepNumber = 0;
 //
 //                } else {
-                    if (creature.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
-                        creature.useAbility(creature.findAbility(AbilityType.CLOSE_RANGE_ATACK));
-                        creature.weaponSprite.isMoving = true;
-                    }
+                        if (creatureOwner.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
+                            creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.CLOSE_RANGE_ATACK));
+                            creatureOwner.weaponSprite.isMoving = true;
+                        }
 //                    else //move to enemy
-//                        if (creature.directionRight) {
+//                        if (creatureOwner.directionRight) {
 //                            if (!moveLeft)
-//                                creature.move(creature.directionRight);
+//                                creatureOwner.move(creatureOwner.directionRight);
 //                        } else {
 //                            if (!moveRight)
-//                                creature.move(creature.directionRight);
+//                                creatureOwner.move(creatureOwner.directionRight);
 //                        }
 //                }
-                    break;
-                case ALMOST_DEAD:
-                    if (creature.findAbility(AbilityType.BUFF) != null) {
-                        creature.useAbility(creature.findAbility(AbilityType.BUFF));
-                        creature.weaponSprite.isMoving = true;
-                    } else //move from enemy
-                        if (!creature.directionRight) {
-                            if (!moveLeft)
-                                creature.move(creature.directionRight);
-                        } else {
-                            if (!moveRight)
-                                creature.move(creature.directionRight);
-                        }
+                        break;
+                    case ALMOST_DEAD:
+                        if (creatureOwner.findAbility(AbilityType.BUFF) != null) {
+                            creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.BUFF));
+                            creatureOwner.weaponSprite.isMoving = true;
+                        } else //move from enemy
+                            if (!creatureOwner.directionRight) {
+                                if (!moveLeft)
+                                    creatureOwner.move(creatureOwner.directionRight);
+                            } else {
+                                if (!moveRight)
+                                    creatureOwner.move(creatureOwner.directionRight);
+                            }
 //                if(pattern!=null) {
 //                    if (pattern.getSteps()[currentActionStepNumber].getCondition().equals("HP")) {
-//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                        creatureOwner.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
 //                    }
 //                    currentActionStepNumber++;
 //                    if (currentActionStepNumber == maxNumberOfActionSteps)
 //                        currentActionStepNumber = 0;
 //                }
-                    break;
-                case WALK:
-                    if (creature.existingTime > timeToChangeDirection) {
-                        creature.directionRight = (new Random().nextBoolean());
-                        timeToChangeDirection = creature.existingTime + 2f;
-                    }
-                    creature.move(creature.directionRight);
-                    break;
-            }
+                        break;
+                    case WALK:
+                        if (creatureOwner.existingTime > timeToChangeDirection) {
+                            creatureOwner.directionRight = (new Random().nextBoolean());
+                            timeToChangeDirection = creatureOwner.existingTime + 2f;
+                        }
+                        creatureOwner.move(creatureOwner.directionRight);
+                        break;
+                }
 
-//        //Gdx.app.log(creature.directionRight + "", result.toString());
+//        //Gdx.app.log(creatureOwner.directionRight + "", result.toString());
 //        } else {
 //
 //            if(pattern.getSteps()[currentActionStepNumber].getCondition().equals("HP")) {
-//                if(creature.stats.health.current<creature.stats.health.base/4)
-//                    if(creature.checkCooldownExpired(pattern.getSteps()[currentActionStepNumber].ability)) ;
-//                        creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                if(creatureOwner.stats.health.current<creatureOwner.stats.health.base/4)
+//                    if(creatureOwner.checkCooldownExpired(pattern.getSteps()[currentActionStepNumber].ability)) ;
+//                        creatureOwner.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
 //            }else
-//                if(creature.checkCooldownExpired(pattern.getSteps()[currentActionStepNumber].ability)) ;
-//                    creature.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
+//                if(creatureOwner.checkCooldownExpired(pattern.getSteps()[currentActionStepNumber].ability)) ;
+//                    creatureOwner.useAbility(pattern.getSteps()[currentActionStepNumber].ability);
 //
 //            currentActionStepNumber++;
 //                    if (currentActionStepNumber == maxNumberOfActionSteps)
 //                        currentActionStepNumber = 0;
 //        }
+        }
+    }
+
+
+
+    public void getNextStepByProgram( float delta) {
+
+
+        // follow program (if any)
+        CreatureAction result = CreatureAction.WAIT;
+
+        if (program != null && !"".equals(program) ) {
+                if (repeatAction == null)
+                    result = nextStepByProgram(delta);
+                else
+                    result = repeatAction;
+        }
+
+        if (creatureOwner.abilityToCast == AbilityID.NONE)
+            switch (result) {
+                case STOP:
+                    creatureOwner.stop();
+                    break;
+                case MOVE_LEFT:
+                        creatureOwner.moveRight(-1f);
+                    break;
+                case MOVE_RIGHT:
+                        creatureOwner.moveRight(1f);
+                    break;
+                case MOVE_DOWN:
+                    creatureOwner.moveUp(-1f);
+                    break;
+                case MOVE_UP:
+                    creatureOwner.moveUp(1f);
+                    break;
+                case JUMP_LEFT:
+                    creatureOwner.move(false);
+                    creatureOwner.jump();
+                    break;
+                case JUMP_RIGHT:
+                    creatureOwner.move(true);
+                    creatureOwner.jump();
+                    break;
+                case RANGE_ATACK:
+                    if (creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                        creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK));
+                    }
+                    break;
+                case RANGE_ATACK_UP:
+                    creatureOwner.direction = PalidorGame.upVector;
+                    if (creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                        creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK));
+                        repeatAction = null;
+                    } else
+                        repeatAction = result;
+                    break;
+                case RANGE_ATACK_DOWN:
+                    creatureOwner.direction = PalidorGame.downVector;
+                    if (creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                        creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK));
+                        repeatAction = null;
+                    } else
+                        repeatAction = result;
+                    break;
+                case RANGE_ATACK_RIGHT:
+                    creatureOwner.directionRight = true;
+                    creatureOwner.direction = PalidorGame.rightVector;
+                    if (creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                        creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK));
+                        repeatAction = null;
+                    } else
+                        repeatAction = result;
+                    break;
+                case RANGE_ATACK_LEFT:
+                    creatureOwner.directionRight = false;
+                    creatureOwner.direction = PalidorGame.leftVector;
+                    if (creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK) != null) {
+                        creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.LONG_RANGE_ATACK));
+                        repeatAction = null;
+                    } else
+                        repeatAction = result;
+                    break;
+                case CLOSE_ATACK:
+                    if (creatureOwner.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
+                        creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.CLOSE_RANGE_ATACK));
+                    }
+                    break;
+                case HIDE:
+                    creatureOwner.setInvisible(true);
+                    break;
+            }
+
     }
 
 
@@ -390,28 +490,72 @@ public class AI {
         }
         if (currentStep == 'l') {
             result =  CreatureAction.MOVE_LEFT;
-
+        }
+        if (currentStep == 'd') {
+            result =  CreatureAction.MOVE_DOWN;
+        }
+        if (currentStep == 'u') {
+            result =  CreatureAction.MOVE_UP;
         }
 
-        if (creature.existingTime >= timeForNextStep) {
+        if (creatureOwner.existingTime >= timeForNextStep) {
             currentStepNumber++;
-            timeForNextStep = creature.existingTime + timeMovementTakes;
+            timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
 
 
+            if (currentStep == 'c') {
+                result =  CreatureAction.CLOSE_ATACK;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
+            }
+            if (currentStep == 'a') {
+                result =  CreatureAction.RANGE_ATACK;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
+            }
+
+            if (currentStep == '}') {
+                result =  CreatureAction.RANGE_ATACK_RIGHT;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
+            }
+            if (currentStep == '{') {
+                result =  CreatureAction.RANGE_ATACK_LEFT;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
+            }
+            if (currentStep == '^') {
+                result =  CreatureAction.RANGE_ATACK_UP;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
+            }
+            if (currentStep == '_') {
+                result =  CreatureAction.RANGE_ATACK_DOWN;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
+            }
 
             if (currentStep == 'j') {
                 result = CreatureAction.JUMP_LEFT;
-                timeForNextStep = creature.existingTime + timeMovementTakes;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
             }
 
             if (currentStep == 'i') {
                 result = CreatureAction.JUMP_RIGHT;
-                timeForNextStep = creature.existingTime + timeMovementTakes;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
             }
 
-            if (currentStep == 'n') {//nothing
-                timeForNextStep = creature.existingTime + 1;
+            if (currentStep == 'w') {//nothing for random ammount of time
+                timeForNextStep = creatureOwner.existingTime + randomizer.nextInt(3);
             }
+            if (currentStep == 'n') {//nothing
+                timeForNextStep = creatureOwner.existingTime + 1;
+            }
+            if (currentStep == '-') {//hide
+                timeForNextStep = creatureOwner.existingTime + 1;
+                result = CreatureAction.HIDE;
+            }
+            if (currentStep == 'z') {//nothing
+                timeForNextStep = creatureOwner.existingTime + 1;
+                program = "";
+                result = CreatureAction.STOP;
+            }
+
+
 
         }
 
@@ -428,7 +572,28 @@ public class AI {
     }
 
     public void resetProgram() {
-        program = DEFAULT_PROGRAM;
-        steps = DEFAULT_PROGRAM.toCharArray();
+        if(!creatureOwner.isMachine) {
+            program = DEFAULT_PROGRAM;
+            steps = DEFAULT_PROGRAM.toCharArray();
+        }
+    }
+
+    public void resetProgram(String prog) {
+        this.program = prog;
+        steps = program.toCharArray();
+    }
+
+    public boolean isEnemy(Creature mob) {
+        if(globalListOfEnemies.contains(mob,true) || screen.hero.getGlobalState(organization).contains(String.valueOf(mob.getOrganization())))
+            return true;
+        return false;
+    }
+
+    public void addToListOfGlobalEnemies(Creature mob){
+        globalListOfEnemies.add(mob);
+    }
+
+    public void removeFromListOfGlobalEnemies(Creature mob){
+        globalListOfEnemies.removeValue(mob,true);
     }
 }

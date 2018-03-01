@@ -45,6 +45,7 @@ public enum EffectID {
     IMMUNE_CRUSH_DAMAGE("icon_plus_armor", true),
     IMMUNE_FIRE_DAMAGE("icon_plus_armor", true),
     IMMUNE_ICE_DAMAGE("icon_plus_armor", true),
+    IMMUNE_POISON_DAMAGE("icon_plus_armor", true),
 
     //shields
     HAS_SHIELD_AGAINST_CUT_DAMAGE("icon_plus_armor", true),
@@ -52,7 +53,7 @@ public enum EffectID {
     HAS_SHIELD_AGAINST_ICE_DAMAGE("icon_plus_armor", true),
     HAS_SHIELD_AGAINST_FIRE_DAMAGE("icon_plus_armor", true),
 
-    //immune
+    //weak
     WEEKNESS_CUT_DAMAGE("icon_minus_armor", false),
     WEEKNESS_CRUSH_DAMAGE("icon_minus_armor", false),
     WEEKNESS_FIRE_DAMAGE("icon_minus_armor", false),
@@ -68,7 +69,18 @@ public enum EffectID {
     INVISIBLE("icon_cross_blue",false),
 
     THROW_FROM_INVENTORY("icon_cross_blue",false),
-    ANGRY("icon_cross_red", false);
+
+
+    ANGRY("icon_cross_red", false),
+    CHARMED("icon_cross_green", false),
+
+    NO_MASS("icon_cross_blue", false),
+
+    HEAL("icon_cross_green", false),
+
+    AURA_DAMAGE("icon_cross_red", false),
+    AURA_HEAL("icon_cross_green", false),
+    AURA_JUMP("icon_cross_yellow", false);
 
 
     private String icon;
