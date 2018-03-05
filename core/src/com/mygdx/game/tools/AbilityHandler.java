@@ -28,12 +28,14 @@ public class AbilityHandler {
         switch (id) {
                 case POWERJUMP:
                     //if(creature.getState()== State.JUMPING)
+                        creature.stopMovement();
                         creature.moveUp();
                     break;
             case FLY:
                 //if(creature.getState()== State.FALLING)
                     //creature.moveUp(3);
-                creature.applyEffect(new Effect(EffectID.NO_MASS, 3f, 0.1f, 0f));
+                creature.stopMovement();
+                creature.applyEffect(new Effect(EffectID.NO_MASS, 2f, 0.1f, 0f));
                 break;
             case ANIMAL_PUNCH:
             case PUNCH:
@@ -165,6 +167,8 @@ public class AbilityHandler {
                 results.add(result);
 
                 break;
+            case SWORD_SMASH2:
+                activeEffects.add(new Effect(EffectID.CUT_DAMAGE, 0.01f, 2f, 0f));
             case SWORD_SMASH:
                 if(creature.directionRight)
                     activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 1f, 0f));
@@ -209,6 +213,8 @@ public class AbilityHandler {
                 result.setCreatedBy(creature);
                 results.add(result);
                 break;
+            case HUMMER_SMASH2:
+                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 2f,0f));
             case HUMMER_SMASH:
                 if(creature.directionRight)
                     activeEffects.add(new Effect(EffectID.MOVE_RIGHT, 0.1f, 2f, 0f));
@@ -259,10 +265,10 @@ public class AbilityHandler {
                 creature.applyEffect(new Effect(EffectID.MINUS_ICE_DAMAGE, 15f, 3f, 0f));
                 break;
             case FULLPROTECTION:
-                creature.applyEffect(new Effect(EffectID.MINUS_CRUSH_DAMAGE, 15f, 6f, 0f));
-                creature.applyEffect(new Effect(EffectID.MINUS_CUT_DAMAGE, 15f, 6f, 0f));
-                creature.applyEffect(new Effect(EffectID.MINUS_FIRE_DAMAGE, 15f, 6f, 0f));
-                creature.applyEffect(new Effect(EffectID.MINUS_ICE_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.IMMUNE_CRUSH_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.IMMUNE_CUT_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.IMMUNE_FIRE_DAMAGE, 15f, 6f, 0f));
+                creature.applyEffect(new Effect(EffectID.IMMUNE_ICE_DAMAGE, 15f, 6f, 0f));
                 break;
 
             case HASTE:
@@ -575,7 +581,7 @@ public class AbilityHandler {
                         "soundwall");
 
                 result.setCreatedBy(creature);
-                creature.applyEffect(new Effect(EffectID.INVISIBLE, 0f, 0f, 0f));
+                //creature.applyEffect(new Effect(EffectID.INVISIBLE, 0f, 0f, 0f));
                 results.add(result);
 
                 break;

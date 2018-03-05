@@ -253,6 +253,25 @@ public class DialogPanel implements Disposable {
             showDialog();
     }
 
+    // process replic if condition satisfied (simple doors, chest, buttons etc)
+    public boolean checkAndProcessIfDialogIsShort(Creature actor) {
+        this.actor = actor;
+        this.dialogs = new Array<GameDialog>();
+        for(Integer i : actor.getDialogs())
+            this.dialogs.add(screen.levelmanager.DIALOGS.get(i));
+
+        // if one dialog one replic and one answer available
+        if(dialogs.size == 1 &&
+                dialogs.get(0).getReplic().size() == 1 &&
+                ((DialogReplic)dialogs.get(0).getReplic().values().toArray()[0]).getAnswers().size == 1) {
+            if (ConditionProcessor.conditionSatisfied(screen.hero, dialogs.get(0).getCondition())) {
+                ConditionProcessor.conditionProcess(actor, ((DialogReplic) dialogs.get(0).getReplic().values().toArray()[0]).getAnswers().get(0).getProcess());
+            }
+            return true;
+        }
+        return false;
+    }
+
     //showDialog(screen.levelmanager.DIALOGS.get(id), actor.name, actor.icon);
 
 }

@@ -11,7 +11,9 @@ public enum Skill {
             new AbilityID[]{
 //                    AbilityID.AXE_SWING,
                     AbilityID.SWORD_SWING,
-                    AbilityID.HUMMER_SWING
+                    AbilityID.HUMMER_SWING,
+                    AbilityID.SWORD_SMASH,
+                    AbilityID.HUMMER_SMASH,
             } , 100,0),
     STRENGTH2(11, "Advanced Close combat", "Using Dash ability. \n +1 Crush, +1 Cut damage",
             new AbilityID[]{
@@ -20,9 +22,8 @@ public enum Skill {
             } , 100,1),
     STRENGTH3(21, "Master Close combat", "Mastering in close combat weapon",
             new AbilityID[]{
-                    //AbilityID.AXE_SMASH,
-                    AbilityID.SWORD_SMASH,
-                    AbilityID.HUMMER_SMASH,
+                    AbilityID.SWORD_SMASH2,
+                    AbilityID.HUMMER_SMASH2,
             } , 100,11),
 
     ACCURACY1(2, "Range combat", "Using range combat weapon",

@@ -409,6 +409,8 @@ public class GameScreen implements Screen {
 
             maprenderer.setView(camera); // make Map renderer render only part in a cam
 
+        } else {
+            //System.out.println("pause");
         }
     }
 
@@ -586,8 +588,8 @@ public class GameScreen implements Screen {
                 } else if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
                     hero.dash();
                 } else {
-                    hero.powerjump();
-                    //hero.jump();
+                    //hero.powerjump();
+                    hero.jump();
 //                    for (Creature creature : levelmanager.SUMMONED_CREATURES) {
 //                        creature.jump();
 //                    }
@@ -600,6 +602,9 @@ public class GameScreen implements Screen {
 
                 if (hero.getNeighbor() != null)
                     startDialog(hero.getNeighbor());
+                else if (!hero.onAGround){
+                    hero.fly();
+                }
                 else {
                     if (whenUseWasJustPressed + 0.5 > hero.existingTime) {
                         if (hero.isHidden())
@@ -702,6 +707,12 @@ public class GameScreen implements Screen {
 
     public void startDialog(Creature actor){
         if(actor.getDialogs() != null && actor.getDialogs().size > 0) {
+
+            //short dialog processing
+            if(dialogPanel.checkAndProcessIfDialogIsShort(actor))
+                return;
+
+            //long dialog processing
             PAUSE = true;
 
             onDialogScreen = true;

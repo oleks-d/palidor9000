@@ -77,7 +77,7 @@ public class CreatureStatus extends Sprite {
         //setPosition(owner.getBody().getPosition().x - owner.getWidth()/2 , owner.getBody().getPosition().y + owner.getHeight() /2);
         icons.clear();
         for (Effect effect : owner.activeEffects) {
-            //if(effect.duration != 0) // do not show constant effects
+            if(effect.duration != 0) // do not show constant effects
                 icons.add(owner.screen.animationHelper.getTextureRegionByIDAndIndex(effect.id.getIcon()));
         }
 
@@ -99,7 +99,7 @@ public class CreatureStatus extends Sprite {
             }
 
             for(int j = 0; j<messages.size; j++){
-                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + 0.3f - 0.3f*((float)(removeMessageTime - owner.existingTime)) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
+                messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() - 0.3f*((float)(removeMessageTime - owner.existingTime)) + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
                 //messages.get(j).getFont().draw(batch, messages.get(j).getMessage(), getX(), getY() + PalidorGame.TILE_SIZE/PPM + (j + 2)*20/PPM);
             }
 

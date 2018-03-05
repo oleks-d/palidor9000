@@ -166,9 +166,7 @@ public class Hero extends Creature {
         if(getState() == State.JUMPING) {
             if (abilities.contains(AbilityID.POWERJUMP, false))
                 useAbility(AbilityID.POWERJUMP);
-        }else if(getState() == State.FALLING && abilities.contains(AbilityID.FLY, false))
-            useAbility(AbilityID.FLY);
-        else
+        } else
             jump();
     }
 
@@ -397,8 +395,8 @@ public class Hero extends Creature {
                         selectedDefenseAbilities.clear();
                         if (abilities.contains(AbilityID.COVER, true))
                             selectedDefenseAbilities.add(AbilityID.COVER);
-                        if (abilities.contains(AbilityID.BARSKIN, true))
-                            selectedDefenseAbilities.add(AbilityID.BARSKIN);
+                        if (abilities.contains(AbilityID.FULLPROTECTION, true))
+                            selectedDefenseAbilities.add(AbilityID.FULLPROTECTION);
                     } else return "Item does not fit into any slot (remove equiped Secondary item)";
                 } else return "NO REQUIRED SKILL (ENDURANCE)";
                 break;

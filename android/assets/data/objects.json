@@ -56,5 +56,13 @@
     "id":"spikes_up",
     "image" : "spikes_up",
     "type" : "SPIKE"
+  },
+
+  {
+    "id":"animation_route",
+    "image" : "route",
+    "type" : "ANIMATION"
   }
+
+
 ]}

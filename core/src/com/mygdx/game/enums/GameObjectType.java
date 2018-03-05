@@ -8,5 +8,6 @@ public enum GameObjectType {
     BLOCK,
     SPIKE,
     CHEST,
-    BACK
+    BACK,
+    ANIMATION
 }

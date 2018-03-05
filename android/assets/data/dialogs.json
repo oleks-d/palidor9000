@@ -95,7 +95,15 @@
     "condition" : "I:key_1",
     "replics": [
       {"id": 1 ,"text" : "There some goods in this chest", "answers" :
-      [ {"text":"Take all", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
+      [ {"text":"Take all", "next":0, "process":"KN:KILL"}]
+      }]},
+
+  {"id":904,
+    "title":"Use controller",
+    "condition" : "A:READ_BASIC",
+    "replics": [
+      {"id": 1 ,"text" : "Use it", "answers" :
+      [ {"text":"Take all", "next":0, "process":"SP:5001:uuz"}]
       }]},
 
 
@@ -105,7 +113,17 @@
     "replics": [
       {"id": 1 ,"text" : "Do you want to open this door?", "answers" :
       [ {"text":"Open", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
-      }]}
+      }]},
+
+
+  {"id":903,
+    "title":"Open chest or not",
+    "condition" : "I:key_1",
+    "replics": [
+      {"id": 1 ,"text" : "There some goods in this chest", "answers" :
+      [ {"text":"Take all", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
+      }]},
+
 
 ]
 

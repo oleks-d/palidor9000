@@ -21,6 +21,10 @@ public enum AbilityID{
 //    AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
     SWORD_SMASH("Circle of death",  "Melee strike with multiple targets (use Swing twice) \n every enemy around will be damaged", "sword_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 1f ),
 
+    HUMMER_SMASH2("Total SMASH",  "Stunning Melee strike (use Smash twice) \n (stun 3 sec)", "hummer_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.6f, 5f ),
+    //    AXE_SMASH("Axe SMASH",  "Powerfull Melee strike", "axe_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.1f, 10f ),
+    SWORD_SMASH2("Circle of death",  "Melee strike with multiple targets (use Swing twice) \n every enemy around will be damaged", "sword_red", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 1f ),
+
 
     DITRUCTING_SHOT("Stuning shot", "Stunning shot \n (2 sec of Stun)", "sling_red", State.SHOTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ROCK, 0.3f, 5f),
     //POWER_SHOT("Power shot", "Three arrows one by one", "bow", State.SHOTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.1f, 10f),
@@ -59,7 +63,7 @@ public enum AbilityID{
 //    SILENT_STRIKE("Silent strike", "Double damage from behind", "sword", State.KICKING, AbilityType.BUFF, ActivityAreaType.BOX, 0.1f, 60f),
 
 //    JUMP_BACK("Jump back","Run backward","icon_blank", State.STANDING, AbilityType.BUFF , ActivityAreaType.SELF, 0.1f , 60f),
-    FLY("Fly","Falling slower","icon_blank", State.CASTING, AbilityType.FLAG , ActivityAreaType.SELF, 0.1f , 3f),
+    FLY("Fly","Falling slower","icon_blank", State.CASTING, AbilityType.FLAG , ActivityAreaType.SELF, 0.1f , 1f),
 //    INVISIBILITY("Invisibility", "Hide from everyone", "icon_cross", State.CASTING , AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 10f),
 //    TIMESTOP("Timestop", "You are moving toooo fast", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
     //TELEPORT("Teleport", "Move to ", "icon_blank", State.CASTING, AbilityType.BUFF, ActivityAreaType.SELF, 0.1f, 60f),
@@ -119,7 +123,6 @@ public enum AbilityID{
     ACID_SHOT("Splash", "Acid arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.4f, 0.5f ),
     SPIKE_SHOT("Showing spikes", "Spike arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.5f, 0.5f ),
     ANIMAL_DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.6f , 10f);
-
 
     private final AbilityType type;
     String value;

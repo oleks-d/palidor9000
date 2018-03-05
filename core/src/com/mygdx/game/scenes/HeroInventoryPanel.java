@@ -19,6 +19,7 @@ import com.mygdx.game.enums.AbilityID;
 import com.mygdx.game.enums.EquipmentType;
 import com.mygdx.game.sprites.creatures.Hero;
 import com.mygdx.game.sprites.gameobjects.GameItem;
+import com.mygdx.game.stuctures.Effect;
 import com.mygdx.game.tools.AnimationHelper;
 import com.mygdx.game.tools.ConditionProcessor;
 
@@ -39,12 +40,15 @@ public class HeroInventoryPanel implements Disposable {
 
     Label inventoryHeader;
     Label equipedHeader;
+    Label effectsHeader;
     Label equipedHeadLabel;
     Label equipedArmorLabel;
     Label equipedWeapon1Label;
     Label equipedWeapon2Label;
 
+
     Label moneyLabel;
+    Label healthLabel;
 
     Label detailsHeader;
     Image background;
@@ -86,6 +90,7 @@ public class HeroInventoryPanel implements Disposable {
         inventoryHeader = new Label(String.format("<< -  %s - >>", "ITEMS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));
         equipedHeader= new Label(String.format("<< -  %s - >>", "EQUIPMENT:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
         detailsHeader= new Label(String.format("<< -  %s - >>", "DETAILS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
+        effectsHeader= new Label(String.format("<< -  %s - >>", "EFFECTS:"), new Label.LabelStyle(new BitmapFont(), Color.RED));;
 
          equipedHeadLabel = new Label(String.format("%s", "Head:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
          equipedArmorLabel= new Label(String.format("%s", "Body:"), new Label.LabelStyle(new BitmapFont(), Color.BLACK));;
@@ -196,6 +201,15 @@ public class HeroInventoryPanel implements Disposable {
         selectedTable.row();
         selectedTable.add(selectedHeader);
 
+
+        Table effectstable = new Table();
+        effectstable.right();
+        effectstable.setFillParent(true);
+        effectstable.row();
+        effectstable.add(effectsHeader);
+        effectstable.row();
+        healthLabel = new Label(String.format("Health: %d / %d", hero.stats.health.current, hero.stats.health.base), new Label.LabelStyle(new BitmapFont(), Color.RED));
+        effectstable.add(healthLabel);
 
         // inventory tableController update
 
@@ -469,6 +483,46 @@ public class HeroInventoryPanel implements Disposable {
             selectedTable.add(headImage);
         }
 
+        for(int i =0; i < hero.activeEffects.size; i++){
+            final int index = i;
+            Label item;
+            Image itemImg;
+            effectstable.row().pad(10,10,10,10);
+            Effect effect = hero.activeEffects.get(i);
+            if(effect.duration > 0) {
+                if (effect.id.isPositive()) {
+                    item = new Label(String.format(" %.1f  %.1f", effect.magnitude, effect.removeTime - hero.existingTime), new Label.LabelStyle(new BitmapFont(), Color.GREEN));
+                } else {
+                    item = new Label(String.format(" %.1f  %.1f", effect.magnitude, effect.removeTime - hero.existingTime), new Label.LabelStyle(new BitmapFont(), Color.RED));
+                }
+            } else {
+                if (effect.id.isPositive()) {
+                    item = new Label(String.format(" %.1f", effect.magnitude), new Label.LabelStyle(new BitmapFont(), Color.GREEN));
+                } else {
+                    item = new Label(String.format(" %.1f", effect.magnitude), new Label.LabelStyle(new BitmapFont(), Color.RED));
+                }
+            }
+
+            itemImg = new Image(animhelper.getTextureRegionByIDAndIndex(effect.id.getIcon()));
+            itemImg.addListener(new InputListener(){
+
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    currentDetails = hero.activeEffects.get(index).id.getDescritption();
+                    return true;
+                }
+
+                @Override
+                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                    update();
+                }
+            });
+
+            effectstable.add(itemImg);
+            effectstable.add(item);
+
+        }
+
         //details tableController update
         detailstable.row();
         detailstable.row().pad(15,15,15,15);
@@ -480,6 +534,7 @@ public class HeroInventoryPanel implements Disposable {
         stage.addActor(equipmenttable);
         stage.addActor(selectedTable);
         stage.addActor(detailstable);
+        stage.addActor(effectstable);
     }
 
     @Override

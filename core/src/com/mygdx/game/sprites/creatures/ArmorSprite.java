@@ -19,6 +19,7 @@ public class ArmorSprite extends Sprite {
     TextureRegion region;
 
     protected TextureRegion stand;
+    protected TextureRegion hideStand;
     protected Animation runAnimation;
     protected Animation abilityToCastAnimation;
     protected Animation jumpAnimation;
@@ -75,6 +76,9 @@ public class ArmorSprite extends Sprite {
                 region = stand;
         }
 
+        if(owner.isHidden())
+            region =  hideStand;
+
         //if ((body.getLinearVelocity().x < 0 || !directionRight) && !region.isFlipX()){
         if (!owner.directionRight && !region.isFlipX()){
             region.flip(true, false);
@@ -104,6 +108,7 @@ public class ArmorSprite extends Sprite {
 
         if(picture != null) {
             stand = owner.screen.animationHelper.getTextureRegionByIDAndIndex(pictureName, 0);
+            hideStand = owner.screen.animationHelper.getTextureRegionByIDAndIndex(pictureName, 8);
             runAnimation = owner.screen.animationHelper.getAnimationByID(pictureName, 0.2f, 1, 2);
             jumpAnimation = owner.screen.animationHelper.getAnimationByID(pictureName, 0.3f, 3);
 

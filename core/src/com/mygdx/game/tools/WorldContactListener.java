@@ -84,7 +84,6 @@ public class WorldContactListener implements ContactListener {
                     target = ((Creature) fixB.getUserData());
                 }
 
-
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
                     if(!act.isTargetWasAlreadyProcessed(target)) {
@@ -96,11 +95,14 @@ public class WorldContactListener implements ContactListener {
                                         target.setIN_BATTLE(true);
                                         target.brain.addToListOfGlobalEnemies(act.createdBy);
                                         target.setCharmed(false);
+
                                     }
                                 }
+
                                 //backstub  TODO fix
-                                if (act.createdBy.getAbilities().contains(AbilityID.BACKSTUB, false) && ((target.directionRight && act.createdBy.directionRight) || (!target.directionRight && !act.createdBy.directionRight)))
-                                    target.applyEffect(new Effect(EffectID.POISON, 0.01f, 5f, 0f));
+                                if(!act.activeEffects.get(0).id.isPositive())
+                                    if (act.createdBy.getAbilities().contains(AbilityID.BACKSTUB, false) && ((target.directionRight && act.createdBy.directionRight) || (!target.directionRight && !act.createdBy.directionRight)))
+                                        target.applyEffect(new Effect(EffectID.POISON, 0.01f, 5f, 0f));
 
                             } else {
                                 target.addStatusMessage("Damage avoided by dodge", Fonts.GOOD);
@@ -267,6 +269,20 @@ public class WorldContactListener implements ContactListener {
                     ((Creature) fixA.getUserData()).setMoveRight(false);
                 else
                     ((Creature) fixB.getUserData()).setMoveRight(false);
+                break;
+            case PalidorGame.GROUND_BIT | PalidorGame.CREATURE_BOTTOM:
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
+                    ((Creature) fixA.getUserData()).onAGround(false);
+                } else {
+                    ((Creature) fixB.getUserData()).onAGround(false);
+                }
+                break;
+            case PalidorGame.CREATURE_BIT | PalidorGame.CREATURE_BOTTOM:
+                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BOTTOM) {
+                    ((Creature) fixA.getUserData()).onAGround(false);
+                } else {
+                    ((Creature) fixB.getUserData()).onAGround(false);
+                }
                 break;
 //            case PalidorGame.CREATURE_BIT | PalidorGame.STAND_POINT: 
 //                if (fixA.getFilterData().categoryBits == PalidorGame.CREATURE_BIT)

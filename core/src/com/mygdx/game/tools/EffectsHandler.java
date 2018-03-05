@@ -126,11 +126,17 @@ public class EffectsHandler {
             case MOVE_UP:
                 creature.getBody().applyLinearImpulse(new Vector2(0,magnitude), creature.getBody().getWorldCenter(), true);
                 break;
+            case MOVE_DOWN:
+                creature.getBody().applyLinearImpulse(new Vector2(0,-magnitude), creature.getBody().getWorldCenter(), true);
+                break;
             case INVISIBLE:
                 creature.setInvisible(true);
                 break;
             case CHARMED:
                 creature.setCharmed(true);
+                break;
+            case ANGRY:
+                creature.setInRage(true);
                 break;
             case NO_MASS:
                 creature.setGravitation(magnitude);
@@ -166,6 +172,9 @@ public class EffectsHandler {
                 break;
             case CHARMED:
                 creature.setCharmed(false);
+                break;
+            case ANGRY:
+                creature.setInRage(false);
                 break;
             case THROW_FROM_INVENTORY:
                 creature.throwFromInventory();

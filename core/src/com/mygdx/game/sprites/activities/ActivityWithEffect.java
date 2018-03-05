@@ -41,7 +41,7 @@ public class ActivityWithEffect extends Sprite {
 
     boolean directionRight;
 
-    com.mygdx.game.enums.ActivityAreaType type;
+    ActivityAreaType type;
     public Vector2 direction;
 
     public Creature createdBy;
@@ -296,8 +296,8 @@ public class ActivityWithEffect extends Sprite {
                         destroyBody();
                     break;
                 default:
-                    if (target.getOrganization() != createdBy.getOrganization())
-                        destroyBody();
+                    //if (target.getOrganization() != createdBy.getOrganization())
+                    //    destroyBody();
             }
     }
 
@@ -314,7 +314,7 @@ public class ActivityWithEffect extends Sprite {
                     destroyBody();
                 break;
             default:
-                    destroyBody();
+                    //destroyBody();
         }
     }
 

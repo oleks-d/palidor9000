@@ -584,7 +584,9 @@ public class AI {
     }
 
     public boolean isEnemy(Creature mob) {
-        if(globalListOfEnemies.contains(mob,true) || screen.hero.getGlobalState(organization).contains(String.valueOf(mob.getOrganization())))
+        if(globalListOfEnemies.contains(mob,true) ||
+                screen.hero.getGlobalState(organization).contains(String.valueOf(mob.getOrganization())) ||
+                creatureOwner.isInRage())
             return true;
         return false;
     }

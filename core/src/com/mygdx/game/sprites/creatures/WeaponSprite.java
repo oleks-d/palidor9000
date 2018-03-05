@@ -69,9 +69,9 @@ public class WeaponSprite extends Sprite {
                 //distortionX = (owner.screen.randomizer.nextBoolean() ? 0.05f:-0.05f);  //TODO distortion
 
                 if (isMain)
-                    distortionY = distortionY + (moveDown ? 0.005f:-0.005f);
+                    distortionY = distortionY + (moveDown ? 0.002f:-0.002f);
                 else
-                    distortionY = distortionY + (moveDown ? -0.005f:0.005f);
+                    distortionY = distortionY + (moveDown ? -0.002f:0.002f);
 
                 distortionX = 0;
 
@@ -243,6 +243,7 @@ public class WeaponSprite extends Sprite {
         //Gdx.app.log(this + " " + getX()+"", getY()+"");
   //      batch.draw(picture, getX(), getY(), picture.getRegionWidth()/ PalidorGame.PPM/2,picture.getRegionHeight()/ PalidorGame.PPM/2, picture.getRegionWidth()/ PalidorGame.PPM, picture.getRegionHeight()/ PalidorGame.PPM, scale, scale, (owner.directionRight?1:-1)*angle);
         batch.draw(picture, getX(), getY(), picture.getRegionWidth()/ PalidorGame.PPM/2,picture.getRegionHeight()/ PalidorGame.PPM/2, picture.getRegionWidth()/ PalidorGame.PPM, picture.getRegionHeight()/ PalidorGame.PPM, scale, scale, (owner.directionRight?1:-1)*angle);
+        //batch.draw(picture, getX(), getY(), 0.01f,0.01f, picture.getRegionWidth()/ PalidorGame.PPM, picture.getRegionHeight()/ PalidorGame.PPM, scale, scale, (owner.directionRight?1:-1)*angle);
         //batch.draw(icon, getX(), getY(),  icon.getRegionWidth()/PPM, icon.getRegionHeight()/PPM);
     }
 

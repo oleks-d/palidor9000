@@ -1,7 +1,9 @@
 package com.mygdx.game.sprites.gameobjects;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -47,6 +49,10 @@ public class GameObject extends Sprite {
     Vector2 direction;
     public Rectangle originalRectangle = null;
 
+    Animation mainAnimation = null;
+    TextureRegion region;
+    float stateTimer;
+
     public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String condition, String items, String program, String activationTrigger) {
 
         super();
@@ -77,7 +83,10 @@ public class GameObject extends Sprite {
                 this.items.add(new GameItem(screen, this.screen.levelmanager.ITEMS_DESCRIPTIONS.get(itemd.trim())));
             }
 
-        setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(objectDescription.image));
+            if(type == GameObjectType.ANIMATION)
+                mainAnimation = screen.animationHelper.getAnimationByID(objectDescription.image, 32, 32, 0.2f, 0, 1, 2, 3);
+            else
+                setRegion(screen.animationHelper.getTextureRegionByIDAndIndex(objectDescription.image));
 
         createBody(rectangle);
 
@@ -108,7 +117,7 @@ public class GameObject extends Sprite {
         fixtureDef.shape = shape;
 
         fixtureDef.isSensor = false;
-        if(type == GameObjectType.BACK)
+        if(type == GameObjectType.BACK || type == GameObjectType.ANIMATION)
             fixtureDef.isSensor = true;
 
         fixtureDef.filter.categoryBits = PalidorGame.OBJECT_BIT;
@@ -118,6 +127,7 @@ public class GameObject extends Sprite {
         body.createFixture(fixtureDef).setUserData(this);
 
         setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+        update(0);
     }
 
     public void update(float dt) {
@@ -137,6 +147,15 @@ public class GameObject extends Sprite {
             body.setLinearVelocity(direction);
         }
 
+        this.setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
+        if(type == GameObjectType.ANIMATION)
+            this.setRegion(getFrame(dt));
+    }
+
+    public TextureRegion getFrame(float dt) {
+        region = (TextureRegion) mainAnimation.getKeyFrame(stateTimer, true);
+        stateTimer = stateTimer + dt;
+        return region;
     }
 
     private void nextStep(float dt) {
@@ -189,11 +208,14 @@ public class GameObject extends Sprite {
         }
     }
 
+    @Override
     public void draw(Batch batch){
         if(!destroyed) {
-            this.setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
-            //this.setRegion(getFrame(dt));
-            super.draw(batch);
+            try {
+                super.draw(batch);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

@@ -142,7 +142,7 @@ public class Creature extends Sprite {
     public String deathProcess = null;
     public TextureRegion icon;
 
-    private boolean onAGround = false;
+    public boolean onAGround = false;
 
     private Animation cutAnimation;
     private Animation crushAnimation;
@@ -165,6 +165,7 @@ public class Creature extends Sprite {
 
 
     private boolean isCharmed; // not agressive
+    private boolean isInRage; // aggressive
 
     public void resetTimeSpentOnCast() {
         this.timeSpentOnCast = 0;
@@ -873,6 +874,10 @@ public class Creature extends Sprite {
                 getBody().setLinearVelocity(0,getBody().getLinearVelocity().y);
     }
 
+    public void stopMovement() {
+            getBody().setLinearVelocity(getBody().getLinearVelocity().x,0);
+    }
+
     public void moveUp() {
         getBody().applyLinearImpulse(new Vector2(0, JUMP_BASE * stats.jumphight.current), getBody().getWorldCenter(), true);
         //Gdx.app.log("","'"+stats.jumphight.current);
@@ -939,13 +944,21 @@ public class Creature extends Sprite {
 
     public Array<ActivityWithEffect> activateAbility(AbilityID ability) {
         if(!stuned) {
-            setInvisible(false); // make visible
+
+            if(isAbilityMakesNoice(ability)) {
+                setInvisible(false); // make visible
+                setIN_BATTLE(true); // set In_Battle state
+            }
+
             resetTimeSpentOnCast(); // reset casting time
             //getBody().setLinearVelocity(0, 0); // STOP
             cooldowns.put(ability, AbilityHandler.getAbilityCooldownTime(this,ability) + existingTime); // put cooldown
-            setIN_BATTLE(true); // set In_Battle state
             return AbilityHandler.getAbilityAndUseIt(screen, this, ability); // return ability
         } return null;
+    }
+
+    private boolean isAbilityMakesNoice(AbilityID ability) {
+        return ability != AbilityID.PICKPOCKET && ability != AbilityID.FLY && ability != AbilityID.POWERJUMP;
     }
 
     //results of defense actions
@@ -1120,6 +1133,7 @@ public class Creature extends Sprite {
     public void addToInventory(GameItem item) {
         //if(!toDestroy && !item.toDestroy) {
         if(canPickUpObjects){ // TODO make all Humans pickup objects
+            // screen.anim.add(new Animaion(item.getBody().getPosition().x, item.getBody().getPosition().y, "pickup_item")); //TODO add pickup animation
             item.destroyBody();
             inventory.add(item);
             addStatusMessage("Found: " + item.itemname, Fonts.GOOD);
@@ -1344,7 +1358,7 @@ public class Creature extends Sprite {
     // to status bar
     public void addStatusMessage(String message, Fonts font) {
         if(statusbar != null)
-            statusbar.addMessage(message, existingTime + 1f, font);
+            statusbar.addMessage(message, existingTime + 2f, font);
     }
 
     public void doDamage(int damageValue, EffectID damageType) {
@@ -1481,8 +1495,13 @@ public class Creature extends Sprite {
                 //if (creatureToApply.getState() == State.FALLING)
                     creatureToApply.moveUp(10);
             } else {
-                creatureToApply.doDamage(Math.round(aura.magnitude), EffectID.CUT_DAMAGE);
-                creatureToApply.applyEffect(new Effect(EffectID.MOVE_UP, 0.01f, 5f, 0f));
+                creatureToApply.applyEffect(new Effect(EffectID.CUT_DAMAGE, 0.1f, Math.round(aura.magnitude), 0f));
+                creatureToApply.applyEffect(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+                System.out.println(creatureToApply.getState() + " " + creatureToApply.getBody().getLinearVelocity().y);
+                if(creatureToApply.getBody().getLinearVelocity().y <= 0)
+                    creatureToApply.moveUp(3-creatureToApply.getBody().getLinearVelocity().y);
+                else
+                    creatureToApply.moveUp(-3);
             }
         }
         if((aura = getEffect(EffectID.AURA_HEAL))!=null){
@@ -1526,5 +1545,16 @@ public class Creature extends Sprite {
             removeEffectByID(EffectID.CHARMED);
         }
         isCharmed = value;
+    }
+
+    public boolean isInRage() {
+        return isInRage;
+    }
+
+    public void setInRage(boolean value){
+        if(isInRage && !value) {
+            removeEffectByID(EffectID.ANGRY);
+        }
+        isInRage = value;
     }
 }
