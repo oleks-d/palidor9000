@@ -107,14 +107,21 @@
       }]},
 
 
-  {"id":902,
+  {"id":9021,
     "title":"Open door",
     "condition" : "I:key_1",
     "replics": [
       {"id": 1 ,"text" : "Do you want to open this door?", "answers" :
-      [ {"text":"Open", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
+      [ {"text":"Open", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0, "process":"IR:key_1" }]
       }]},
 
+  {"id":902,
+    "title":"Open door with simple key",
+    "condition" : "I:key_1",
+    "replics": [
+      {"id": 1 ,"text" : "Do you want to open this door?", "answers" :
+      [ {"text":"Open", "next":0, "process":"KN:KILL;IR:key_1"}]
+      }]},
 
   {"id":903,
     "title":"Open chest or not",
@@ -124,6 +131,14 @@
       [ {"text":"Take all", "next":0, "process":"KN:KILL"}, {"text":"Leave it", "next":0 }]
       }]},
 
+
+
+  {"id":1001,
+    "title":"Use controller  UP/DOWN",
+    "replics": [
+      {"id": 1 ,"text" : "Use it", "answers" :
+      [ {"text":"Use", "next":0, "process":"SP:5001:nduuuddz;CAE:STUNED 5 0 0"}]
+      }]},
 
 ]
 

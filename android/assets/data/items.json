@@ -201,11 +201,21 @@
   },
 
   {
+    "id":"potion_healing",
+    "name" : "Potion of healing",
+    "description" : "Healing \n + 5 HP",
+    "value" : "100",
+    "image" : "red_bottle",
+    "usable" : "TRUE",
+    "effects" : "HEAL 1 5 0"
+  },
+
+  {
     "id":"potion_speed",
     "name" : "Potion of speed",
     "description" : "Allows to run two times faster\n Duration: 10 seconds",
     "value" : "100",
-    "image" : "red_bottle",
+    "image" : "blue_bottle",
     "usable" : "TRUE",
     "effects" : "FAST 10 1 0"
   },
@@ -227,6 +237,25 @@
     "value" : "0",
     "image" : "berry"
   },
+
+  {
+    "id":"remains",
+    "name" : "remains",
+    "description" : "Remains",
+    "value" : "0",
+    "image" : "close_button"
+  },
+
+
+  {
+    "id":"BolfirsSkin",
+    "name" : "BolfirsSkin",
+    "description" : "BolfirsSkin",
+    "value" : "0",
+    "image" : "close_button"
+  },
+
+
 
   {
     "id":"book_about_rolfs",
@@ -271,5 +300,7 @@
     "effects": "",
     "type" : "WEAPON_AXE"
   },
+
+
 
 ]}

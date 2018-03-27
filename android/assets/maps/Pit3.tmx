@@ -19,17 +19,17 @@
  <objectgroup name="ground">
   <object id="4" x="3" y="3" width="30" height="606"/>
   <object id="5" x="768" y="511" width="156" height="31"/>
-  <object id="8" x="33" y="609" width="915" height="29"/>
+  <object id="8" x="33" y="606" width="915" height="32"/>
   <object id="13" x="928" y="89" width="32" height="519"/>
   <object id="55" x="770" y="414.5" width="156" height="31"/>
  </objectgroup>
  <objectgroup name="points">
-  <object id="1" name="hero_Start" x="120" y="336"/>
+  <object id="1" name="hero_Pit2" x="120" y="336"/>
  </objectgroup>
  <objectgroup name="triggers">
   <object id="42" name="route" x="889" y="477" width="11" height="12">
    <properties>
-    <property name="value" value="Pit2"/>
+    <property name="value" value="Pit4"/>
    </properties>
   </object>
  </objectgroup>
@@ -41,7 +41,7 @@
     <property name="org" value="9"/>
    </properties>
   </object>
-  <object id="100" name="animal_rolf" x="646" y="569">
+  <object id="100" name="animal_bolfir" x="646" y="569">
    <properties>
     <property name="items" value="key_1"/>
     <property name="org" value="2"/>
@@ -49,6 +49,6 @@
   </object>
  </objectgroup>
  <objectgroup name="objects">
-  <object id="57" name="cavern_door" x="870" y="452" width="56" height="56"/>
+  <object id="57" name="cavern_door" x="859" y="447" width="56" height="56"/>
  </objectgroup>
 </map>

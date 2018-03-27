@@ -53,7 +53,7 @@ public class AbilityHandler {
 
                 result = new ActivityWithEffect(
                         screen,
-                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x * PalidorGame.TILE_SIZE/2,
                         creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
                         activeEffects,
                         id.getActivityAreaType(),
@@ -688,6 +688,28 @@ public class AbilityHandler {
 //
 //                result.setCreatedBy(creature);
 //                break;
+
+
+            case ACID_SPLASH:
+
+                activeEffects.add(new Effect(EffectID.STUNED, 0.1f, 0.1f, 0f));
+                activeEffects.add(new Effect(EffectID.CRUSH_DAMAGE, 0.01f, 1f + creature.getEffectsSum(EffectID.PLUS_CRUSH_DAMAGE) , 0f));
+                activeEffects.add(new Effect(EffectID.POISON, 3f, 2f, 0f));
+
+                direction = new Vector2(0,  3 );
+
+                result = new ActivityWithEffect(
+                        screen,
+                        creature.getBody().getPosition().x * PalidorGame.PPM + creature.direction.x* PalidorGame.TILE_SIZE,
+                        creature.getBody().getPosition().y * PalidorGame.PPM + creature.direction.y* PalidorGame.TILE_SIZE,
+                        activeEffects,
+                        id.getActivityAreaType(),
+                        direction,
+                        "firewall");
+
+                result.setCreatedBy(creature);
+                results.add(result);
+                break;
         }
 
         //creature.creatureAim.update(id.getActivityAreaType());
@@ -899,7 +921,7 @@ public class AbilityHandler {
             //case ANIMAL_PUNCH:
             //return screen.animationHelper.getAnimationByID(spritesheetRegion, 0.3f, 1, 2, 3);
             case TURREL_PIU:
-                return screen.animationHelper.getAnimationByID("turrel_right", abilityToCast.getCastTime()/4, 0, 0, 0, 2);
+                return screen.animationHelper.getAnimationByID(spritesheetRegion, abilityToCast.getCastTime()/4, 0, 0, 2, 0);
             case APPEAR:
                 return screen.animationHelper.getAnimationByID("appearing", abilityToCast.getCastTime()/3, 0, 1, 2);
             default:

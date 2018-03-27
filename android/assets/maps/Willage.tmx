@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="126">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="127">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="100" height="20">
   <data encoding="base64">
@@ -111,10 +111,16 @@
     <property name="value" value="GotIt"/>
    </properties>
   </object>
-  <object id="122" name="step" x="1069.4" y="426.982">
+  <object id="122" name="step" x="748.067" y="428.315">
    <properties>
-    <property name="process" value="SP:5001:uuz"/>
+    <property name="process" value="SP:5001:uuz;RC:5001;RO:6001"/>
     <property name="text" value="Moving up"/>
+   </properties>
+  </object>
+  <object id="126" name="step" x="637.333" y="384">
+   <properties>
+    <property name="process" value="KO:6001;KC:5001"/>
+    <property name="text" value="Moving down"/>
    </properties>
   </object>
  </objectgroup>
@@ -181,6 +187,7 @@
   </object>
   <object id="120" name="mech_brick" x="880.43" y="304.61" width="126.679" height="27">
    <properties>
+    <property name="condition" value="NO:NO"/>
     <property name="org" value="8"/>
     <property name="program" value="ndnuz"/>
     <property name="uid" value="5001"/>
@@ -193,12 +200,13 @@
     <property name="program" value="key_willage_1"/>
    </properties>
   </object>
-  <object id="124" name="animation_route" x="72.8581" y="462.824" width="56.7582" height="54.1183">
+  <object id="124" name="animation_route" x="750.191" y="297.49" width="56.7582" height="54.1183">
    <properties>
-    <property name="condition" value=""/>
+    <property name="condition" value="NO:NO"/>
     <property name="items" value=""/>
     <property name="program" value=""/>
     <property name="trigger" value=""/>
+    <property name="uid" value="6001"/>
    </properties>
   </object>
   <object id="125" name="animation_route" x="3127.62" y="550.274" width="56.7582" height="54.1183">

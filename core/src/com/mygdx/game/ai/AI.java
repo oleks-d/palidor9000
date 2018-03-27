@@ -52,7 +52,7 @@ public class AI {
     public char[] steps = null;
     char currentStep;
     double timeForNextStep;
-    float speedInCurrentStep = 1;
+    float speedInCurrentStep = 1f;
     float timeMovementTakes = 1;
     int currentStepNumber;
 
@@ -63,6 +63,13 @@ public class AI {
     String DEFAULT_PROGRAM = "lwrwnw";
 
     String organization;
+
+    float previousPositionX;
+    float previousPositionY;
+    boolean previousDirection;
+    CreatureAction previousAction;
+
+    boolean buffedBeforeDeath = false;
 
     public AI(Creature creature, GameScreen screen, String program, BehaviourPattern pattern){
         this.screen = screen;
@@ -99,7 +106,9 @@ public class AI {
         return ( !mob.destroyed
                 && !mob.isHidden() // not hidden
           //      && ( mob.getBody().getPosition().x + creatureOwner.sight/PPM < creatureOwner.getBody().getPosition().x && mob.getBody().getPosition().x - creatureOwner.sight/PPM > creatureOwner.getBody().getPosition().x)); // visible
-                && ( mob.getBody().getPosition().x < creatureOwner.getBody().getPosition().x + creatureOwner.sight/PPM && mob.getBody().getPosition().x > creatureOwner.getBody().getPosition().x  - creatureOwner.sight/PPM ));
+                && ( mob.getBody().getPosition().x < creatureOwner.getBody().getPosition().x + creatureOwner.sight/PPM && mob.getBody().getPosition().x > creatureOwner.getBody().getPosition().x  - creatureOwner.sight/PPM )
+
+                && mob.getBody().getPosition().y < creatureOwner.getBody().getPosition().y + creatureOwner.sight/2/PPM && mob.getBody().getPosition().y > creatureOwner.getBody().getPosition().y  - creatureOwner.sight/2/PPM);
 
         };
 
@@ -133,7 +142,7 @@ public class AI {
             //define nearby situation :
 
             //check for neighbors
-            if (creatureOwner.getNeighbor() != null &&  isEnemy(creatureOwner.getNeighbor())) {
+            if (creatureOwner.getNeighbor() != null && isEnemy(creatureOwner.getNeighbor())) {
                 targetX = creatureOwner.getNeighbor().getX();
                 targetY = creatureOwner.getNeighbor().getY();
                 //state = STATE_ATTACK;
@@ -181,7 +190,7 @@ public class AI {
                 {
                     creatureOwner.directionRight = false;
                     creatureOwner.direction.set(-1, 0);
-                    if (targetY - 0.10 < creatureOwner.getY() && targetY + 0.10 > creatureOwner.getY()) { // is reachable
+                    if (targetY - 0.30 < creatureOwner.getY() && targetY + 0.30 > creatureOwner.getY()) { // is reachable
                         if (targetX > creatureOwner.getX() - 1.5 * PalidorGame.TILE_SIZE / PPM             // is close
                                 && targetX > creatureOwner.getX() - 1.5 * PalidorGame.TILE_SIZE / PPM) {
                             result = CreatureAction.CLOSE_ATACK;
@@ -192,7 +201,7 @@ public class AI {
                     {
                         creatureOwner.directionRight = true;
                         creatureOwner.direction.set(1, 0);
-                        if (targetY - 0.10 < creatureOwner.getY() && targetY + 0.10 > creatureOwner.getY()) {// is reachable
+                        if (targetY - 0.30 < creatureOwner.getY() && targetY + 0.30 > creatureOwner.getY()) {// is reachable
                             if (targetX < creatureOwner.getX() + 1.5 * PalidorGame.TILE_SIZE / PPM             // is close
                                     && targetX > creatureOwner.getX() - 1.5 * PalidorGame.TILE_SIZE / PPM)
                                 result = CreatureAction.CLOSE_ATACK;
@@ -229,21 +238,39 @@ public class AI {
 
 //        if("".equals(pattern)) {
 
-            if (creatureOwner.stats.health.current < creatureOwner.stats.health.base / 3)
+            if (creatureOwner.stats.health.current < creatureOwner.stats.health.base / 3 && !buffedBeforeDeath)
                 result = CreatureAction.ALMOST_DEAD;
 
-            if (creatureOwner.abilityToCast == AbilityID.NONE)
+            if (creatureOwner.abilityToCast == AbilityID.NONE) {
                 switch (result) {
                     case STOP:
                         creatureOwner.stop();
                         break;
                     case MOVE_LEFT:
-                        if (!moveRight)
-                            creatureOwner.move(false);
+                        if (!moveRight) {
+                            if (creatureOwner.getX() == previousPositionX && creatureOwner.getY() == previousPositionY && previousDirection == creatureOwner.directionRight && result == previousAction) { // pushing wall
+                                creatureOwner.move(false);
+                                creatureOwner.jump();
+                            } else {
+                                creatureOwner.move(false);
+                                previousDirection = creatureOwner.directionRight;
+                                previousPositionX = creatureOwner.getX();
+                                previousPositionY = creatureOwner.getY();
+                            }
+                        }
                         break;
                     case MOVE_RIGHT:
-                        if (!moveLeft)
-                            creatureOwner.move(true);
+                        if (!moveLeft) {
+                            if (creatureOwner.getX() == previousPositionX && creatureOwner.getY() == previousPositionY && previousDirection == creatureOwner.directionRight && result == previousAction) { // pushing wall
+                                creatureOwner.move(true);
+                                creatureOwner.jump();
+                            } else {
+                                creatureOwner.move(true);
+                                previousDirection = creatureOwner.directionRight;
+                                previousPositionX = creatureOwner.getX();
+                                previousPositionY = creatureOwner.getY();
+                            }
+                        }
                         break;
                     case JUMP_LEFT:
                         creatureOwner.move(false);
@@ -279,11 +306,29 @@ public class AI {
                             creatureOwner.weaponSprite.isMoving = true;
                         } else if (creatureOwner.findAbility(AbilityType.CLOSE_RANGE_ATACK) != null) {
                             if (creatureOwner.directionRight) {
-                                if (!moveLeft)
-                                    creatureOwner.move(creatureOwner.directionRight);
+                                if (!moveLeft) {
+                                    if (creatureOwner.getX() == previousPositionX && creatureOwner.getY() == previousPositionY && previousDirection == creatureOwner.directionRight && result == previousAction) { // pushing wall
+                                        creatureOwner.move(true);
+                                        creatureOwner.jump();
+                                    } else {
+                                        creatureOwner.move(true);
+                                        previousPositionX = creatureOwner.getX();
+                                        previousPositionY = creatureOwner.getY();
+                                        previousDirection = creatureOwner.directionRight;
+                                    }
+                                }
                             } else {
-                                if (!moveRight)
-                                    creatureOwner.move(creatureOwner.directionRight);
+                                if (!moveRight) {
+                                    if (creatureOwner.getX() == previousPositionX && creatureOwner.getY() == previousPositionY && previousDirection == creatureOwner.directionRight && result == previousAction) { // pushing wall
+                                        creatureOwner.move(false);
+                                        creatureOwner.jump();
+                                    } else {
+                                        creatureOwner.move(false);
+                                        previousPositionX = creatureOwner.getX();
+                                        previousPositionY = creatureOwner.getY();
+                                        previousDirection = creatureOwner.directionRight;
+                                    }
+                                }
                             }
                         }
 //                }
@@ -317,14 +362,15 @@ public class AI {
                     case ALMOST_DEAD:
                         if (creatureOwner.findAbility(AbilityType.BUFF) != null) {
                             creatureOwner.useAbility(creatureOwner.findAbility(AbilityType.BUFF));
+                            buffedBeforeDeath = true;
                             creatureOwner.weaponSprite.isMoving = true;
                         } else //move from enemy
-                            if (!creatureOwner.directionRight) {
+                            if (targetX<creatureOwner.getX()) {
                                 if (!moveLeft)
-                                    creatureOwner.move(creatureOwner.directionRight);
+                                    creatureOwner.move(true);
                             } else {
                                 if (!moveRight)
-                                    creatureOwner.move(creatureOwner.directionRight);
+                                    creatureOwner.move(false);
                             }
 //                if(pattern!=null) {
 //                    if (pattern.getSteps()[currentActionStepNumber].getCondition().equals("HP")) {
@@ -359,6 +405,8 @@ public class AI {
 //                    if (currentActionStepNumber == maxNumberOfActionSteps)
 //                        currentActionStepNumber = 0;
 //        }
+            }
+            previousAction = result;
         }
     }
 
@@ -543,14 +591,14 @@ public class AI {
                 timeForNextStep = creatureOwner.existingTime + randomizer.nextInt(3);
             }
             if (currentStep == 'n') {//nothing
-                timeForNextStep = creatureOwner.existingTime + 1;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
             }
             if (currentStep == '-') {//hide
-                timeForNextStep = creatureOwner.existingTime + 1;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
                 result = CreatureAction.HIDE;
             }
             if (currentStep == 'z') {//nothing
-                timeForNextStep = creatureOwner.existingTime + 1;
+                timeForNextStep = creatureOwner.existingTime + timeMovementTakes;
                 program = "";
                 result = CreatureAction.STOP;
             }

@@ -191,7 +191,7 @@ public class WeaponSprite extends Sprite {
                                 trajectoryY = prevtrajectoryY;
                             }else{ //smash
                                 if(holdingAngle != 1){
-                                    trajectoryX = -owner.getWidth() / 2;
+                                    trajectoryX = (owner.directionRight ? -owner.getWidth() / 2 : owner.getWidth() / 2);
                                     trajectoryY = -owner.getHeight() / 2;
                                 }
                             }

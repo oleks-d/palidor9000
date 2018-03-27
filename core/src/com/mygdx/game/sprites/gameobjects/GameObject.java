@@ -32,7 +32,7 @@ public class GameObject extends Sprite {
     GameObjectType type;
     private String program;
     private String icon;
-    public String id;
+    public String name;
     String condition;
 
     String activationTrigger = "";
@@ -53,12 +53,14 @@ public class GameObject extends Sprite {
     TextureRegion region;
     float stateTimer;
 
+    private int uniqueID;
+
     public GameObject(GameScreen screen, Rectangle rectangle, ObjectDescription objectDescription, String condition, String items, String program, String activationTrigger) {
 
         super();
 
         this.screen = screen;
-        this.id = objectDescription.id;
+        this.name = objectDescription.id;
         this.icon = objectDescription.image;
         this.type = objectDescription.type;
         this.program = program;
@@ -211,11 +213,7 @@ public class GameObject extends Sprite {
     @Override
     public void draw(Batch batch){
         if(!destroyed) {
-            try {
                 super.draw(batch);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
         }
     }
 
@@ -238,7 +236,7 @@ public class GameObject extends Sprite {
 
     @Override
     public String toString() {
-        return id;
+        return name;
     }
 
     public Body getBody() {
@@ -263,5 +261,13 @@ public class GameObject extends Sprite {
 
     public String getCondition() {
         return condition==null?"":condition;
+    }
+
+    public void setUniqueID(int uniqueID) {
+        this.uniqueID = uniqueID;
+    }
+
+    public int getID() {
+        return uniqueID;
     }
 }

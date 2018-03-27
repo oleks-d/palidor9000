@@ -46,6 +46,7 @@ public enum EffectID {
     IMMUNE_FIRE_DAMAGE("icon_plus_armor", true, "Immune to fire damage"),
     IMMUNE_ICE_DAMAGE("icon_plus_armor", true, "Immune to ice damage"),
     IMMUNE_POISON_DAMAGE("icon_plus_armor", true, "Immune to poison damage"),
+    IMMUNE_DAMAGE("icon_plus_armor", true, "Immune to any damage"),
 
     //shields
     HAS_SHIELD_AGAINST_CUT_DAMAGE("icon_plus_armor", true),

@@ -123,7 +123,9 @@ public class GameScreen implements Screen {
 
 
     public Array<String> creaturesToCreate;
+    public Array<String> objectsToCreate;
     public Array<String> creaturesToDie;
+    public Array<String> objectsToDie;
     public Array<String> itemsToCreate;
     public Array<ActivityWithEffect> activitiesToCreate;
 
@@ -171,7 +173,9 @@ public class GameScreen implements Screen {
         levelmanager.loadLevel(hero.currentLevel, hero.name);
 
         creaturesToCreate = new Array<String>();
+        objectsToCreate = new Array<String>();
         creaturesToDie = new Array<String>();
+        objectsToDie = new Array<String>();
         itemsToCreate = new Array<String>();
         activitiesToCreate = new Array<ActivityWithEffect>();
 
@@ -278,8 +282,10 @@ public class GameScreen implements Screen {
                         hero.screen.levelmanager.createCreature(hero.screen, newCreatureX, newCreatureY, typeOfCreature, newCreatureOrg);
                     } else
                         for (LevelManager.UnavailableCreatures creature : hero.screen.levelmanager.UNAVAILABLE_CREATURES)
-                            if (creature.getUid().equals(line))
+                            if (creature.getUid().equals(line)) {
                                 hero.screen.levelmanager.createCreatureFromUnavailableCreature(creature);
+                                hero.screen.levelmanager.UNAVAILABLE_CREATURES.removeValue(creature, true);
+                            }
 
                 };
                 creaturesToCreate.clear();
@@ -295,6 +301,42 @@ public class GameScreen implements Screen {
                     }
                 };
                 creaturesToDie.clear();
+
+            }
+
+            //summon creature
+            if(objectsToCreate.size > 0) {
+                for(String line : objectsToCreate) {
+
+
+                    if(line.contains(":")) { // TODO
+//                        String typeOfCreature = line.split(":")[1];
+//                        String conditionValue = line.split(":")[2];
+//                        float newCreatureX = Float.valueOf(conditionValue.split(",")[0]);
+//                        float newCreatureY = Float.valueOf(conditionValue.split(",")[1]);
+//                        int newCreatureOrg = Integer.valueOf(conditionValue.split(",")[2]);
+//                        hero.screen.levelmanager.createInteractiveObject(hero.screen, newCreatureX, newCreatureY, typeOfCreature);
+                    } else
+                        for (LevelManager.UnavailableObject object : hero.screen.levelmanager.UNAVAILABLE_OBJECTS)
+                            if (object.getID().equals(line)) {
+                                hero.screen.levelmanager.createObjectFromUnavailableObject(object);
+                                hero.screen.levelmanager.UNAVAILABLE_OBJECTS.removeValue(object, true);
+                            }
+
+                };
+                objectsToCreate.clear();
+
+            }
+
+            //kill creature
+            if(objectsToDie.size > 0) {
+                for(String line : objectsToDie) {
+                    for(GameObject object: hero.screen.levelmanager.OBJECTS) {
+                        if( object.getID() == Integer.valueOf(line))
+                            object.destroyBody();
+                    }
+                };
+                objectsToDie.clear();
 
             }
 
@@ -857,7 +899,7 @@ public class GameScreen implements Screen {
 //            game.getBatch().setProjectionMatrix(dialogPanel.stage.getCamera().combined);
 //            dialogPanel.stage.draw();
 
-            //if (Gdx.app.getType() == Application.ApplicationType.Android)
+            if (Gdx.app.getType() == Application.ApplicationType.Android)
                 controller.stage.draw();
 
         }

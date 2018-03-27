@@ -1,15 +1,28 @@
 {"creatures" : [
 
+  {
+    "id" : "dying",
+    "name" : "Rolf",
+    "description": "Regular rolf",
+    "health" : "3",
+    "speed" : "6",
+    "jump": "10",
+    "spritesheetregion" : "animal_rolf",
+    "abilities" : "ANIMAL_CLAW,MASK1,DISAPPEAR",
+    "pattern" : "ANIMAL_ROLF",
+    "equipeditems" : "paw_1,paw_1"
+
+  },
 
   {
     "id" : "animal_rolf",
     "name" : "Rolf",
     "description": "Regular rolf",
     "health" : "10",
-    "speed" : "5",
-    "jump": "5",
+    "speed" : "6",
+    "jump": "10",
     "spritesheetregion" : "animal_rolf",
-    "abilities" : "ANIMAL_CLAW, ANIMAL_POKE,MASK1,DISAPPEAR",
+    "abilities" : "ANIMAL_CLAW,MASK1,DISAPPEAR",
     "pattern" : "ANIMAL_ROLF",
     "equipeditems" : "paw_1,paw_1"
   },
@@ -23,6 +36,19 @@
     "jump": "10",
     "spritesheetregion" : "animal_bolfir",
     "abilities" : "ANIMAL_CLAW,ACID_SHOT",
+    "pattern" : "ANIMAL_BOLFIR",
+    "equipeditems" : "paw_1,paw_1"
+  },
+
+  {
+    "id" : "animal_bolfir_boss",
+    "name" : "Boss Bolfir",
+    "description": "Huge bolfir",
+    "health" : "50",
+    "speed" : "6",
+    "jump": "10",
+    "spritesheetregion" : "animal_bolfir",
+    "abilities" : "ANIMAL_CLAW,ACID_SPLASH",
     "pattern" : "ANIMAL_BOLFIR",
     "equipeditems" : "paw_1,paw_1"
   },
@@ -240,9 +266,37 @@
       "health" : "2",
       "speed" : "0",
       "jump": "-1",
-      "spritesheetregion" : "turrel_right",
-      "abilities" : "TURREL_PIU"
+      "spritesheetregion" : "turrel_main",
+      "abilities" : "TURREL_PIU",
+      "effects" : "IMMUNE_DAMAGE 0 1 0"
     },
+
+
+  {
+    "id" : "mech_t_dd",
+    "name" : "piu",
+    "description": "Piu",
+    "health" : "2",
+    "speed" : "0",
+    "jump": "-1",
+    "spritesheetregion" : "turrel_destroyable",
+    "abilities" : "TURREL_PIU",
+    "effects" : "IMMUNE_POISON_DAMAGE 0 1 0,IMMUNE_FIRE_DAMAGE 0 1 0,IMMUNE_ICE_DAMAGE 0 1 0"
+  },
+
+  {
+    "id" : "mech_t_d",
+    "name" : "piu",
+    "description": "Piu",
+    "health" : "2",
+    "speed" : "0",
+    "jump": "-1",
+    "spritesheetregion" : "turrel_durable",
+    "abilities" : "TURREL_PIU",
+    "effects" : "IMMUNE_POISON_DAMAGE 0 1 0,IMMUNE_CUT_DAMAGE 0 1 0,IMMUNE_CRUSH_DAMAGE 0 1 0"
+  },
+
+
 
   {
     "id" : "mech_t_r_light",
@@ -287,14 +341,16 @@
     "health" : "2",
     "speed" : "-1",
     "jump": "-1",
-    "spritesheetregion" : "mech_tumbler"
+    "spritesheetregion" : "mech_tumbler",
+
+    "effects" : "IMMUNE_POISON_DAMAGE 0 1 0,IMMUNE_CUT_DAMAGE 0 1 0,IMMUNE_CRUSH_DAMAGE 0 1 0,IMMUNE_FIRE_DAMAGE 0 1 0,IMMUNE_ICE_DAMAGE 0 1 0"
   },
 
   {
     "id" : "mech_door",
     "name" : "door",
     "description": "door",
-    "health" : "10",
+    "health" : "100",
     "speed" : "-1",
     "jump": "-1",
     "spritesheetregion" : "mech_door"
@@ -311,7 +367,18 @@
   },
 
   {
-    "id" : "mech_spiky",
+    "id" : "mech_spiky_r",
+    "name" : "spikes",
+    "description": "spikes",
+    "health" : "1",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_spiky_metal",
+    "effects" : "AURA_DAMAGE 0 3 0,IMMUNE_DAMAGE 0 1 0"
+  },
+
+  {
+    "id" : "mech_spiky_d",
     "name" : "spikes",
     "description": "spikes",
     "health" : "1",
@@ -339,7 +406,19 @@
     "health" : "1",
     "speed" : "-1",
     "jump": "-1",
-    "spritesheetregion" : "mech_block_brick"
+    "spritesheetregion" : "mech_block_brick",
+    "effects" : "IMMUNE_DAMAGE 0 1 0"
+  },
+
+
+  {
+    "id" : "mech_wood",
+    "name" : "object",
+    "description": "object",
+    "health" : "2",
+    "speed" : "-1",
+    "jump": "-1",
+    "spritesheetregion" : "mech_block_wood"
   },
 
 
@@ -351,7 +430,7 @@
     "speed" : "-1",
     "jump": "-1",
     "spritesheetregion" : "mech_healthy",
-    "effects" : "AURA_HEAL 0 3 0"
+    "effects" : "AURA_HEAL 0 3 0,IMMUNE_DAMAGE 0 1 0"
   }
 
 //  {

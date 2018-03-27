@@ -48,6 +48,7 @@ public class WorldContactListener implements ContactListener {
                     act = ((ActivityWithEffect) fixA.getUserData());
                     target = ((Creature) fixB.getUserData());
                 }
+                if(target.toDestroy) break;
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
@@ -83,6 +84,7 @@ public class WorldContactListener implements ContactListener {
                     act = ((ActivityWithEffect) fixA.getUserData());
                     target = ((Creature) fixB.getUserData());
                 }
+                if(target.toDestroy) break;
 
                 //creature belongs to your fraction
                 if (!act.isTargetACreator(target) && act.getCreator().getOrganization() != target.getOrganization()) { //&& !act.isTargetWasAlreadyProcessed(target)) {
@@ -183,9 +185,13 @@ public class WorldContactListener implements ContactListener {
                 target.activateTrigger(trigger);
                 break;
             case PalidorGame.CREATURE_BIT | PalidorGame.CREATURE_BIT:
+
                 // not hidden
                 creatureA = ((Creature) fixA.getUserData());
                 creatureB = ((Creature) fixB.getUserData());
+
+                if(creatureA.toDestroy) break;
+                if(creatureB.toDestroy) break;
 
                 creatureA.setInvisible(false);
                 creatureB.setInvisible(false);

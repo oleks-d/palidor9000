@@ -84,6 +84,8 @@ public class ConditionProcessor {
                         else
                             result = result && false;
                         break;
+                    case "NO":
+                        return false;
                 }
             }
         }
@@ -152,6 +154,14 @@ public class ConditionProcessor {
 
                     case "RC": // creature Creature (from list of unavailable creatures)
                         hero.screen.creaturesToCreate.add(conditionKey);
+                        break;
+
+                    case "RO": // creature Object (from list of unavailable objects)
+                        hero.screen.objectsToCreate.add(conditionKey);
+                        break;
+
+                    case "KO": // kill Object
+                        hero.screen.objectsToDie.add(conditionKey);
                         break;
 
                     case "KC": // kill Creature

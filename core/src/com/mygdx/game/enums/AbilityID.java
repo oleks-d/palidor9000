@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 
 public enum AbilityID{
     NONE("Nope", "None", "icon_blank", State.CASTING, AbilityType.FLAG, ActivityAreaType.SELF, 0f, 0f),
-    PUNCH("Punch",  "Melee strike", "fist", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.6f, 1f ),
+    PUNCH("Punch",  "Melee strike", "fist", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.6f, 0.5f ),
 
 
     HUMMER_SWING("Smash",  "Melee strike \n (crush damage)", "hummer", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 0.3f ),
@@ -119,8 +119,10 @@ public enum AbilityID{
     ANIMAL_POKE("Poke",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.5f, 1f ),
     ANIMAL_CLAW("Claw",  "Melee strike", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_ATACK, ActivityAreaType.BOX, 0.9f, 1f ),
 
+    ACID_SPLASH("Acid atack", "Explosion", "icon_blank", State.CASTING, AbilityType.LONG_RANGE_ATACK, ActivityAreaType.BOOM, 1f, 5f),
+
     ANIMAL_SHIELD("Covering with shell", "Cover with shell", "icon_blank", State.KICKING, AbilityType.CLOSE_RANGE_DEFENSE, ActivityAreaType.BOX, 0.1f, 3f),
-    ACID_SHOT("Splash", "Acid arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.4f, 0.5f ),
+    ACID_SHOT("Splash", "Acid arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.6f, 1f ),
     SPIKE_SHOT("Showing spikes", "Spike arrow" , "icon_blank", State.CASTING,AbilityType.LONG_RANGE_ATACK, ActivityAreaType.ARROW, 0.5f, 0.5f ),
     ANIMAL_DASH("Dash","Run forward and push enemy \n (interrupts and locks ability that enemy is casting)","icon_blank", State.KICKING, AbilityType.LONG_RANGE_ATACK , ActivityAreaType.BOX, 0.6f , 10f);
 

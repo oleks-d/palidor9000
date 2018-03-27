@@ -158,7 +158,7 @@ public class Creature extends Sprite {
 
     public String program;
 
-    public String summonedCreature = "";
+    public String summonedCreature = "";  // todo use ID
     public Creature owner;
     private int uniqueID;
     public Rectangle originalRect;
@@ -187,8 +187,9 @@ public class Creature extends Sprite {
     public float abilityToCastExecutionTime;
 
 
-    protected boolean toDestroy;
+    public boolean toDestroy;
     public boolean destroyed;
+    public double diyingTime;
 
     public double timeInBattle;
     public void setIN_BATTLE(boolean IN_BATTLE) {
@@ -298,7 +299,10 @@ public class Creature extends Sprite {
             stand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
             hideStand = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
             icon = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0); //TODO
-            damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
+            if(description.id.contains("button"))
+                damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 1);
+            else
+                damaged = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 0);
             deadBody = screen.animationHelper.getTextureRegionByIDAndIndex(description.region, 1);
             runAnimation = screen.animationHelper.getAnimationByID(description.region, 0.2f, 0);
             jumpAnimation = screen.animationHelper.getAnimationByID(description.region, 0.3f, 0);
@@ -590,10 +594,32 @@ public class Creature extends Sprite {
     public void update(float dt){
         setAnimationFrames(dt);
 
+        existingTime = existingTime + dt;
+
+        if(!destroyed) {
+            updatePosition(dt);
+
+            weaponSprite.update(dt);
+            weaponSprite2.update(dt);
+            armorSprite.update(dt);
+
+            statusbar.updatePosition();
+        }
+
+        //creatureAim.updatePosition(); //TODO aiming
+        if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
+            statusbar.removeMessage();
+
+
         if(toDestroy && !destroyed){
-            world.destroyBody(body);
-            destroyed = true;
-            Gdx.app.log("Destroyed", name);
+            //if (onAGround || isMachine) {
+            if (diyingTime <= existingTime) {
+                world.destroyBody(body);
+                destroyed = true;
+                Gdx.app.log("Destroyed", name);
+            }
+            Gdx.app.log("Dying", name);
+            return;
         }
 
         if(!toDestroy && !destroyed) {
@@ -603,27 +629,15 @@ public class Creature extends Sprite {
             if(getBody().getPosition().y < 0)
                 toDie();
 
-            updatePosition(dt);
-
-            weaponSprite.update(dt);
-            weaponSprite2.update(dt);
-            armorSprite.update(dt);
 
             checkEffects(dt);
 
             if(IN_BATTLE &&  existingTime >= timeInBattle)
                 setIN_BATTLE(false);
 
-            existingTime = existingTime + dt;
-
             if ((getState() == State.CASTING || getState() == State.SHOTING || getState() == State.KICKING) && !stuned) {
                 timeSpentOnCast = timeSpentOnCast + dt;
             }
-
-            statusbar.updatePosition();
-            //creatureAim.updatePosition(); //TODO aiming
-            if(statusbar.removeMessageTime != 0 && statusbar.removeMessageTime <= existingTime)
-                statusbar.removeMessage();
 
 
         }
@@ -650,6 +664,9 @@ public class Creature extends Sprite {
 
     public TextureRegion getFrame(float dt) {
         currentState = getState();
+
+        if(currentState == State.DEAD)  // DEAD BODY
+            return deadBody;
 
         if(!stuned) {
             switch (currentState) {
@@ -739,7 +756,7 @@ public class Creature extends Sprite {
     public void draw(Batch batch) {
 //        if(auratexture != null)
 //            batch.draw(auratexture,getX(),getY());
-            if (!destroyed) {
+            if (!toDestroy && !destroyed) {
                 if(isMachine) {
                     if(screen.hero.isAbleToSee(this)) {
                         this.setPosition(body.getPosition().x - getWidth() / 2, body.getPosition().y - getHeight() / 2);
@@ -768,10 +785,13 @@ public class Creature extends Sprite {
                         //creatureAim.draw(batch);
                     }
                 }
-            } else {
+            }
+//            //TODO draw dead body
+            else {
                     if (getY() > 0 && owner == null) { // not Falling not Summoned
+                        //super.draw(batch);
                         batch.draw(deadBody, getX(), getY(), getWidth(), getHeight());
-                        statusbar.draw(batch);
+                        //statusbar.draw(batch);
                     }
 
             }
@@ -1086,7 +1106,11 @@ public class Creature extends Sprite {
                 break;
             }
         }
+    }
 
+    //remove all effects
+    public void removeAllEffects(){
+        activeEffects = new Array<Effect>();
     }
 
 
@@ -1334,11 +1358,17 @@ public class Creature extends Sprite {
 
         toDestroy = true;
         setState(State.DEAD);
+
+        //body.getFixtureList().get(0).setSensor(true);
+
+        removeAllEffects();
         int inventorySize = getInventory().size;
         for(int i =0; i<inventorySize;i++)
             throwFromInventory(getInventory().get(0));
 
         startAnimation(deathAnimation);
+
+        diyingTime = existingTime + 2;  //timeout before removing of body
 
         if(owner != null) {
             owner.summonedCreature = "";
