@@ -90,6 +90,47 @@
     ]},
 
 
+  {"id":107,
+    "title":"Try to talk",
+    "condition" : "A:READ_FOREIGN",
+    "replics": [
+      {"id": 1 ,"text" : "Are you local?", "answers" : [{"text":"Yes. But looks like you are not", "next":2}]},
+      {"id": 2 ,"text" : "My name is Herkon. And I have a special mission. \n May be you can help me?",
+        "answers" : [
+          {"text":"How can I help you?", "next":3},
+          {"text":"Get out of here. We dont like foreigners", "next":4}
+        ]},
+      {"id": 3 ,"text" : "I have orders to find an Ancient book \n According to records of our people it can be found in ancient ruins\n And I can not came back without it", "answers" : [{"text":"Maybe I can help.", "next":5}]},
+      {"id": 4 ,"text" : "I wish I could. \n But I have orders to find an Ancient book \n According to records of our people it can be found in ancient ruins\n And I can not came back without it", "answers" : [{"text":"...", "next":6}]},
+      {"id": 5 ,"text" : "If you will find this Ancient book I will pay you\n", "answers" : [{"text":"Sounds like you really need this book.", "next":0}]},
+      {"id": 6 ,"text" : "If you will find this Ancient book I will pay you\n If not - we will search it by ourselves \n and we will start searching in your willage ", "answers" : [{"text":"I am not affraid.", "next":0}]}
+
+    ]},
+
+
+  {"id":108,
+    "title":"Bring Grimuar",
+    "condition" : "I:Grimuar",
+    "replics": [
+      {"id": 1 ,"text" : "Did you get book?", "answers" :
+        [ {"text":"Yes! Take it.", "next":2},{"text":"Yes! But I will not give it to you.", "next":3}]},
+      {"id": 2 ,"text" : "Thank you foreigner! \n Our mission is complete and we will leave right away!\n I promised you a payment for help \n Select wisely", "answers" :
+        [
+          {"text":"I will take an Axe of Foreigners", "next":4, "process":"IA:axe_2;EX:100;IR:Grimuar"},
+          {"text":"I will take an Bow of Foreigners", "next":4, "process":"IA:bow_2;EX:100;IR:Grimuar"}
+        ]
+      },
+
+      {"id": 3 ,"text" : "Ok, I will use force to get it", "answers" :
+      [ {"text":"<Fight>", "process": "CAE:ANGRY 10 0 0" , "next":0} ]},
+
+      {"id": 4 ,"text" : "Be well. And thatnk you for help", "answers" :
+      [ {"text":"Buy", "next":0} ]}
+
+    ]},
+
+
+
   {"id":901,
     "title":"Open chest",
     "condition" : "I:key_1",

@@ -259,6 +259,21 @@
   },
 
 
+
+  {
+    "id" : "herkon",
+    "name" : "Foreign soldier",
+    "description": "Looks like a leader of Foreign soldiers",
+    "health" : "50",
+    "speed" : "5",
+    "jump" : "10",
+    "spritesheetregion" : "enemies1",
+    "abilities" : "SWORD_SWING,LONGBOW_SHOT",
+    "equipeditems" : "axe_2",
+    "pattern" : "ENEMY_1"
+  },
+
+
     {
       "id" : "mech_t_r",
       "name" : "piu",

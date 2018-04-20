@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="166">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="32" tileheight="32" nextobjectid="170">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="30" height="20">
   <data encoding="base64">
@@ -38,7 +38,7 @@
     <property name="value" value="Room1"/>
    </properties>
   </object>
-  <object id="163" name="mech_spiky_r" x="474.5" y="169.667" width="131" height="18">
+  <object id="163" name="mech_spiky_r" x="201.167" y="153.667" width="131" height="18">
    <properties>
     <property name="deathprocess" value="T:STEP_ON:1"/>
     <property name="org" value="9"/>
@@ -57,6 +57,35 @@
   <object id="165" name="mech_button" x="338.667" y="238.667">
    <properties>
     <property name="dialogs" value="904"/>
+   </properties>
+  </object>
+  <object id="166" name="animation_route" x="751.621" y="132.941" width="56.7582" height="54.1183">
+   <properties>
+    <property name="condition" value="NO:NO"/>
+    <property name="items" value=""/>
+    <property name="program" value=""/>
+    <property name="trigger" value=""/>
+    <property name="uid" value="6001"/>
+   </properties>
+  </object>
+  <object id="167" name="mech_brick" x="708.66" y="235.833" width="126.679" height="27">
+   <properties>
+    <property name="condition" value="NO:NO"/>
+    <property name="org" value="8"/>
+    <property name="program" value="ndnuz"/>
+    <property name="uid" value="5001"/>
+   </properties>
+  </object>
+  <object id="168" name="step" x="576" y="290.667">
+   <properties>
+    <property name="process" value="KO:6001;KC:5001"/>
+    <property name="text" value="Moving down"/>
+   </properties>
+  </object>
+  <object id="169" name="step" x="502.667" y="288">
+   <properties>
+    <property name="process" value="SP:5001:uuz;RC:5001;RO:6001"/>
+    <property name="text" value="Moving up"/>
    </properties>
   </object>
  </objectgroup>

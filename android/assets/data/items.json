@@ -102,6 +102,16 @@
     "picture" : "weapon_spear"
   },
   {
+    "id":"bow_2",
+    "name" : "Spear",
+    "description" : "Great spear \n (Accuracy skill required)",
+    "value" : "100",
+    "image" : "bow_red",
+    "type" : "WEAPON_BOW",
+    "picture" : "weapon_spear",
+    "effects": "PLUS_CUT_DAMAGE 0 2 0"
+  },
+  {
     "id":"sling_1",
     "name" : "Rock",
     "description" : "Regular sling \n (Accuracy skill required)",

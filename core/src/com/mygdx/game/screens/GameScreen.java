@@ -62,6 +62,7 @@ public class GameScreen implements Screen {
 
     public DialogPanel dialogPanel;
     ControllerPanel controller;
+    InfoPanel infoPanel;
     HeroInventoryPanel heroInventoryPanel;
     HeroAbilitiesPanel heroAbilitiesPanel;
 
@@ -159,6 +160,9 @@ public class GameScreen implements Screen {
         //controller
         controller = new ControllerPanel(game.getBatch(),animationHelper);
 
+        //infopanel
+        infoPanel = new InfoPanel(game.getBatch(),animationHelper);
+
         //set camera to center
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
@@ -186,6 +190,8 @@ public class GameScreen implements Screen {
 
         //controller
         controller.update(hero);
+        infoPanel.update(this);
+
 
         PAUSE = false;
 
@@ -901,6 +907,8 @@ public class GameScreen implements Screen {
 
             if (Gdx.app.getType() == Application.ApplicationType.Android)
                 controller.stage.draw();
+
+            infoPanel.stage.draw();
 
         }
 

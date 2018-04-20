@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="127">
+<map version="1.0" tiledversion="1.0.3" orientation="orthogonal" renderorder="right-down" width="100" height="20" tilewidth="32" tileheight="32" nextobjectid="128">
  <tileset firstgid="1" source="Hunters.tsx"/>
  <layer name="background" width="100" height="20">
   <data encoding="base64">
@@ -68,7 +68,7 @@
  </objectgroup>
  <objectgroup name="points">
   <object id="75" name="hero_Forest" x="3047" y="594"/>
-  <object id="69" name="hero_Mountains" x="85" y="588"/>
+  <object id="69" name="hero_Mountains" x="99.6667" y="588"/>
   <object id="53" name="hero_Start" x="872" y="551"/>
   <object id="106" name="hero_Ruins" x="296.99" y="95.037"/>
  </objectgroup>
@@ -109,18 +109,6 @@
     <property name="key" value="GotThere"/>
     <property name="text" value="You are there!"/>
     <property name="value" value="GotIt"/>
-   </properties>
-  </object>
-  <object id="122" name="step" x="748.067" y="428.315">
-   <properties>
-    <property name="process" value="SP:5001:uuz;RC:5001;RO:6001"/>
-    <property name="text" value="Moving up"/>
-   </properties>
-  </object>
-  <object id="126" name="step" x="637.333" y="384">
-   <properties>
-    <property name="process" value="KO:6001;KC:5001"/>
-    <property name="text" value="Moving down"/>
    </properties>
   </object>
  </objectgroup>
@@ -178,21 +166,6 @@
     <property name="org" value="1"/>
    </properties>
   </object>
-  <object id="121" name="mech_spiky" x="2623.59" y="420.266" width="96" height="28">
-   <properties>
-    <property name="deathprocess" value="T:STEP_ON:1"/>
-    <property name="org" value="8"/>
-    <property name="program" value="nrnl"/>
-   </properties>
-  </object>
-  <object id="120" name="mech_brick" x="880.43" y="304.61" width="126.679" height="27">
-   <properties>
-    <property name="condition" value="NO:NO"/>
-    <property name="org" value="8"/>
-    <property name="program" value="ndnuz"/>
-    <property name="uid" value="5001"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup name="objects">
   <object id="98" name="door_willage_1" x="1382" y="323.39" width="19.7994" height="55.4382">
@@ -200,16 +173,15 @@
     <property name="program" value="key_willage_1"/>
    </properties>
   </object>
-  <object id="124" name="animation_route" x="750.191" y="297.49" width="56.7582" height="54.1183">
+  <object id="125" name="animation_route" x="3115.62" y="540.941" width="56.7582" height="54.1183">
    <properties>
-    <property name="condition" value="NO:NO"/>
+    <property name="condition" value=""/>
     <property name="items" value=""/>
     <property name="program" value=""/>
     <property name="trigger" value=""/>
-    <property name="uid" value="6001"/>
    </properties>
   </object>
-  <object id="125" name="animation_route" x="3127.62" y="550.274" width="56.7582" height="54.1183">
+  <object id="127" name="animation_route" x="6.28757" y="546.274" width="56.7582" height="54.1183">
    <properties>
     <property name="condition" value=""/>
     <property name="items" value=""/>

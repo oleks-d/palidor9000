@@ -194,6 +194,7 @@ public class GameObject extends Sprite {
         }
         if(currentStep =='o') {//reset
             world.destroyBody(body); //TODO check
+            currentStepNumber = 0;
             createBody(originalRectangle);
             timeForNextStep = existingTime;
         }
